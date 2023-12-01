@@ -41,7 +41,7 @@ jobs:
             python manage.py migrate
       - name: Insert Database Records
          run: |
-            insertallall.sh
+            bash insertall.sh
       - name: Collectstatic
         run: |
             python manage.py collectstatic
