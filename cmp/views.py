@@ -329,3 +329,8 @@ def soldier(request, soldier_id):
 #                          's_notes':        s.notes, 
 #                         }
 #    return soldier_record
+
+def soldier_search(request):
+    name = request.POST.get('name')
+    soldiers = Soldier.objects.filter(surname__icontains=name)
+    return render(request, 'cmp/soldier-results.html', {'soldiers': soldiers})

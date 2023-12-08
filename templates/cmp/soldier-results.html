@@ -1,0 +1,10 @@
+{% for soldier in soldiers %}
+    <div>
+        <h2>{{ soldier.name }}</h2>
+        <p>{{ soldier.rank }}</p>
+        <p>{{ soldier.unit }}</p>
+        <!-- Add more fields as needed -->
+    </div>
+{% empty %}
+    <p>No soldiers found matching search</p>
+{% endfor %}
