@@ -108,7 +108,7 @@ class SoldierDeath(models.Model):
     cemetery = models.ForeignKey(Cemetery, blank=True, null=True, default=110, on_delete=models.CASCADE, related_name='cemeteries')
     cwgc_id  = models.IntegerField(blank=True, null=True, unique=False, verbose_name="War Graves ID")
     def __unicode__(self):
-        return '%s %s %s' % (self.Soldier, self.Date, self.cemetery)
+        return '%s %s %s' % (self.Soldier, self.date, self.cemetery)
 
     def cwgc_url(self):
         """Build a URL for a link to CWGC site."""
