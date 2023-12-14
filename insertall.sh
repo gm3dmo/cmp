@@ -1,5 +1,5 @@
 python manage.py runscript insert-all-countries
-python manage.py runscript add-flags-to-countries.py
+python manage.py runscript add-flags-to-countries
 #python manage.py runscript insert-all-theatres
 python manage.py runscript insert-all-cemeteries
 python manage.py runscript insert-all-pow-camps
