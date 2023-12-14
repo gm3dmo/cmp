@@ -330,7 +330,12 @@ def soldier(request, soldier_id):
 #                         }
 #    return soldier_record
 
-def soldier_search(request):
-    name = request.POST.get('name')
-    soldiers = Soldier.objects.filter(surname__icontains=name)
-    return render(request, 'cmp/soldier-results.html', {'soldiers': soldiers})
+
+def soldier_search(request, search_term):
+    """Search for soldier by surname or an army number"""
+    surname = request.POST.get('search_term')
+    print(surname)
+    # get or return a 404
+    match_list = Soldier.objects.filter(surname__icontains=surname)
+    return HttpResponse(match_list)
+    

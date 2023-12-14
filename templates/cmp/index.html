@@ -14,7 +14,7 @@
 </p>
 </div>
 <div>
-    <form hx-post="{% url 'soldier_search' %}" hx-trigger="submit" hx-target="#results">
+    <form hx-post="{% url 'soldier-search' %}" hx-trigger="submit" hx-target="#results">
         <label for="name">Search for a soldier:</label>
         <input type="text" id="name" name="name">
         <input type="submit" value="Search">
@@ -22,6 +22,6 @@
     <div id="results">
         <!-- Search results will be loaded here -->
     </div>
-<div class="response-text" id="soldier-response"></div>
+<div class="response-text" id="results"></div>
 
 {% endblock %}
