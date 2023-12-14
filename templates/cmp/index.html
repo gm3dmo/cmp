@@ -15,13 +15,25 @@
 </div>
 <div>
     <form hx-post="{% url 'soldier-search' %}" hx-trigger="submit" hx-target="#results">
+        {% csrf_token %}
         <label for="name">Search for a soldier:</label>
         <input type="text" id="name" name="name">
         <input type="submit" value="Search">
     </form>
+    <br>
     <div id="results">
         <!-- Search results will be loaded here -->
+        {% for soldier in match_list %}
+        <div>
+            <h2>{{ soldier}}</h2>
+            <!-- Add more fields as needed -->
+        </div>
+    {% empty %}
+        <p>No soldiers found.</p>
+    {% endfor %}
+            <!-- Add more fields as needed -->
+
+
     </div>
-<div class="response-text" id="results"></div>
 
 {% endblock %}

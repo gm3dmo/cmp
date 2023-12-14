@@ -331,11 +331,15 @@ def soldier(request, soldier_id):
 #    return soldier_record
 
 
-def soldier_search(request, search_term):
+def soldier_search(request):
     """Search for soldier by surname or an army number"""
-    surname = request.POST.get('search_term')
-    print(surname)
+    search_term = request.POST.get('search_term')
+    print(search_term)
+    surname = search_term
+    surname = 'smith'
     # get or return a 404
     match_list = Soldier.objects.filter(surname__icontains=surname)
+    print(match_list)
+
     return HttpResponse(match_list)
     
