@@ -108,7 +108,7 @@ class SoldierDeath(models.Model):
     cemetery = models.ForeignKey(Cemetery, blank=True, null=True, default=110, on_delete=models.CASCADE, related_name='cemeteries')
     cwgc_id  = models.IntegerField(blank=True, null=True, unique=False, verbose_name="War Graves ID")
     def __unicode__(self):
-        return '%s %s %s' % (self.Soldier, self.Date, self.cemetery)
+        return '%s %s %s' % (self.Soldier, self.date, self.cemetery)
 
     def cwgc_url(self):
         """Build a URL for a link to CWGC site."""
@@ -175,6 +175,6 @@ class SoldierDecoration(models.Model):
         gz_type = 'london'  
         sc_type = 'adv'
         #gz_string = "SearchResults.aspx?GeoType=${gz_type}&st=${sc_type}&sb=issue&issue=${gz_issue}&gpn=${gz_page}&" 
-        gz_string = "%s/London/issue/%s/supplement/%s" % (gz_site, self.GztIssue, self.GztPage )
+        gz_string = "%s/London/issue/%s/supplement/%s" % (gz_site, self.gazette_issue, self.gazette_page)
         gazette_url = gz_string 
         return gazette_url

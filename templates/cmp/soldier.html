@@ -3,7 +3,7 @@
 {% block title %}Soldier{% endblock %}
 {% block content %}
 
-<h1>Soldier</h1>
+<h1>Soldier Record</h1>
 
 <table class="table table-hover table-bordered table-lg">
   <thead class="thead-dark">
@@ -14,6 +14,18 @@
       <tr><td>Rank:</td><td>{{ soldier.rank }}</td></tr>
       <tr><td>Army Number:</td><td>{{ soldier.army_number }}</td></tr>
       <tr><td>Notes:</td><td>{{ soldier.notes }}</td></tr>
+
+      <tr><td colspan="2"><h4>Decorations Record:</h4></td></tr>
+      <tr><td colspan="2"><h4>Prisoner of War Record:</h4></td></tr>
+
+      <tr><td colspan="2"><h4>Casualty Record:</h4></td></tr>
+      <tr><td>Date of Death:</td><td>{{ soldier.soldierdeath.date }}</td></tr>
+      <tr><td>Company:</td><td>{{ soldier.soldierdeath.company }}</td></tr>
+      <tr><td>Cemetery:</td><td>{{ soldier.soldierdeath.cemetery }}</td></tr>
+      <tr><td colspan="2">Map</td></tr>
+      <tr><td colspan="2">A map goes here</tr>
+  
+
   </tbody>
 </table>
 

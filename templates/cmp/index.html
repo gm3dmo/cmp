@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
-{% block title %}Corps of Military Police{% endblock %}
+{% block title %} Corps of Military Police {% endblock %}
 {% block content %}
 
 <div>
@@ -14,11 +14,15 @@
 </p>
 </div>
 <div>
-    <form method="post" hx-post="{% url 'index' %}" hx-target="#query-response">
+    <form hx-post="{% url 'index' %}" hx-trigger="submit" hx-target="#results">
         {% csrf_token %}
-        <input type="text" name="q" placeholder="Enter surname or army number" class="input-text">
-        <input type="submit" value="Search" class="btn btn-secondary">
+        <label for="name">Search for a soldier:</label>
+        <input type="text" id="name" name="name">
+        <input type="submit" value="Search">
     </form>
-</div>
-<div class="response-text" id="soldier-search"></div>
+    <br>
+    <div id="results">
+     {% include 'cmp/soldier-results.html' %}
+    </div>
+
 {% endblock %}

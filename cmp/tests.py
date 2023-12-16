@@ -6,6 +6,10 @@ from django.test import TestCase
 from cmp.views import original_unit, belongsTo
 
 from cmp.models import Rank
+from cmp.models import Country
+from cmp.models import Cemetery
+from cmp.models import Decoration
+
 
 from cmp import views
 
@@ -128,6 +132,18 @@ class UsersManagersTests(TestCase):
                 email="super@user.com", password="foo",  is_staff=False
             )
 
+
+@pytest.mark.django_db
+class DecorationModelTest(TestCase):
+    def test_create_decoration(self):
+        name = "Decoration1"
+        notes = "Decoration1 notes"
+        details_link = "https://www.example.com"
+        abbreviation = "D1"
+        country_name = "UNKNOWN"
+        country, created = Country.objects.get_or_create(name=country_name)
+        decoration = Decoration.objects.create(name=name, country=country, notes=notes, details_link=details_link, abbreviation=abbreviation)
+        self.assertEqual(decoration.name, name)
     
 
 
@@ -142,6 +158,26 @@ class RankModelTest(TestCase):
         self.assertEqual(rank.abbreviation, abbreviation)
         self.assertEqual(rank.rank_class, rank_class)
         self.assertEqual(str(rank), name)
+
+@pytest.mark.django_db
+class CountryModelTest(TestCase):
+    def test_create_country(self):
+        name = "Country1"
+        country = Country.objects.create(name=name)
+        self.assertEqual(country.name, name)    
+
+
+@pytest.mark.django_db
+class CemeteryModelTest(TestCase):
+    def test_create_cemetery(self):
+        name = "Cemetery1"
+        latitude = 1.0
+        longitude = 1.0
+        country_name  = "UNKNOWN"
+        country, created = Country.objects.get_or_create(name=country_name)
+        cemetery = Cemetery.objects.create(name=name, latitude=latitude, longitude=longitude, country=country)
+        self.assertEqual(cemetery.name, name)
+
 
 @pytest.mark.django_db
 class testViewsModule(TestCase):
