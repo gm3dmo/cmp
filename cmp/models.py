@@ -175,6 +175,6 @@ class SoldierDecoration(models.Model):
         gz_type = 'london'  
         sc_type = 'adv'
         #gz_string = "SearchResults.aspx?GeoType=${gz_type}&st=${sc_type}&sb=issue&issue=${gz_issue}&gpn=${gz_page}&" 
-        gz_string = "%s/London/issue/%s/supplement/%s" % (gz_site, self.GztIssue, self.GztPage )
+        gz_string = "%s/London/issue/%s/supplement/%s" % (gz_site, self.gazette_issue, self.gazette_page)
         gazette_url = gz_string 
         return gazette_url

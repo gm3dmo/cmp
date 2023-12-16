@@ -1,10 +1,26 @@
-{% for soldier in soldiers %}
-    <div>
-        <h2>{{ soldier.name }}</h2>
-        <p>{{ soldier.rank }}</p>
-        <p>{{ soldier.unit }}</p>
-        <!-- Add more fields as needed -->
-    </div>
-{% empty %}
-    <p>No soldiers found matching search</p>
-{% endfor %}
+
+{% load static crispy_forms_tags %}
+{% block title %}Results{% endblock %}
+<br>
+{% block content %}
+
+<table>
+    <thead>
+        <tr>
+            <th><h4>Surname</h4></th>
+            <th><h4>Initials</h4></th>
+            <th><h4>Rank</h4></th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for soldier in soldiers %}
+        <tr>
+            <td>{{ soldier.surname }}</td>
+            <td>{{ soldier.initials }}</td>
+            <td>{{ soldier.rank }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}
