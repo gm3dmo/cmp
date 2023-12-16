@@ -1,8 +1,11 @@
-
+{% extends "base.html" %}
 {% load static crispy_forms_tags %}
 {% block title %}Results{% endblock %}
 <br>
 {% block content %}
+
+{% if soldiers %}   
+<h2>Results</h2>
 
 <table>
     <thead>
@@ -10,6 +13,7 @@
             <th><h4>Surname</h4></th>
             <th><h4>Initials</h4></th>
             <th><h4>Rank</h4></th>
+            <th><h4>Army Number</h4></th>
         </tr>
     </thead>
     <tbody>
@@ -18,9 +22,12 @@
             <td>{{ soldier.surname }}</td>
             <td>{{ soldier.initials }}</td>
             <td>{{ soldier.rank }}</td>
+            <td>{{ soldier.army_number}}</td>
         </tr>
         {% endfor %}
     </tbody>
 </table>
+
+{% endif %} 
 
 {% endblock %}

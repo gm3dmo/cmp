@@ -335,18 +335,32 @@ def soldier(request, soldier_id):
 #    return soldier_record
 
 
-def index(request):
-    if not request.POST:
-        return render(request, 'cmp/index.html', {'soldiers': []})
-    """Search for soldier by surname or an army number"""
-    print("DAVE")
-    print(type(request))
-    print(request.method)
-    # print the content of the POST request
-    print(request.POST)
-    print(request.POST.get('name'))
-    surname = request.POST.get('name')
-    soldiers = Soldier.objects.filter(surname__icontains=surname)
-    print(soldiers)
-    return render(request, 'cmp/index.html', {'soldiers': soldiers})
+#def index(request):
+#    if not request.POST:
+#        return render(request, 'cmp/index.html', {'soldiers': []})
+#    """Search for soldier by surname or an army number"""
+#    print("DAVE")
+#    print(type(request))
+#    print(request.method)
+#    # print the content of the POST request
+#    print(request.POST)
+#    print(request.POST.get('name'))
+#    surname = request.POST.get('name')
+#
+#    soldiers = Soldier.objects.filter(surname__icontains=surname).order_by('surname')
+#    print(soldiers)
+#    return render(request, 'cmp/index.html', {'soldiers': soldiers})
     
+def index(request):
+    post = request.POST
+    if post:
+        try:
+            search_term = str(post.get("name"))
+        except ValueError:
+            print("woo")
+        
+        surname = request.POST.get('name')
+        soldiers = Soldier.objects.filter(surname__icontains=surname).order_by('surname')
+        return render(request, 'cmp/soldier-results.html', {'soldiers': soldiers})
+    else:
+        return render(request, 'cmp/index.html')
