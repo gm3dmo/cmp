@@ -25,12 +25,16 @@
       <tr><td colspan="2"><h4>Prisoner of War Record:</h4></td></tr>
 
 
-      <tr><td colspan="2"><h4>Casualty Record:</h4></td></tr>
-      <tr><td>Date of Death:</td><td>{{ soldier.soldierdeath.date }}</td></tr>
-      <tr><td>Company:</td><td>{{ soldier.soldierdeath.company }}</td></tr>
-      <tr><td>Cemetery:</td><td>{{ soldier.soldierdeath.cemetery }}</td></tr>
-      <tr><td colspan="2">Map</td></tr>
-      <tr><td colspan="2">A map goes here</tr>
+      {% if soldier.soldierdeath %}
+         <tr><td colspan="2"><h4>Casualty Record:</h4></td></tr>
+         <tr><td>Date of Death:</td><td>{{ soldier.soldierdeath.date }}</td></tr>
+         <tr><td>Company:</td><td>{{ soldier.soldierdeath.company }}</td></tr>
+         <tr><td>Cemetery:</td><td>{{ soldier.soldierdeath.cemetery }}</td></tr>
+         <tr><td colspan="2">Map</td></tr>
+         <tr><td colspan="2">A map goes here</tr>
+      {% endif %}
+
+
   
 
   </tbody>
