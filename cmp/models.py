@@ -107,7 +107,8 @@ class SoldierDeath(models.Model):
     company  = models.ForeignKey(Company, blank=True, null=True, default="UNKNOWN", on_delete=models.CASCADE, related_name='companies')
     cemetery = models.ForeignKey(Cemetery, blank=True, null=True, default=110, on_delete=models.CASCADE, related_name='cemeteries')
     cwgc_id  = models.IntegerField(blank=True, null=True, unique=False, verbose_name="War Graves ID")
-    def __unicode__(self):
+
+    def __str__(self):
         return '%s %s %s' % (self.Soldier, self.date, self.cemetery)
 
     def cwgc_url(self):
@@ -152,6 +153,8 @@ class SoldierImprisonment(models.Model):
     legacy_date_from = models.CharField(max_length=255, unique=False, default='')
     legacy_date_to = models.CharField(max_length=255, unique=False, default='')
     notes = models.CharField(max_length=255, unique=False, default='')
+    def __str__(self):
+        return self.pow_camp.name
 
 
 class SoldierDecoration(models.Model):
@@ -165,6 +168,7 @@ class SoldierDecoration(models.Model):
     country  = models.ForeignKey(Country, blank=True, null=True, on_delete=models.CASCADE)
     citation = models.TextField(max_length=50000, blank=True)
     notes = models.TextField(max_length=50000, blank=True)
+
     def __str__(self):
         return self.decoration.name
 
