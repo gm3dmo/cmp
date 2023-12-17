@@ -4,7 +4,7 @@
         "builder": "NIXPACKS"
     },
     "deploy": {
-        "startCommand": "python manage.py makemigrations && python manage.py migrate && python manage.py runscript delete-all-countries && python manage.py runscript insert-all-countries && python manage.py runscript add-flags-to-countries && python manage.py runscript insert-all-pow-camps && python manage.py runscript insert-all-decorations && python manage.py runscript insert-all-companies && python manage.py runscript insert-all-soldiers && python manage.py collectstatic && python manage.py runserver 0.0.0.0:$PORT",
+        "startCommand": "python manage.py makemigrations && python manage.py migrate && ./insertall.sh && python manage.py collectstatic && python manage.py runserver 0.0.0.0:$PORT",
         "restartPolicyType": "ON_FAILURE",
         "restartPolicyMaxRetries": 10
     }
