@@ -22,8 +22,14 @@
           {% endfor %}
       {% endif %}
 
-      <tr><td colspan="2"><h4>Prisoner of War Record:</h4></td></tr>
+      {% if soldier.soldierimprisonment_set.exists %}
+       <tr><td colspan="2"><h4>Prisoner of War Record:</h4></td></tr>
+       {% for imprisonment in soldier.soldierimprisonment_set.all %}
+          <tr><td>Imprisonment: </td><td>{{ imprisonment }} {{imprisonment.pow_camp.country}} {{imprisonment.pow_camp.country.flag}}</td></tr>
+       {% endfor %}
 
+      {% endif %}
+      
 
       {% if soldier.soldierdeath %}
          <tr><td colspan="2"><h4>Casualty Record:</h4></td></tr>
