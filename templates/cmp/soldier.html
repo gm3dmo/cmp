@@ -15,8 +15,15 @@
       <tr><td>Army Number:</td><td>{{ soldier.army_number }}</td></tr>
       <tr><td>Notes:</td><td>{{ soldier.notes }}</td></tr>
 
-      <tr><td colspan="2"><h4>Decorations Record:</h4></td></tr>
+      {% if soldier.soldierdecoration_set.all %}
+          <tr><td colspan="2"><h4>Decorations Record:</h4></td></tr>
+          {% for decoration in soldier.soldierdecoration_set.all %}
+             <tr><td>decoration: </td><td>{{ decoration }}</td></tr>
+          {% endfor %}
+      {% endif %}
+
       <tr><td colspan="2"><h4>Prisoner of War Record:</h4></td></tr>
+
 
       <tr><td colspan="2"><h4>Casualty Record:</h4></td></tr>
       <tr><td>Date of Death:</td><td>{{ soldier.soldierdeath.date }}</td></tr>
