@@ -17,6 +17,8 @@ from cmp.forms import editPowCampForm
 from .models import Soldier
 from cmp.forms import editSoldierForm
 
+import folium
+
 
 def powcamps(request):
     powcamps = PowCamp.objects.all()
