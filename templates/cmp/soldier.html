@@ -3,7 +3,9 @@
 {% block title %}Soldier{% endblock %}
 {% block content %}
 
-<h1>Soldier Record</h1>
+<center><h3>Corps of Military Police</h3></center>
+
+<h4>Soldier Record</h4>
 
 <table class="table table-hover table-bordered table-lg">
   <thead class="thead-dark">
@@ -16,9 +18,9 @@
       <tr><td>Notes:</td><td>{{ soldier.notes }}</td></tr>
 
       {% if soldier.soldierdecoration_set.all %}
-          <tr><td colspan="2"><h4>Decorations Record:</h4></td></tr>
+          <tr><td colspan="2"><h5>Decoration Record:</h5></td></tr>
           {% for decoration in soldier.soldierdecoration_set.all %}
-             <tr><td>decoration: </td><td>{{ decoration }}</td></tr>
+             <tr><td>Decoration: </td><td>{{ decoration }} &#128240 (London Gazette: {{ decoration.gazette_issue }} Page: {{ decoration.gazette_page}} {{ decoration.gazette_date }}) </td></r>
           {% endfor %}
       {% endif %}
 
@@ -36,8 +38,8 @@
          <tr><td>Date of Death:</td><td>{{ soldier.soldierdeath.date }}</td></tr>
          <tr><td>Company:</td><td>{{ soldier.soldierdeath.company }}</td></tr>
          <tr><td>Cemetery:</td><td>{{ soldier.soldierdeath.cemetery }}</td></tr>
+         <tr><td>Cemetery:</td><td>{{ soldier.soldierdeath.country }}</td></tr>
          <tr><td colspan="2">Map</td></tr>
-         <tr><td colspan="2">A map goes here</tr>
       {% endif %}
 
 
