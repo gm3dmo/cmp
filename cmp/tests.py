@@ -148,6 +148,7 @@ class DecorationModelTest(TestCase):
         country, created = Country.objects.get_or_create(name=country_name)
         decoration = Decoration.objects.create(name=name, country=country, notes=notes, details_link=details_link, abbreviation=abbreviation)
         self.assertEqual(decoration.name, name)
+        self.assertEqual(str(decoration.name), name)
 
 @pytest.mark.django_db
 class SoldierModelTest(TestCase):
@@ -158,6 +159,7 @@ class SoldierModelTest(TestCase):
         rank, created = Rank.objects.get_or_create(name="Private", abbreviation="Pte", rank_class="Other Rank")
         soldier = Soldier.objects.create(surname=surname, initials=initials, army_number=army_number, rank=rank)
         self.assertEqual(soldier.surname, surname)
+        self.assertEqual(str(soldier.surname), surname)
 
 
 @pytest.mark.django_db
