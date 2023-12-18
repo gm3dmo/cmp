@@ -12,3 +12,4 @@ whitenoise
 django-crispy-forms
 crispy-bootstrap5
 ipdb
+folium
