@@ -173,9 +173,31 @@ class SoldierDecorationModelTest(TestCase):
         country, created = Country.objects.get_or_create(name=country_name)
         decoration = Decoration.objects.create(name=name, country=country, details_link=details_link, abbreviation=abbreviation)
         soldier = Soldier.objects.create(surname="Soldier1", initials="AB", army_number=12345678, rank=Rank.objects.get_or_create(name="Private", abbreviation="Pte", rank_class="Other Rank")[0])
-        soldier_decoration = SoldierDecoration.objects.create(decoration=decoration, soldier=soldier, citation="Citation1")
+        soldier_decoration = SoldierDecoration.objects.create(decoration=decoration, soldier=soldier, citation="Citation1", gazette_issue=1, gazette_page=1)
+        gazette_url = soldier_decoration.generate_gazette_url()
 
         self.assertEqual(soldier_decoration.decoration, decoration) 
+        self.assertEqual(gazette_url, "http://www.thegazette.co.uk/London/issue/1/supplement/1")
+
+
+#@pytest.mark.django_db
+#class SoldierDeathModelTest(TestCase):
+#    def test_create_soldier_death(self):
+#        soldier = Soldier.objects.create(surname="Soldier1", initials="AB", army_number=12345678, rank=Rank.objects.get_or_create(name="Private", abbreviation="Pte", rank_class="Other Rank")[0])
+#        country_name = "UNKNOWN"
+#        country, created = Country.objects.get_or_create(name=country_name)
+#        cemetery = Cemetery.objects.create(name="Cemetery1", latitude=1.0, longitude=1.0, country=country)
+#        for field in cemetery._meta.fields:
+#            print(f"{field.name}: {getattr(cemetery, field.name)}")
+#        print(type(cemetery))
+#        print(type(soldier))
+#        try:
+#            soldier_death = SoldierDeath.objects.create(soldier=soldier, cemetery=1)
+#        except ValueError as e:
+#            print(e)
+#        soldier_death = SoldierDeath.objects.create(soldier=soldier, cemetery=cemetery)
+#        #soldier_death = SoldierDeath.objects.create(soldier=soldier, cemetery=cemetery)
+#        #self.assertEqual(soldier_death.soldier, soldier)
 
 
 @pytest.mark.django_db
