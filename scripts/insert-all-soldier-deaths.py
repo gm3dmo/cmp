@@ -35,7 +35,7 @@ def run():
                 soldier_id = int(row['soldier_id']),
                 date =row['Date'],
                 company_id = company.id,
-                #cemetery_id = row['cemetery_id'],
+                cemetery_id = row['cemetery_id'],
                 cwgc_id = cwgc_id
         )
         except Exception as e:
