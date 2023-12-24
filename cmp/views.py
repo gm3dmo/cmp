@@ -17,6 +17,8 @@ from cmp.forms import editPowCampForm
 from .models import Soldier
 from cmp.forms import editSoldierForm
 
+from .models import SoldierDeath
+
 
 import folium
 from django.views.generic import TemplateView
@@ -326,14 +328,26 @@ def soldier(request, soldier_id):
     # get or return a 404
     soldier = get_object_or_404(Soldier, pk=soldier_id)
 
+    cemetery_map = None
+    try:
+        soldierdeath = SoldierDeath.objects.get(soldier=soldier)
+        coordinates = [ soldierdeath.cemetery.latitude, soldierdeath.cemetery.longitude ]
+    except SoldierDeath.DoesNotExist:
+        soldierdeath = None
 
-    m = folium.Map([51.5, -0.25], zoom_start=10)
-    test = folium.Html('<b>Hello world</b>', script=True)
-    popup = folium.Popup(test, max_width=2650)
-    folium.RegularPolygonMarker(location=[51.5, -0.25], popup=popup).add_to(m)
+    if soldierdeath:
+        coordinates = [ soldierdeath.cemetery.latitude, soldierdeath.cemetery.longitude ]
+        m = folium.Map(coordinates, zoom_start=15)
+        test = folium.Html('<b>Hello world</b>', script=True)
+        popup = folium.Popup(test, max_width=2650)
+        marker = folium.Marker(
+            location=coordinates,
+            icon=folium.Icon(color='red', icon='info-sign')
+        )
+        marker.add_to(m)
 
-    m_html = m._repr_html_()
-    cemetery_map = m_html
+        m_html = m._repr_html_()
+        cemetery_map = m_html
 
     context = { "soldier": soldier, "cemetery_map":  cemetery_map  }
     return render(request, "cmp/soldier.html", context)
