@@ -37,8 +37,9 @@
          <tr><td colspan="2"><h4>Casualty Record:</h4></td></tr>
          <tr><td>Date of Death:</td><td>{{ soldier.soldierdeath.date }}</td></tr>
          <tr><td>Company:</td><td>{{ soldier.soldierdeath.company }}</td></tr>
-         <tr><td>Cemetery:</td><td>{{ soldier.soldierdeath.cemetery }}, {{soldier.soldierdeath.cemetery.country }} {{soldier.soldierdeath.cemetery.country.flag }}</td></tr>
-         <tr><td colspan="2">Map</td></tr>
+         <tr><td>Cemetery:</td><td>{{ soldier.soldierdeath.cemetery }}, {{soldier.soldierdeath.cemetery.country }} <span style="font-size: 1.5em;">{{ soldier.soldierdeath.cemetery.country.flag }}</span>
+         </td></tr>
+         <tr><td colspan="2"> {{ cemetery_map | safe }} </td></tr>
       {% endif %}
 
 
