@@ -17,7 +17,11 @@ from cmp.forms import editPowCampForm
 from .models import Soldier
 from cmp.forms import editSoldierForm
 
+
 import folium
+from django.views.generic import TemplateView
+
+
 
 
 def powcamps(request):
@@ -321,7 +325,18 @@ def edit_ranks(request):
 def soldier(request, soldier_id):
     # get or return a 404
     soldier = get_object_or_404(Soldier, pk=soldier_id)
-    return render(request, "cmp/soldier.html", {"soldier": soldier})
+
+
+    m = folium.Map([51.5, -0.25], zoom_start=10)
+    test = folium.Html('<b>Hello world</b>', script=True)
+    popup = folium.Popup(test, max_width=2650)
+    folium.RegularPolygonMarker(location=[51.5, -0.25], popup=popup).add_to(m)
+
+    m_html = m._repr_html_()
+    cemetery_map = m_html
+
+    context = { "soldier": soldier, "cemetery_map":  cemetery_map  }
+    return render(request, "cmp/soldier.html", context)
 
 
 #def soldier_detail(request, soldier_id):
