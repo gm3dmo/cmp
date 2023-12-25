@@ -22,7 +22,6 @@
           {% for decoration in soldier.soldierdecoration_set.all %}
              <tr><td>Decoration: </td><td>{{ decoration }} <a href="{{ decoration.generate_gazette_url }}">(London Gazette: {{ decoration.gazette_issue }} Page: {{ decoration.gazette_page}} {{ decoration.gazette_date }}</a>) </td></r>
              <tr><td>Citation: </td><td>{{ decoration.citation }}</td></r>
-
           {% endfor %}
       {% endif %}
 
@@ -31,21 +30,16 @@
        {% for imprisonment in soldier.soldierimprisonment_set.all %}
           <tr><td>Imprisonment: </td><td>{{ imprisonment }} {{imprisonment.pow_camp.country}} {{imprisonment.pow_camp.country.flag}}</td></tr>
        {% endfor %}
-
       {% endif %}
-      
 
       {% if soldier.soldierdeath %}
          <tr><td colspan="2"><h4>Casualty Record:</h4></td></tr>
          <tr><td>Date of Death:</td><td>{{ soldier.soldierdeath.date }}</td></tr>
          <tr><td>Company:</td><td>{{ soldier.soldierdeath.company }}</td></tr>
-         <tr><td>Cemetery:</td><td>{{ soldier.soldierdeath.cemetery }}, {{soldier.soldierdeath.cemetery.country }} <span style="font-size: 1.5em;">{{ soldier.soldierdeath.cemetery.country.flag }}</span>
-         </td></tr>
+         <tr><td>CWGC Link:</td><td><span style="font-size: 1.5em;"><a href="{{ soldier.soldierdeath.cwgc_url }}">{{ soldier.soldierdeath.cwgc_id }}</span></a></td></tr>
+         <tr><td>Cemetery:</td><td>{{ soldier.soldierdeath.cemetery }}, {{soldier.soldierdeath.cemetery.country }} <span style="font-size: 1.3em;">{{ soldier.soldierdeath.cemetery.country.flag }}</span>
          <tr><td colspan="2"> {{ cemetery_map | safe }} </td></tr>
       {% endif %}
-
-
-  
 
   </tbody>
 </table>
