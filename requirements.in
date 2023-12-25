@@ -1,8 +1,9 @@
-Django==4.2.7
+Django==5.0.0
 django-environ
 django-debug-toolbar
 django-extensions
 django-htmx
+django-storages
 pytest-django
 sentry-sdk
 pytest-cov # used to generate coverage report
