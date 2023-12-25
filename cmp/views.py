@@ -18,7 +18,8 @@ from .models import Soldier
 from cmp.forms import editSoldierForm
 
 from .models import SoldierDeath
-
+ 
+from .models import SoldierDecoration
 
 import folium
 from django.views.generic import TemplateView
@@ -328,6 +329,10 @@ def soldier(request, soldier_id):
     # get or return a 404
     soldier = get_object_or_404(Soldier, pk=soldier_id)
 
+    # Soldier Decorations
+    soldierdecorations = SoldierDecoration.objects.filter(soldier=soldier)
+
+    # Soldier Deaths
     cemetery_map = None
     try:
         soldierdeath = SoldierDeath.objects.get(soldier=soldier)

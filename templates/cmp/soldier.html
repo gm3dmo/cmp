@@ -20,7 +20,9 @@
       {% if soldier.soldierdecoration_set.all %}
           <tr><td colspan="2"><h5>Decoration Record:</h5></td></tr>
           {% for decoration in soldier.soldierdecoration_set.all %}
-             <tr><td>Decoration: </td><td>{{ decoration }} &#128240 (London Gazette: {{ decoration.gazette_issue }} Page: {{ decoration.gazette_page}} {{ decoration.gazette_date }}) </td></r>
+             <tr><td>Decoration: </td><td>{{ decoration }} <a href="{{ decoration.generate_gazette_url }}">(London Gazette: {{ decoration.gazette_issue }} Page: {{ decoration.gazette_page}} {{ decoration.gazette_date }}</a>) </td></r>
+                 
+
           {% endfor %}
       {% endif %}
 
