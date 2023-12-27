@@ -5,7 +5,7 @@ django-extensions
 django-htmx
 django-storages
 pytest-django
-sentry-sdk
+sentry-sdk==1.39.1
 pytest-cov # used to generate coverage report
 flake8 # used to check code style
 black # used to format code
