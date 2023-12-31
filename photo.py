@@ -2,6 +2,7 @@ import os
 import django
 import zipfile
 import logzero
+import pathlib
 
 from logzero import logger
 
@@ -9,7 +10,8 @@ from logzero import logger
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'core.settings')  # replace 'myproject.settings' with your settings module
 django.setup()
 
-from cmp.models import Soldier  # replace 'myapp' with your app name
+from cmp.models import Soldier
+from cmp.models import SoldierDeath
 
 # create a data class for soldiers 
 
@@ -31,13 +33,14 @@ def main():
         for item in zip_contents:
             # if the item is a file, extract it
             if item.endswith('.jpg'):
-                    # increment the counter
-                    counter += 1
-                    logger.info(f"item: {item} counter: {counter}" )
-
-                #zip_ref.extract(item, '/home/gm3dmo/src/old-cmp/grave-images-2023-12-31')   
-
-
+                    filename = os.path.basename(item)
+                    filename = pathlib.Path(filename).stem
+                    filename = filename.replace("_","/")
+                    soldiers = Soldier.objects.filter(army_number=filename)
+                    for soldier in soldiers:
+                        logger.info(f"{counter} Soldier: {soldier.army_number} == {filename}")
+                        soldier.photo_in_original = True
+                        counter += 1
 
 if __name__ == "__main__":
     main()
