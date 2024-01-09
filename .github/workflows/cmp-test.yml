@@ -24,13 +24,6 @@ jobs:
         uses: actions/setup-python@v4
         with:
            python-version: 3.11
-      - name: Install flake8
-        run: |
-              pip install flake8
-      - name: Install black
-        run: |
-              pip install black
-      - name: Install requirements
         run: |
             pip install -r requirements.txt
       - name: Make Migrations
