@@ -14,12 +14,15 @@ on:
     pull_request:
         branches: [main]
 
-strategy:
-  matrix:
-    python-version: [ 3.11 ]        
+   
 
 jobs:
-  core_base_build:
+  test_matrix:
+   strategy:
+     matrix:
+      python-version: [ 3.11 ]
+      os: [ ubuntu-latest ]
+  cmp_core_base_build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout CMP code
