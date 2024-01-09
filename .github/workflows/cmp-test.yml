@@ -45,11 +45,11 @@ jobs:
             python manage.py test
       - name: Run test with coverage report
         run: |
-            pytest
+            pytest  --cov-report lcov:cov.info
       - name: Coveralls Coverage Report
         uses: coverallsapp/github-action@v2.2.3    
         with:
-          coverageFile: coverage.xml
+          coverageFile: lcov.info
           token: ${{ secrets.GITHUB_TOKEN }}
         if: needs.pr-check.outputs.number != 'null'
       - name: Artifact Upload coverage report
@@ -57,4 +57,4 @@ jobs:
         with:
             name: coverage-report
             path: |
-              coverage.xml
+              lcov.info
