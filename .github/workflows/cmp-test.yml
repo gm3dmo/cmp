@@ -49,8 +49,7 @@ jobs:
       - name: Coveralls Coverage Report
         uses: coverallsapp/github-action@v2.2.3    
         with:
-          coverageFile: cov.info
-          token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
         if: needs.pr-check.outputs.number != 'null'
       - name: Artifact Upload coverage report
         uses: actions/upload-artifact@v3
