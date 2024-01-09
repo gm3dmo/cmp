@@ -17,7 +17,6 @@ on:
    
 
 jobs:
-  test_matrix:
    strategy:
      matrix:
       python-version: [ 3.11 ]
