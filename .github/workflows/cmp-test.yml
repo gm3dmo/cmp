@@ -14,15 +14,13 @@ on:
     pull_request:
         branches: [main]
 
-   
-
 jobs:
-   strategy:
-     matrix:
-      python-version: [ 3.11 ]
-      os: [ ubuntu-latest ]
   cmp_core_base_build:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        python-version: [ 3.11 ]
+        os: [ ubuntu-latest ]
     steps:
       - name: Checkout CMP code
         uses: actions/checkout@v4
@@ -58,4 +56,3 @@ jobs:
             name: coverage-report
             path: |
               coverage.xml
-
