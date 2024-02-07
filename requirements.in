@@ -1,4 +1,4 @@
-Django==5.0.0
+Django==5.0.2
 django-environ
 django-debug-toolbar
 django-extensions
