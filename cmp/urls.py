@@ -23,19 +23,27 @@ urlpatterns = [
     path('ranks/', views.ranks, name='ranks'),
 
     # Mangagement URLs
-    path("mgmt/countries", views.edit_countries, name="countries"),
+    # create an index page for mgmt urls to link to /mgmt/countries
+    path('mgmt/', views.mgmt_index, name='mgmt-index'),
+
+    path("mgmt/countries", views.edit_countries, name="edit-countries"),
     path("mgmt/countries/<int:country_id>/", views.detail_countries, name="countries"),
     path("mgmt/countries/edit/<int:country_id>", views.edit_countries, name="edit-countries"),
 
-    path("mgmt/ranks", views.edit_ranks, name="ranks"),
+    path("mgmt/ranks", views.edit_ranks, name="edit-ranks"),
+
     path("mgmt/pow-camps", views.edit_powcamps, name="powcamps"),
+
     path("mgmt/cemeteries", views.edit_cemeteries, name="cemeteries"),
 
     # Soldiers
     path('soldiers/', views.soldiers, name='soldiers'),
+
+    # Soldier management
     path("mgmt/soldiers", views.edit_soldiers, name="soldiers"),
     path("mgmt/soldiers/<int:soldier_id>/", views.detail_soldiers, name="soldiers"),
     path("mgmt/soldiers/edit/<int:soldier_id>", views.edit_soldiers, name="edit-soldiers"),
+
     
     path('soldier/<int:soldier_id>/', views.soldier, name='soldier'),
 
