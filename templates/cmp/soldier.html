@@ -15,7 +15,7 @@
       <tr><td>Initials:</td><td>{{ soldier.initials }}</td></tr>
       <tr><td>Rank:</td><td>{{ soldier.rank }}</td></tr>
       <tr><td>Army Number:</td><td>{{ soldier.army_number }}</td></tr>
-      <tr><td>Notes:</td><td>{{ soldier.notes }}</td></tr>
+      <tr><td>Notes:</td><td>{{ soldier.notes | linebreaks }}</td></tr>
 
       {% if soldier.soldierdecoration_set.all %}
           <tr><td colspan="2"><h5>Decoration Record:</h5></td></tr>
