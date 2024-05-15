@@ -25,11 +25,14 @@ import folium
 from django.views.generic import TemplateView
 
 
+def mgmt_index(request):
+    return render(request, 'cmp/mgmt-index.html')
 
 
 def powcamps(request):
     powcamps = PowCamp.objects.all()
     return render(request, 'cmp/pow-camps.html', {'powcamps': powcamps})
+
 
 def cemeteries(request):
     cemeteries = Cemetery.objects.all()
@@ -278,7 +281,7 @@ def edit_powcamps(request):
     return render(request, "cmp/edit-pow-camps.html", {"form": form})
 
 
-def edit_countries(request, country_id):
+def edit_country(request, country_id):
     post = request.POST
     form = editCountryForm(post or None)
     if country_id:
@@ -288,6 +291,20 @@ def edit_countries(request, country_id):
         form.save()
         return HttpResponse("Country Added")
     return render(request, "cmp/edit-countries.html", {"form": form})
+
+
+
+def edit_countries(request, country_id=None):
+    post = request.POST
+    form = editCountryForm(post or None)
+    if country_id:
+        country = Country.objects.get(id=country_id)
+        form = editCountryForm(post or None, instance=country)
+    if post and form.is_valid():
+        form.save()
+        return HttpResponse("Country Added")
+    return render(request, "cmp/edit-countries.html", {"form": form})
+
 
 
 def edit_soldiers(request, soldier_id):
@@ -315,7 +332,6 @@ def detail_soldiers(request, soldier_id):
 
 
 
-@login_required
 def edit_ranks(request):
     post = request.POST
     form = editRankForm(post or None)
