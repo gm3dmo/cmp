@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% load static crispy_forms_tags %}
+{% block title %}Soldiers{% endblock %}
+{% block content %}
+
+<form method="get">
+  <input type="text" name="q" placeholder="Search soldiers to edit">
+  <input type="submit" value="Search">
+</form>
+
+
+{% for soldier in soldiers %}
+    <p>
+        <a href="{% url 'edit-soldiers' soldier.id %}">{{ soldier.surname }}</a>
+    </p>
+{% endfor %}
+
+
+
+{% endblock %}
