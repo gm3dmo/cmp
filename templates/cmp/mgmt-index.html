@@ -1,5 +1,8 @@
-<!DOCTYPE html>
-<html>
+{% extends "base.html" %}
+{% load static crispy_forms_tags %}
+{% block title %}Admin Page{% endblock %}
+{% block content %}
+
 <head>
     <title>Management Index</title>
 </head>
@@ -15,5 +18,5 @@
         <h3>Working</h3>
         <li><a href="/mgmt/soldiers/search/">Soldiers</a></li>
     </ul>
-</body>
-</html>
+
+    {% endblock %}

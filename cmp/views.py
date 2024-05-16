@@ -21,6 +21,9 @@ from .models import SoldierDeath
  
 from .models import SoldierDecoration
 
+
+from .forms import editSoldierForm, editSoldierDeathForm
+
 import folium
 from django.views.generic import TemplateView
 
@@ -308,13 +311,22 @@ def edit_countries(request, country_id=None):
 def edit_soldiers(request, soldier_id):
     post = request.POST
     form = editSoldierForm(post or None)
+    death_form = None
     if soldier_id:
         soldier = Soldier.objects.get(id=soldier_id)
         form = editSoldierForm(post or None, instance=soldier)
-    if post and form.is_valid():
+        try:
+            death = SoldierDeath.objects.get(soldier=soldier)  
+            death_form = editSoldierDeathForm(post or None, instance=death)
+        except SoldierDeath.DoesNotExist:
+            death_form = editSoldierDeathForm(post or None)
+        
+    if post and form.is_valid() and (death_form is None or death_form.is_valid()):
         form.save()
+        if death_form is not None:
+            death_form.save()
         return HttpResponse("Soldier Added")
-    return render(request, "cmp/edit-soldiers.html", {"form": form})
+    return render(request, "cmp/edit-soldiers.html", {"form": form, 'death_form': death_form})
 
 
 

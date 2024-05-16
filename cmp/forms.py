@@ -1,4 +1,5 @@
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
+
 from django import forms
 
 from .models import CustomUser
@@ -8,6 +9,7 @@ from .models import Rank
 from .models import Cemetery
 from .models import PowCamp
 from .models import Soldier
+from .models import SoldierDeath
 
 
 class CustomUserCreationForm(UserCreationForm):
@@ -50,4 +52,10 @@ class editSoldierForm(forms.ModelForm):
     class Meta:
         model = Soldier
         fields = "__all__"
+
+
+class editSoldierDeathForm(forms.ModelForm):
+    class Meta:
+        model = SoldierDeath
+        fields = ["date", "cemetery"]  # replace 'date' with the actual name of your date field
 
