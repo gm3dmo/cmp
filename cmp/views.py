@@ -293,7 +293,6 @@ def edit_country(request, country_id):
     return render(request, "cmp/edit-countries.html", {"form": form})
 
 
-
 def edit_countries(request, country_id=None):
     post = request.POST
     form = editCountryForm(post or None)
@@ -306,7 +305,6 @@ def edit_countries(request, country_id=None):
     return render(request, "cmp/edit-countries.html", {"form": form})
 
 
-
 def edit_soldiers(request, soldier_id):
     post = request.POST
     form = editSoldierForm(post or None)
@@ -317,6 +315,16 @@ def edit_soldiers(request, soldier_id):
         form.save()
         return HttpResponse("Soldier Added")
     return render(request, "cmp/edit-soldiers.html", {"form": form})
+
+
+
+def search_soldiers(request):
+    query = request.GET.get('q')
+    if query:
+        soldiers = Soldier.objects.filter(surname__icontains=query)
+    else:
+        soldiers = Soldier.objects.all()
+    return render(request, 'cmp/search-soldiers.html', {'soldiers': soldiers})
 
 
 def detail_countries(request, country_id):
