@@ -14,3 +14,4 @@ django-crispy-forms
 crispy-bootstrap5
 ipdb
 folium
+Pillow

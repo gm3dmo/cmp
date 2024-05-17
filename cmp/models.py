@@ -132,11 +132,20 @@ class ProvostAppointment(models.Model):
     def __str__(self):
         return self.rank
 
+
+def get_upload_to(instance, filename):
+    return f"""static/media/{instance.soldier_id}/memorial/{instance.soldier_id}.jpg""" 
+ 
+ # http://localhost:8000/media/3774/memorial/3774.jpg
+ # http://localhost:8000/static/media/3774/memorial/3774.jpg
+
+
 class SoldierDeath(models.Model):
     soldier = models.OneToOneField(
         Soldier, on_delete=models.CASCADE, related_name="soldierdeath"
     )
     date = models.DateField(null=True, blank=True)
+    image = models.ImageField(upload_to=get_upload_to, null=True, blank=True)
     company = models.ForeignKey(
         Company,
         blank=True,

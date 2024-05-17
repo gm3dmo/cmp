@@ -317,7 +317,7 @@ def edit_soldiers(request, soldier_id):
         form = editSoldierForm(post or None, instance=soldier)
         try:
             death = SoldierDeath.objects.get(soldier=soldier)  
-            death_form = editSoldierDeathForm(post or None, instance=death)
+            death_form = editSoldierDeathForm(post or None, request.FILES, instance=death)
         except SoldierDeath.DoesNotExist:
             death_form = editSoldierDeathForm(post or None)
         

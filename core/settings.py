@@ -177,8 +177,11 @@ sentry_sdk.init(
     profiles_sample_rate=1.0,
 )
 
+
 STORAGES = {
-    # ...
+    "default": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    },
     "staticfiles": {
         "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
     },
