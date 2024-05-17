@@ -57,5 +57,5 @@ class editSoldierForm(forms.ModelForm):
 class editSoldierDeathForm(forms.ModelForm):
     class Meta:
         model = SoldierDeath
-        fields = ["date", "cemetery"]  # replace 'date' with the actual name of your date field
+        fields = ["date", "cemetery", "image"]  
 
