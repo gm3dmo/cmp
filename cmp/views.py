@@ -329,7 +329,7 @@ def edit_soldiers(request, soldier_id):
             form.save()
             death_form.save()
             messages.success(request, "Soldier updated successfully")
-            return redirect('soldier_detail', soldier_id=soldier.id)  # Redirect to the soldier detail page
+            return redirect('soldier', soldier_id=soldier.id)  # Redirect to the soldier detail page
 
     else:  # GET request
         form = editSoldierForm(instance=soldier)
