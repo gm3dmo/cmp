@@ -3,10 +3,14 @@ from django.conf.urls.static import static
 from django.conf import settings
 from . import views
 
-# ...
+
+from .views import soldier_detail
+
 
 
 urlpatterns = [
+
+    path('soldier/<int:soldier_id>/', soldier_detail, name='soldier_detail'),
 
     path("", views.index, name="index"), 
 
