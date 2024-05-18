@@ -26,6 +26,7 @@ from .forms import editSoldierForm, editSoldierDeathForm
 
 import folium
 from django.views.generic import TemplateView
+import logging
 
 
 def mgmt_index(request):
@@ -308,26 +309,33 @@ def edit_countries(request, country_id=None):
     return render(request, "cmp/edit-countries.html", {"form": form})
 
 
-def edit_soldiers(request, soldier_id):
-    post = request.POST
-    form = editSoldierForm(post or None)
-    death_form = None
-    if soldier_id:
-        soldier = Soldier.objects.get(id=soldier_id)
-        form = editSoldierForm(post or None, instance=soldier)
-        try:
-            death = SoldierDeath.objects.get(soldier=soldier)  
-            death_form = editSoldierDeathForm(post or None, request.FILES, instance=death)
-        except SoldierDeath.DoesNotExist:
-            death_form = editSoldierDeathForm(post or None)
-        
-    if post and form.is_valid() and (death_form is None or death_form.is_valid()):
-        form.save()
-        if death_form is not None:
-            death_form.save()
-        return HttpResponse("Soldier Added")
-    return render(request, "cmp/edit-soldiers.html", {"form": form, 'death_form': death_form})
+from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib import messages
 
+
+def soldier_detail(request, soldier_id):
+    soldier = get_object_or_404(Soldier, id=soldier_id)
+    return render(request, 'cmp/soldier.html', {'soldier': soldier})
+
+def edit_soldiers(request, soldier_id):
+    soldier = get_object_or_404(Soldier, id=soldier_id)
+    death, created = SoldierDeath.objects.get_or_create(soldier=soldier)
+
+    if request.method == 'POST':
+        form = editSoldierForm(request.POST, instance=soldier)
+        death_form = editSoldierDeathForm(request.POST, request.FILES, instance=death)
+
+        if form.is_valid() and death_form.is_valid():
+            form.save()
+            death_form.save()
+            messages.success(request, "Soldier updated successfully")
+            return redirect('soldier_detail', soldier_id=soldier.id)  # Redirect to the soldier detail page
+
+    else:  # GET request
+        form = editSoldierForm(instance=soldier)
+        death_form = editSoldierDeathForm(instance=death)
+
+    return render(request, "cmp/edit-soldiers.html", {"form": form, 'death_form': death_form})
 
 
 def search_soldiers(request):

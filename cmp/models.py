@@ -1,7 +1,11 @@
+import os
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
+
+from PIL import Image
+from django.conf import settings
 
 from .managers import CustomUserManager
 
@@ -134,6 +138,13 @@ class ProvostAppointment(models.Model):
 
 
 def get_upload_to(instance, filename):
+    # Django puts a random string into the filename with:
+    #return f"""static/media/{instance.soldier_id}/memorial/{instance.soldier_id}.jpg""" 
+    #extension = filename.split('.')[-1]
+    print(filename)
+    print(instance.soldier_id)
+    #print(instance)
+    extension = "jpg"
     return f"""static/media/{instance.soldier_id}/memorial/{instance.soldier_id}.jpg""" 
  
  # http://localhost:8000/media/3774/memorial/3774.jpg
@@ -146,6 +157,16 @@ class SoldierDeath(models.Model):
     )
     date = models.DateField(null=True, blank=True)
     image = models.ImageField(upload_to=get_upload_to, null=True, blank=True)
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)  # Call the "real" save() method.
+        if self.image:  # if an image exists for this model
+            img = Image.open(self.image.path)  # Open the image file
+            # Resize the image and save it. 
+            img.thumbnail((300, 400), Image.LANCZOS)
+            print(f"settings.STATIC_ROOT: {settings.STATIC_ROOT}")
+            new_filename = os.path.join(settings.STATIC_ROOT, 'media', str(self.soldier_id), 'memorial', f'{self.soldier_id}.jpg')
+            print(f"new_filename: {new_filename}")
+            img.save(new_filename)
     company = models.ForeignKey(
         Company,
         blank=True,

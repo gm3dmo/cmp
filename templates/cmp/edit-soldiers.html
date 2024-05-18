@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% load static crispy_forms_tags %}
-{% block title %}Soldiers Form{% endblock %}
+{% block title %}Edit/Update Soldier{% endblock %}
 {% block content %}
 
 <div>
@@ -9,6 +9,7 @@
         {% csrf_token %}
         {{ form.management_form }}
         {{ form.errors }}
+        {{ death_form.errors }}
         {{form | crispy}}
         <h2 class="mgmt-title">Soldier Death Details </h2>
         {{ death_form|crispy }}
