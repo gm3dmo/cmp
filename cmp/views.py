@@ -338,6 +338,15 @@ def edit_soldiers(request, soldier_id):
     return render(request, "cmp/edit-soldiers.html", {"form": form, 'death_form': death_form})
 
 
+def search_ranks(request):
+    query = request.GET.get('q')
+    if query:
+        ranks = Rank.objects.filter(name__icontains=query)
+    else:
+        ranks = Rank.objects.all()
+    return render(request, 'cmp/search-ranks.html', {'ranks': ranks})
+
+
 def search_soldiers(request):
     query = request.GET.get('q')
     if query:
@@ -355,6 +364,11 @@ def search_countries(request):
     return render(request, 'cmp/search-countries.html', {'countries': countries})
 
 
+def detail_ranks(request, rank_id):
+    # get or return a 404
+    rank = get_object_or_404(Rank, pk=rank_id)
+    return render(request, "cmp/detail-ranks.html", {"rank": rank})
+
 
 def detail_countries(request, country_id):
     # get or return a 404
@@ -368,10 +382,12 @@ def detail_soldiers(request, soldier_id):
     return render(request, "cmp/detail-soldiers.html", {"soldier": soldier})
 
 
-
-def edit_ranks(request):
+def edit_ranks(request, rank_id):
     post = request.POST
     form = editRankForm(post or None)
+    if rank_id:
+        rank= Rank.objects.get(id=rank_id)
+        form = editRankForm(post or None, instance=rank)
     if post and form.is_valid():
         form.save()
         return HttpResponse("Rank Added")
