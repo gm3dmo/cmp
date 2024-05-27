@@ -345,6 +345,15 @@ def search_soldiers(request):
     else:
         soldiers = Soldier.objects.all()
     return render(request, 'cmp/search-soldiers.html', {'soldiers': soldiers})
+    
+def search_countries(request):
+    query = request.GET.get('q')
+    if query:
+        countries = Country.objects.filter(name__icontains=query)
+    else:
+        countries = Country.objects.all()
+    return render(request, 'cmp/search-countries.html', {'countries': countries})
+
 
 
 def detail_countries(request, country_id):

@@ -34,6 +34,7 @@ urlpatterns = [
     path("mgmt/countries", views.edit_countries, name="edit-countries"),
     path("mgmt/countries/<int:country_id>/", views.detail_countries, name="countries"),
     path("mgmt/countries/edit/<int:country_id>", views.edit_countries, name="edit-countries"),
+    path('mgmt/countries/search/', views.search_countries, name='search-countries'),
 
     path("mgmt/ranks", views.edit_ranks, name="edit-ranks"),
 
