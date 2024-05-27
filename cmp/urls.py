@@ -31,12 +31,18 @@ urlpatterns = [
     # create an index page for mgmt urls to link to /mgmt/countries
     path('mgmt/', views.mgmt_index, name='mgmt-index'),
 
+    # Countries
     path("mgmt/countries", views.edit_countries, name="edit-countries"),
     path("mgmt/countries/<int:country_id>/", views.detail_countries, name="countries"),
     path("mgmt/countries/edit/<int:country_id>", views.edit_countries, name="edit-countries"),
     path('mgmt/countries/search/', views.search_countries, name='search-countries'),
 
+    # Ranks
     path("mgmt/ranks", views.edit_ranks, name="edit-ranks"),
+    path("mgmt/ranks/<int:rank_id>/", views.detail_ranks, name="ranks"),
+    path("mgmt/ranks/edit/<int:rank_id>", views.edit_ranks, name="edit-ranks"),
+    path('mgmt/ranks/search/', views.search_ranks, name='search-ranks'),
+
 
     path("mgmt/pow-camps", views.edit_powcamps, name="powcamps"),
 

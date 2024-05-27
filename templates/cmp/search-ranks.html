@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% load static crispy_forms_tags %}
+{% block title %}Ranks{% endblock %}
+{% block content %}
+
+<h1>Search Ranks</h1>
+
+<form method="get">
+  <input type="text" name="q" placeholder="Search ranks to edit">
+  <input type="submit" value="Search">
+</form>
+
+
+{% for rank in ranks%}
+    <p>
+        <a href="{% url 'edit-ranks' rank.id %}">{{ rank.name }}</a>
+    </p>
+{% endfor %}
+
+
+
+{% endblock %}
