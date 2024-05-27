@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% load static crispy_forms_tags %}
+{% block title %}Cemeteries{% endblock %}
+{% block content %}
+
+<h1> Edit Cemeteries</h1>
+
+<form method="get">
+  <input type="text" name="q" placeholder="Search Cemeteries to edit">
+  <input type="submit" value="Search">
+</form>
+
+
+{% for cemetery in cemeteries %}
+    <p>
+        <a href="{% url 'edit-cemeteries' cemetery.id %}">{{ cemetery.name }}</a>
+    </p>
+{% endfor %}
+
+
+{% endblock %}
