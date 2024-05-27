@@ -267,9 +267,12 @@ def original_unit(request, army_number):
     return HttpResponse("No Match Found")
 
 
-def edit_cemeteries(request):
+def edit_cemeteries(request, cemetery_id):
     post = request.POST
     form = editCemeteryForm(post or None)
+    if cemetery_id:
+        cemetery = Cemetery.objects.get(id=cemetery_id)
+        form = editCemeteryForm(post or None, instance=cemetery)
     if post and form.is_valid():
         form.save()
         return HttpResponse("Cemetery Added")
@@ -347,6 +350,15 @@ def search_ranks(request):
     return render(request, 'cmp/search-ranks.html', {'ranks': ranks})
 
 
+def search_cemeteries(request):
+    query = request.GET.get('q')
+    if query:
+        cemeteries = Cemetery.objects.filter(name__icontains=query)
+    else:
+        cemeteries = Cemetery.objects.all()
+    return render(request, 'cmp/search-cemeteries.html', {'cemeteries': cemeteries})
+
+
 def search_soldiers(request):
     query = request.GET.get('q')
     if query:
@@ -354,6 +366,7 @@ def search_soldiers(request):
     else:
         soldiers = Soldier.objects.all()
     return render(request, 'cmp/search-soldiers.html', {'soldiers': soldiers})
+
     
 def search_countries(request):
     query = request.GET.get('q')
@@ -368,6 +381,12 @@ def detail_ranks(request, rank_id):
     # get or return a 404
     rank = get_object_or_404(Rank, pk=rank_id)
     return render(request, "cmp/detail-ranks.html", {"rank": rank})
+
+
+def detail_cemeteries(request, cemetery_id):
+    # get or return a 404
+    rank = get_object_or_404(Cemetery, pk=cemetery_id)
+    return render(request, "cmp/detail-cemeteries.html", {"cemetery": cemetery})
 
 
 def detail_countries(request, country_id):
@@ -392,6 +411,18 @@ def edit_ranks(request, rank_id):
         form.save()
         return HttpResponse("Rank Added")
     return render(request, "cmp/edit-ranks.html", {"form": form})
+    
+
+def edit_cemeteries(request, cemetery_id):
+    post = request.POST
+    form = editCemeteryForm(post or None)
+    if cemetery_id:
+        cemetery = Cemetery.objects.get(id=cemetery_id)
+        form = editCemeteryForm(post or None, instance=cemetery)
+    if post and form.is_valid():
+        form.save()
+        return HttpResponse("CemeteryAdded")
+    return render(request, "cmp/edit-cemeteries.html", {"form": form})
 
 
 def soldier(request, soldier_id):

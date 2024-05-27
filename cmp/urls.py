@@ -37,6 +37,12 @@ urlpatterns = [
     path("mgmt/countries/edit/<int:country_id>", views.edit_countries, name="edit-countries"),
     path('mgmt/countries/search/', views.search_countries, name='search-countries'),
 
+    # Cemeteries 
+    path("mgmt/cemeteries", views.edit_cemeteries, name="edit-cemeteries"),
+    path("mgmt/cemeteries/<int:cemetery_id>/", views.detail_cemeteries, name="cemeteries"),
+    path("mgmt/cemeteries/edit/<int:cemetery_id>", views.edit_cemeteries, name="edit-cemeteries"),
+    path('mgmt/cemeteries/search/', views.search_cemeteries, name='search-cemeteries'),
+
     # Ranks
     path("mgmt/ranks", views.edit_ranks, name="edit-ranks"),
     path("mgmt/ranks/<int:rank_id>/", views.detail_ranks, name="ranks"),
