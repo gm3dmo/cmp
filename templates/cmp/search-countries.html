@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% load static crispy_forms_tags %}
+{% block title %}Countries{% endblock %}
+{% block content %}
+
+<form method="get">
+  <input type="text" name="q" placeholder="Search Countries to edit">
+  <input type="submit" value="Search">
+</form>
+
+
+{% for country in countries %}
+    <p>
+        <a href="{% url 'edit-countries' country.id %}">{{ country.name }}</a>
+    </p>
+{% endfor %}
+
+
+
+{% endblock %}
