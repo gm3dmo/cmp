@@ -312,6 +312,18 @@ def edit_countries(request, country_id=None):
     return render(request, "cmp/edit-countries.html", {"form": form})
 
 
+def edit_powcamps(request, powcamp_id=None):
+    post = request.POST
+    form = editPowCampForm(post or None)
+    if powcamp_id:
+        powcamp = PowCamp.objects.get(id=powcamp_id)
+        form = editPowCampForm(post or None, instance=powcamp)
+    if post and form.is_valid():
+        form.save()
+        return HttpResponse("Prisoner of War Camp Added")
+    return render(request, "cmp/edit-prisoner-of-war-camps.html", {"form": form})
+
+
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
 
@@ -359,6 +371,14 @@ def search_cemeteries(request):
     return render(request, 'cmp/search-cemeteries.html', {'cemeteries': cemeteries})
 
 
+def search_powcamps(request):
+    query = request.GET.get('q')
+    if query:
+        powcamps = PowCamp.objects.filter(name__icontains=query)
+    else:
+        powcamps = PowCamp.objects.all()
+    return render(request, 'cmp/search-prisoner-of-war-camps.html', {'powcamps': powcamps})
+
 def search_soldiers(request):
     query = request.GET.get('q')
     if query:
@@ -381,6 +401,12 @@ def detail_ranks(request, rank_id):
     # get or return a 404
     rank = get_object_or_404(Rank, pk=rank_id)
     return render(request, "cmp/detail-ranks.html", {"rank": rank})
+
+
+def detail_powcamps(request, powcamp_id):
+    # get or return a 404
+    camp = get_object_or_404(Rank, pk=powcamp_id)
+    return render(request, "cmp/detail-prisoner-of-war-camps.html", {"camp": camp})
 
 
 def detail_cemeteries(request, cemetery_id):

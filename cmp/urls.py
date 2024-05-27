@@ -35,13 +35,19 @@ urlpatterns = [
     path("mgmt/countries", views.edit_countries, name="edit-countries"),
     path("mgmt/countries/<int:country_id>/", views.detail_countries, name="countries"),
     path("mgmt/countries/edit/<int:country_id>", views.edit_countries, name="edit-countries"),
-    path('mgmt/countries/search/', views.search_countries, name='search-countries'),
+    path("mgmt/countries/search/", views.search_countries, name='search-countries'),
 
     # Cemeteries 
     path("mgmt/cemeteries", views.edit_cemeteries, name="edit-cemeteries"),
     path("mgmt/cemeteries/<int:cemetery_id>/", views.detail_cemeteries, name="cemeteries"),
     path("mgmt/cemeteries/edit/<int:cemetery_id>", views.edit_cemeteries, name="edit-cemeteries"),
-    path('mgmt/cemeteries/search/', views.search_cemeteries, name='search-cemeteries'),
+    path("mgmt/cemeteries/search/", views.search_cemeteries, name='search-cemeteries'),
+
+    # POW Camps
+    path("mgmt/prisoner-of-war-camps", views.edit_powcamps, name="edit-powcamps"),
+    path("mgmt/prisoner-of-war-camps/<int:powcamp_id>/", views.detail_powcamps, name="powcamps"),
+    path("mgmt/prisoner-of-war-camps/edit/<int:powcamp_id>", views.edit_powcamps, name="edit-prisoner-of-war-camps"),
+    path("mgmt/prisoner-of-war-camps/search/", views.search_powcamps, name='search-prisoner-of-war-camps'),
 
     # Ranks
     path("mgmt/ranks", views.edit_ranks, name="edit-ranks"),
@@ -49,10 +55,6 @@ urlpatterns = [
     path("mgmt/ranks/edit/<int:rank_id>", views.edit_ranks, name="edit-ranks"),
     path('mgmt/ranks/search/', views.search_ranks, name='search-ranks'),
 
-
-    path("mgmt/pow-camps", views.edit_powcamps, name="powcamps"),
-
-    path("mgmt/cemeteries", views.edit_cemeteries, name="cemeteries"),
 
     # Soldiers
     path('soldiers/', views.soldiers, name='soldiers'),
