@@ -3,17 +3,22 @@
 {% block title %}Soldiers{% endblock %}
 {% block content %}
 
+<h1>Search Soldiers</h1>
+
+<div name="search-input" class="search-input">
 <form method="get">
   <input type="text" name="q" placeholder="Search soldiers to edit">
   <input type="submit" value="Search">
 </form>
+</div>
 
-
+<div>
 {% for soldier in soldiers %}
     <p>
         <a href="{% url 'edit-soldiers' soldier.id %}">{{ soldier.surname }}</a>
     </p>
 {% endfor %}
+</div>
 
 
 

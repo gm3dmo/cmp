@@ -3,12 +3,14 @@
 {% block title %}Cemeteries{% endblock %}
 {% block content %}
 
-<h1> Edit Cemeteries</h1>
+<h1> Search Cemeteries</h1>
 
+<div name="search-input" class="search-input">
 <form method="get">
   <input type="text" name="q" placeholder="Search Cemeteries to edit">
   <input type="submit" value="Search">
 </form>
+</div>
 
 
 {% for cemetery in cemeteries %}
