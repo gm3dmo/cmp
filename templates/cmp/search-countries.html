@@ -3,10 +3,14 @@
 {% block title %}Countries{% endblock %}
 {% block content %}
 
+<h1>Search Countries</h1>
+
+<div name="search-input" class="search-input">
 <form method="get">
   <input type="text" name="q" placeholder="Search Countries to edit">
   <input type="submit" value="Search">
 </form>
+</div>
 
 
 {% for country in countries %}

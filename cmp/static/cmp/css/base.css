@@ -5,9 +5,8 @@
         margin-top: 5%;
         font-size: 18px;
         text-align: center;
-</style>
-
     }
+
     h1, h3, h3, h4, h5, h6 {
         color: #8B0000; 
     }
@@ -17,6 +16,7 @@
     padding: 7px;
     text-align: center;
     }
+
     .response-text {
     font-size: 24px;
     margin-top: 3%;
@@ -45,7 +45,11 @@
         margin-right: auto;
         width: 50%;  /* adjust this value as needed */
     }
-      
+
+      .search-input {
+          padding-bottom: 24px; 
+      }
+
       .content-table thead tr {
         background-color: #8B0000;
         color: #ffffff;
@@ -55,9 +59,9 @@
         
       }
       
-      .content-table th,
+      .content-table th, 
       .content-table td {
-        padding: 12px 15px;
+        padding: 12px;
       }
       
       .content-table tbody tr {
