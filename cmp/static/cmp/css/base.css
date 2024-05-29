@@ -39,12 +39,40 @@
       text-align: left;
     }
 
+    .edit-button {
+      background-color: #4CAF50; /* Green */
+      border: none;
+      color: white;
+      padding: 3px 16px;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 16px;
+      margin: 4px 2px;
+      margin-right: 10px; 
+      cursor: pointer;
+      transition-duration: 0.4s;
+      border-radius: 12px; /* Add this line */
+  }
+
+  .soldier-info {
+    margin-right: 15px; /* Adjust as needed */
+}
+  
+  .edit-button:hover {
+      background-color: #45a049;
+  }
+
 
       #results {
         margin-left: auto;
         margin-right: auto;
         width: 50%;  /* adjust this value as needed */
     }
+    
+    .soldier-details {
+      text-align: left;
+  }
 
       .search-input {
           padding-bottom: 24px; 
