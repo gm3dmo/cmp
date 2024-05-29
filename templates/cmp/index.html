@@ -5,7 +5,7 @@
 
 
 <div>
-<img src="{% static 'cmp/c2-rmp.svg' %}" style="width:150px; height:auto;" alt="The badge of the Royal Military Police">
+<img src="{% static 'cmp/cmp-masthead.svg' %}" style="width:350px; height:auto;" alt="The badge of the Royal Military Police">
 <h2> Corps of Military Police</h2>
 <p></p>
 <h3>Casualties, Honours & Decorations, Prisoners of War</h3>
@@ -19,8 +19,8 @@
         <input type="submit" value="Search">
     </form>
 </div>
-    <div id="results">
+<div id="results" class="search-results">
      {% include 'cmp/soldier-results.html' %}
-    </div>
+</div>
 
 {% endblock %}
