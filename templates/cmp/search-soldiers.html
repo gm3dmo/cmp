@@ -14,9 +14,12 @@
 
 <div>
 {% for soldier in soldiers %}
-    <p>
-        <a href="{% url 'edit-soldiers' soldier.id %}">{{ soldier.surname }}</a>
-    </p>
+<p class="soldier-details">
+  <button class="edit-button" onclick="location.href='{% url 'edit-soldiers' soldier.id %}'" type="button">Edit</button> 
+  <span class="soldier-info">{{ soldier.surname }}</span>
+  <span class="soldier-info">{{ soldier.initials }}</span>
+  <span class="soldier-info">{{ soldier.rank }}</span>
+</p>
 {% endfor %}
 </div>
 
