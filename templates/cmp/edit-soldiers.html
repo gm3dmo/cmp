@@ -4,15 +4,19 @@
 {% block content %}
 
 <div>
-    <h1 class="mgmt-title">Update/Edit Soldier Record </h1>
+    <h1 class="mgmt-title">Update Soldier Record </h1>
     <form method="POST" enctype="multipart/form-data">
         {% csrf_token %}
         {{ form.management_form }}
         {{ form.errors }}
         {{ death_form.errors }}
         {{form | crispy}}
+
+        {% if soldier.soldierdeath %}
         <h2 class="mgmt-title">Soldier Death Details </h2>
         {{ death_form|crispy }}
+        {% endif %}
+
         <button type="submit" class="btn btn-primary">Save</button>
     </form>
 
