@@ -356,27 +356,27 @@ def edit_soldiers(request, soldier_id):
 def search_ranks(request):
     query = request.GET.get('q')
     if query:
-        ranks = Rank.objects.filter(name__icontains=query)
+        ranks = Rank.objects.filter(name__icontains=query).order_by('name')
     else:
-        ranks = Rank.objects.all()
+        ranks = Rank.objects.all().order_by('name')
     return render(request, 'cmp/search-ranks.html', {'ranks': ranks})
 
 
 def search_cemeteries(request):
     query = request.GET.get('q')
     if query:
-        cemeteries = Cemetery.objects.filter(name__icontains=query)
+        cemeteries = Cemetery.objects.filter(name__icontains=query).order_by('name')
     else:
-        cemeteries = Cemetery.objects.all()
+        cemeteries = Cemetery.objects.all().order_by('name')
     return render(request, 'cmp/search-cemeteries.html', {'cemeteries': cemeteries})
 
 
 def search_powcamps(request):
     query = request.GET.get('q')
     if query:
-        powcamps = PowCamp.objects.filter(name__icontains=query)
+        powcamps = PowCamp.objects.filter(name__icontains=query).order_by('name')
     else:
-        powcamps = PowCamp.objects.all()
+        powcamps = PowCamp.objects.all().order_by('name')
     return render(request, 'cmp/search-prisoner-of-war-camps.html', {'powcamps': powcamps})
 
 def search_soldiers(request):
@@ -391,9 +391,10 @@ def search_soldiers(request):
 def search_countries(request):
     query = request.GET.get('q')
     if query:
-        countries = Country.objects.filter(name__icontains=query)
+        countries = Country.objects.filter(name__icontains=query).order_by('name')
     else:
-        countries = Country.objects.all()
+        countries = Country.objects.all().order_by('name')
+
     return render(request, 'cmp/search-countries.html', {'countries': countries})
 
 
