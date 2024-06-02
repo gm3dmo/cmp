@@ -115,3 +115,40 @@
         font-weight: bold;
         color: #8B0000;
       }
+
+      .glossy-button {
+          background: #1b3003; /* fallback for old browsers */
+          background: -webkit-linear-gradient(top, #487910, #36670c); /* Chrome 10-25, Safari 5.1-6 */
+          background: linear-gradient(to bottom, #254205, #3b6b12); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+          border: none;
+          color: white;
+          padding: 3px 8px;
+          text-align: center;
+          text-decoration: none;
+          display: inline-block;
+          font-size: 14px;
+          margin: 4px 2px;
+          cursor: pointer;
+          border-radius: 5px;
+          box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+          position: relative;
+          overflow: hidden;
+      }
+      
+      .glossy-button:after {
+          content: "";
+          background: rgba(255,255,255,0.2);
+          display: block;
+          position: absolute;
+          width: 100%;
+          height: 50%;
+          left: 0;
+          top: 0;
+          z-index: 1;
+          transform: skewX(-45deg) translateX(-100%);
+          transition: all 0.7s ease-in-out;
+      }
+      
+      .glossy-button:hover:after {
+          transform: skewX(-45deg) translateX(100%);
+      }
