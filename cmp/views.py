@@ -1,3 +1,4 @@
+from django.core.paginator import Paginator
 from django.shortcuts import get_object_or_404, render, HttpResponse
 
 from django.contrib.auth.decorators import login_required
@@ -381,11 +382,16 @@ def search_powcamps(request):
 
 def search_soldiers(request):
     query = request.GET.get('q')
+    page_number = request.GET.get('page')
     if query:
-        soldiers = Soldier.objects.filter(surname__icontains=query)
+        soldiers = Soldier.objects.filter(surname__icontains=query).order_by('surname', 'initials')
     else:
         soldiers = Soldier.objects.all().order_by('surname', 'initials')
-    return render(request, 'cmp/search-soldiers.html', {'soldiers': soldiers})
+
+    paginator = Paginator(soldiers, 25)
+    page_obj = paginator.get_page(page_number)
+    #return render(request, 'cmp/search-soldiers.html', {'soldiers': soldiers})
+    return render(request, 'cmp/search-soldiers.html', {'page_obj': page_obj})
 
     
 def search_countries(request):
