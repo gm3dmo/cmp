@@ -4,21 +4,21 @@ def run():
     import sys
     import urllib3
     import csv
+    import time
     from cmp.models import SoldierImprisonment
 
     print()
     title = sys.argv[2]
-    print(f"""\033[4;33m{title}\033[0m""")
-    print("-" * len(title))
     
+    start_fetch_time = time.time()
     ref_data_url = "https://raw.githubusercontent.com/gm3dmo/old-cmp/main/data/soldier-imprisonment.csv"
     http = urllib3.PoolManager()
     r = http.request('GET', ref_data_url)
-    print(f"""Fetch table response code: {r.status}""")
+    end_fetch_time = time.time()
     # load the response into a csv dictionary reader
     reader = csv.DictReader(r.data.decode('utf-8').splitlines())
     # breakpoint()
-    # id,soldier_id,company_id,powNumber,powCamp_id,dateFrom,dateTo,notes
+    start_insert_time = time.time()
     for row in reader:
         #print(f"""SoldierImprisonment: {row['id']} {row['soldier_id']} """)
         try:
@@ -35,3 +35,9 @@ def run():
         except Exception as e:
             print(f"""💥row: ({row}) """)
             raise e
+
+
+    end_insert_time = time.time()
+    time_to_fetch = end_fetch_time - start_fetch_time
+    time_to_insert = end_insert_time - start_insert_time
+    print(f"""\033[4;33m{title}\033[0m Fetch table response code: {r.status} time (seconds) to fetch: {time_to_fetch:.2f} time to insert {time_to_insert:.2f}""")
