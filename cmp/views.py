@@ -384,7 +384,7 @@ def search_soldiers(request):
     if query:
         soldiers = Soldier.objects.filter(surname__icontains=query)
     else:
-        soldiers = Soldier.objects.all()
+        soldiers = Soldier.objects.all().order_by('surname', 'initials')
     return render(request, 'cmp/search-soldiers.html', {'soldiers': soldiers})
 
     
