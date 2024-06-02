@@ -171,7 +171,7 @@ class SoldierDeath(models.Model):
         Company,
         blank=True,
         null=True,
-        default="UNKNOWN",
+        #default="UNKNOWN",
         on_delete=models.CASCADE,
         related_name="companies",
     )
