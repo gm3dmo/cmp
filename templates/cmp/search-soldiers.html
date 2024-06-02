@@ -15,7 +15,7 @@
 <div>
 {% for soldier in page_obj %}
 <p class="soldier-details">
-  <button class="edit-button" onclick="location.href='{% url 'edit-soldiers' soldier.id %}'" type="button">Edit</button> 
+  <button class="glossy-button" onclick="location.href='{% url 'edit-soldiers' soldier.id %}'" type="button">Edit</button> 
   <span class="soldier-info">{{ soldier.surname }}</span>
   <span class="soldier-info">{{ soldier.initials }}</span>
   <span class="soldier-info">{{ soldier.rank }}</span>
@@ -23,16 +23,18 @@
 {% endfor %}
 </div>
 
-<div>
-  {% if page_obj.has_previous %}
+<p>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</p>
+
+{% for soldier in page_obj %}
+    <!-- Display the soldier -->
+{% endfor %}
+
+{% if page_obj.has_previous %}
     <a href="?q={{ request.GET.q }}&page={{ page_obj.previous_page_number }}">Previous</a>
 {% endif %}
 
 {% if page_obj.has_next %}
     <a href="?q={{ request.GET.q }}&page={{ page_obj.next_page_number }}">Next</a>
 {% endif %}
-</div>
-
-
 
 {% endblock %}
