@@ -37,7 +37,7 @@
       {% endif %}
 
 
-      {% if soldier.soldierdeath %}
+      {% if soldier.soldierdeath.exists %}
          <tr><td colspan="2"><h4>Casualty Record:</h4></td></tr>
          <tr><td>Date of Death:</td><td>{{ soldier.soldierdeath.date }}</td></tr>
          <tr><td>Company:</td><td>{{ soldier.soldierdeath.company }}</td></tr>
