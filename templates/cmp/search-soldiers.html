@@ -7,13 +7,13 @@
 
 <div name="search-input" class="search-input">
 <form method="get">
-  <input type="text" name="q" placeholder="Search soldiers to edit">
+  <input type="text" name="q" value="{{ request.GET.q }}"  placeholder="Search soldiers to edit">
   <input type="submit" value="Search">
 </form>
 </div>
 
 <div>
-{% for soldier in soldiers %}
+{% for soldier in page_obj %}
 <p class="soldier-details">
   <button class="edit-button" onclick="location.href='{% url 'edit-soldiers' soldier.id %}'" type="button">Edit</button> 
   <span class="soldier-info">{{ soldier.surname }}</span>
@@ -21,6 +21,16 @@
   <span class="soldier-info">{{ soldier.rank }}</span>
 </p>
 {% endfor %}
+</div>
+
+<div>
+  {% if page_obj.has_previous %}
+    <a href="?q={{ request.GET.q }}&page={{ page_obj.previous_page_number }}">Previous</a>
+{% endif %}
+
+{% if page_obj.has_next %}
+    <a href="?q={{ request.GET.q }}&page={{ page_obj.next_page_number }}">Next</a>
+{% endif %}
 </div>
 
 

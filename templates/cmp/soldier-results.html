@@ -16,7 +16,7 @@
         </tr>
     </thead>
     <tbody>
-        {% for soldier in soldiers %}
+        {% for soldier in page_obj %}
         <tr>
             <td><a href="{% url 'soldier' soldier.id %}">{{ soldier.surname }}</a></td>
             <td>{{ soldier.initials }}</td>
@@ -26,6 +26,14 @@
         {% endfor %}
     </tbody>
 </table>
+
+{% if page_obj.has_previous %}
+    <a href="?page={{ page_obj.previous_page_number }}">Previous</a>
+{% endif %}
+
+{% if page_obj.has_next %}
+    <a href="?page={{ page_obj.next_page_number }}">Next</a>
+{% endif %}
 
 {% endif %} 
 
