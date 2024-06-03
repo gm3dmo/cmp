@@ -1,10 +1,11 @@
     body {
         font-family: 'IM Fell English', Helvetica, serif;
-        margin-left: 13%;
-        margin-right: 13%;
-        margin-top: 5%;
+        margin-left: 7%;
+        margin-right: 7%;
+        margin-top: 0%;
+        margin-bottom: 0%;
         font-size: 18px;
-        text-align: center;
+        text-align: left;
     }
 
     h1, h3, h3, h4, h5, h6 {
@@ -43,13 +44,13 @@
       background-color: #4CAF50; /* Green */
       border: none;
       color: white;
-      padding: 3px 16px;
+      padding: 3px 8px;
       text-align: center;
       text-decoration: none;
       display: inline-block;
-      font-size: 16px;
+      font-size: 10px;
       margin: 4px 2px;
-      margin-right: 10px; 
+      margin-right: 4px; 
       cursor: pointer;
       transition-duration: 0.4s;
       border-radius: 12px; /* Add this line */
@@ -80,6 +81,15 @@
     .soldier-details {
       text-align: left;
   }
+
+  .center-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    margin-top: 2%;
+}
+
 
       .search-input {
           padding-bottom: 24px; 
@@ -117,20 +127,21 @@
       }
 
       .glossy-button {
+          font-family: 'Helvetica', sans-serif;
           background: #1b3003; /* fallback for old browsers */
           background: -webkit-linear-gradient(top, #487910, #36670c); /* Chrome 10-25, Safari 5.1-6 */
           background: linear-gradient(to bottom, #254205, #3b6b12); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
           border: none;
           color: white;
-          padding: 3px 8px;
+          padding: 3px 3px;
           text-align: center;
           text-decoration: none;
           display: inline-block;
-          font-size: 14px;
+          font-size: 8px;
           margin: 4px 2px;
           cursor: pointer;
           border-radius: 5px;
-          box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+          box-shadow: 0 5px 5px rgba(0,0,0,0.2);
           position: relative;
           overflow: hidden;
       }
