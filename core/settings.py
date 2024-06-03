@@ -40,7 +40,7 @@ DEBUG = env('DEBUG')
 
 ALLOWED_HOSTS = ["cmp-production.up.railway.app", "*"]
 
-CSRF_TRUSTED_ORIGINS = ["https://cmp-production.up.railway.app"]
+CSRF_TRUSTED_ORIGINS = ["https://cmp-production.up.railway.app", "https://cmp.oxenfor.de" ]
 
 INTERNAL_IPS = [
     # ...
