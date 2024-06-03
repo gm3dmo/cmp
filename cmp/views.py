@@ -6,6 +6,12 @@ from django.contrib.auth.decorators import login_required
 from .models import Country
 from cmp.forms import editCountryForm
 
+from .models import Company
+from cmp.forms import editCompanyForm
+
+from .models import Decoration
+from cmp.forms import editDecorationForm
+
 from .models import Rank
 from cmp.forms import editRankForm
 
@@ -301,6 +307,30 @@ def edit_country(request, country_id):
     return render(request, "cmp/edit-countries.html", {"form": form})
 
 
+def edit_companies(request, company_id=None):
+    post = request.POST
+    form = editCompanyForm(post or None)
+    if company_id:
+        company = Company.objects.get(id=company_id)
+        form = editCompanyForm(post or None, instance=company)
+    if post and form.is_valid():
+        form.save()
+        return HttpResponse("Company Added")
+    return render(request, "cmp/edit-companies.html", {"form": form})
+
+
+def edit_decorations(request, decoration_id=None):
+    post = request.POST
+    form = editDecorationForm(post or None)
+    if decoration_id:
+        decoration = Decoration.objects.get(id=decoration_id)
+        form = editDecorationForm(post or None, instance=decoration)
+    if post and form.is_valid():
+        form.save()
+        return HttpResponse("Decoration Added")
+    return render(request, "cmp/edit-decorations.html", {"form": form})
+
+
 def edit_countries(request, country_id=None):
     post = request.POST
     form = editCountryForm(post or None)
@@ -380,6 +410,7 @@ def search_powcamps(request):
         powcamps = PowCamp.objects.all().order_by('name')
     return render(request, 'cmp/search-prisoner-of-war-camps.html', {'powcamps': powcamps})
 
+
 def search_soldiers(request):
     query = request.GET.get('q')
     page_number = request.GET.get('page')
@@ -392,6 +423,30 @@ def search_soldiers(request):
     page_obj = paginator.get_page(page_number)
     #return render(request, 'cmp/search-soldiers.html', {'soldiers': soldiers})
     return render(request, 'cmp/search-soldiers.html', {'page_obj': page_obj})
+
+
+def search_decorations(request):
+    query = request.GET.get('q')
+    page_number = request.GET.get('page')
+    if query:
+        decorations = Decoration.objects.filter(name__icontains=query).order_by('name')
+    else:
+        decorations = Decoration.objects.all().order_by('name')
+    paginator = Paginator(decorations, 25)
+    page_obj = paginator.get_page(page_number)
+    return render(request, 'cmp/search-decorations.html', {'page_obj': page_obj})
+
+
+def search_companies(request):
+    query = request.GET.get('q')
+    page_number = request.GET.get('page')
+    if query:
+        companies = Company.objects.filter(name__icontains=query).order_by('name')
+    else:
+        companies = Company.objects.all().order_by('name')
+    paginator = Paginator(companies, 15)
+    page_obj = paginator.get_page(page_number)
+    return render(request, 'cmp/search-companies.html', {'page_obj': page_obj})
 
     
 def search_countries(request):
@@ -426,6 +481,18 @@ def detail_countries(request, country_id):
     # get or return a 404
     country = get_object_or_404(Country, pk=country_id)
     return render(request, "cmp/detail-countries.html", {"country": country})
+
+
+def detail_companies(request, company_id):
+    # get or return a 404
+    company = get_object_or_404(Company, pk=company_id)
+    return render(request, "cmp/detail-companies.html", {"company": company})
+
+
+def detail_decorations(request, decoration_id):
+    # get or return a 404
+    decoration = get_object_or_404(Decoration, pk=decoration_id)
+    return render(request, "cmp/detail-decorations.html", {"decoration": decoration})
 
 
 def detail_soldiers(request, soldier_id):
@@ -490,35 +557,6 @@ def soldier(request, soldier_id):
     context = { "soldier": soldier, "cemetery_map":  cemetery_map  }
     return render(request, "cmp/soldier.html", context)
 
-
-#def soldier_detail(request, soldier_id):
-#    """Gather together details about soldier"""
-#    s = Soldier.objects.get(id=soldier_id)
-#    soldier_record = {
-#                          's_surname':      s.surname,
-#                          #'s_initials':     s.dot_initials(),
-#                          's_rank':         s.rank,
-#                          's_armynumber':   s.army_number,
-#                          's_notes':        s.notes, 
-#                         }
-#    return soldier_record
-
-
-#def index(request):
-#    if not request.POST:
-#        return render(request, 'cmp/index.html', {'soldiers': []})
-#    """Search for soldier by surname or an army number"""
-#    print("DAVE")
-#    print(type(request))
-#    print(request.method)
-#    # print the content of the POST request
-#    print(request.POST)
-#    print(request.POST.get('name'))
-#    surname = request.POST.get('name')
-#
-#    soldiers = Soldier.objects.filter(surname__icontains=surname).order_by('surname')
-#    print(soldiers)
-#    return render(request, 'cmp/index.html', {'soldiers': soldiers})
     
 def index(request):
     post = request.POST

@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% load static crispy_forms_tags %}
+{% block title %}Companies{% endblock %}
+{% block content %}
+
+<h1>{{ Company.name }} Details</h1>
+
+<div>
+<table class="table table-borderless table-lg">
+    <thead>
+      <tr>
+        <th>Flag</th>
+        <th>Name</th>
+        <th>Alpha2</th>
+        <th>Alpha3</th>
+        <th>Country #</th>
+        <th>Edit</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+            {{ company.name }}
+        </td>
+        <td>
+          <a class="btn btn-primary btn-sm" href="{% url 'edit-companies' company_id=company.id %}">Edit
+          </a>
+        </td>
+      </tr>
+    </table>
+</div>
+
+{% endblock %}

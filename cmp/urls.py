@@ -7,7 +7,6 @@ from . import views
 from .views import soldier_detail
 
 
-
 urlpatterns = [
 
     #path('soldier/<int:soldier_id>/', soldier_detail, name='soldier_detail'),
@@ -36,6 +35,18 @@ urlpatterns = [
     path("mgmt/countries/<int:country_id>/", views.detail_countries, name="countries"),
     path("mgmt/countries/edit/<int:country_id>", views.edit_countries, name="edit-countries"),
     path("mgmt/countries/search/", views.search_countries, name='search-countries'),
+
+    # Companies
+    path("mgmt/companies", views.edit_companies, name="edit-companies"),
+    path("mgmt/companies/<int:company_id>/", views.detail_companies, name="companies"),
+    path("mgmt/companies/edit/<int:company_id>", views.edit_companies, name="edit-companies"),
+    path("mgmt/companies/search/", views.search_companies, name='search-companies'),
+
+    # Decorations
+    path("mgmt/decorations", views.edit_decorations, name="edit-decorations"),
+    path("mgmt/decorations/<int:decoration_id>/", views.detail_decorations, name="decorations"),
+    path("mgmt/decorations/edit/<int:decoration_id>", views.edit_decorations, name="edit-decorations"),
+    path("mgmt/decorations/search/", views.search_decorations, name='search-decorations'),
 
     # Cemeteries 
     path("mgmt/cemeteries", views.edit_cemeteries, name="edit-cemeteries"),
