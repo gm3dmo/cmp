@@ -3,7 +3,8 @@
 {% block title %}Companies{% endblock %}
 {% block content %}
 
-<h1>Search Companies</h1>
+<div class="center-content">
+<h3>Search Companies</h3>
 
 <div name="search-input" class="search-input">
 <form method="get">
@@ -13,16 +14,25 @@
 </div>
 
 <div>
-{% for company in page_obj %}
-<p class="soldier-details">
-  <button class="glossy-button" onclick="location.href='{% url 'edit-companies' company.id %}'" type="button">Edit</button> 
-  <span class="soldier-info">{{ company.name}} </span>
-</p>
-{% endfor %}
-</div>
+  <table class="content-table">
+    <thead class="">
+      <tr>
+        <th></th>
+        <th>NAME</th>
+      </tr>
+    </thead>
+
+   {% for company in page_obj %}
+   <tr>
+    <td><button class="glossy-button" onclick="location.href='{% url 'edit-companies' company.id %}'" type="button">EDIT</button></td>
+    <td><span class="soldier-info">{{ company.name }}</span></td>
+  </tr>
+
+   {% endfor %}
+   </table>
+   </div>
 
 <p>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</p>
-
 
 {% if page_obj.has_previous %}
     <a href="?q={{ request.GET.q }}&page={{ page_obj.previous_page_number }}">Previous</a>
@@ -33,3 +43,5 @@
 {% endif %}
 
 {% endblock %}
+</div>
+kk

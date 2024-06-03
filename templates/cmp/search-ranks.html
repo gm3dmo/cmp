@@ -3,7 +3,8 @@
 {% block title %}Ranks{% endblock %}
 {% block content %}
 
-<h1>Search Ranks</h1>
+<div class="center-content">
+<h3>Search Ranks</h3>
 
 <div name="search-input" class="search-input">
 <form method="get">
@@ -12,12 +13,21 @@
 </form>
 </div>
 
-{% for rank in ranks%}
-    <p>
-        <a href="{% url 'edit-ranks' rank.id %}">{{ rank.name }}</a>
-    </p>
-{% endfor %}
-
-
+   <div>
+     <table class="content-table">
+       <thead class="">
+         <tr>
+           <th></th>
+           <th>NAME</th>
+         </tr>
+       </thead>
+       {% for rank in ranks%}
+       <tr>
+        <td><button class="glossy-button" onclick="location.href='{% url 'edit-ranks' rank.id %}'" type="button">EDIT</button></td>
+        <td><span class="soldier-info">{{ rank.name}}</span></td>
+      </tr>
+       {% endfor %}
+   </div>
 
 {% endblock %}
+</div>

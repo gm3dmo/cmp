@@ -3,23 +3,35 @@
 {% block title %}Cemeteries{% endblock %}
 {% block content %}
 
-<h1> Search Cemeteries</h1>
+   <div class="center-content">
+   <h3> Search Cemeteries</h3>
 
-<div name="search-input" class="search-input">
-<form method="get">
-  <input type="text" name="q" placeholder="Search Cemeteries to edit">
-  <input type="submit" value="Search">
-</form>
-</div>
+   <div name="search-input" class="search-input">
+   <form method="get">
+     <input type="text" name="q" placeholder="Search Cemeteries ">
+     <input type="submit" value="Search">
+   </form>
+   </div>
 
 
-<div>
-{% for cemetery in cemeteries %}
-    <p>
-        <a href="{% url 'edit-cemeteries' cemetery.id %}">{{ cemetery.name }}</a>
-    </p>
-{% endfor %}
-</div>
+   <div>
+    <table class="content-table">
+      <thead class="">
+        <tr>
+          <th></th>
+          <th>NAME</th>
+          <th>COUNTRY</th>
+        </tr>
+      </thead>
 
+   {% for cemetery in cemeteries %}
+   <tr>
+    <td><button class="glossy-button" onclick="location.href='{% url 'edit-cemeteries' cemetery.id %}'" type="button">EDIT</button></td>
+    <td><span class="soldier-info">{{ cemetery.name }}</span></td>
+    <td><span class="soldier-info">{{ cemetery.country.name }} {{cemetery.country.flag}} </span></td>
+  </tr>
+   {% endfor %}
+   </div>
 
 {% endblock %}
+</div>

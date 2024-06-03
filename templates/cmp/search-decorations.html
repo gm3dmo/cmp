@@ -3,7 +3,8 @@
 {% block title %}Decorations{% endblock %}
 {% block content %}
 
-<h1>Search Decorations</h1>
+<div class="center-content">
+<h3>Search Decorations</h3>
 
 <div name="search-input" class="search-input">
 <form method="get">
@@ -13,12 +14,23 @@
 </div>
 
 <div>
+  <table class="content-table">
+    <thead class="">
+      <tr>
+        <th></th>
+        <th>NAME</th>
+        <th>COUNTRY</th>
+      </tr>
+    </thead>
+
 {% for decoration in page_obj %}
-<p class="soldier-details">
-  <button class="glossy-button" onclick="location.href='{% url 'edit-decorations' decoration.id %}'" type="button">Edit</button> 
-  <span class="soldier-info">{{ decoration.name}} {{ decoration.country.name }} {{ decoration.country.flag }} </span>
-</p>
+<tr>
+  <td><button class="glossy-button" onclick="location.href='{% url 'edit-decorations' decoration.id %}'" type="button">EDIT</button></td>
+  <td><span class="soldier-info">{{ decoration.name }}</span></td>
+  <td><span class="soldier-info">{{ decoration.country.flag }} {{ decoration.country.name }} </span></td>
+</tr>
 {% endfor %}
+</table>
 </div>
 
 <p>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</p>
@@ -27,6 +39,7 @@
     <!-- Display the soldier -->
 {% endfor %}
 
+<span>
 {% if page_obj.has_previous %}
     <a href="?q={{ request.GET.q }}&page={{ page_obj.previous_page_number }}">Previous</a>
 {% endif %}
@@ -34,5 +47,7 @@
 {% if page_obj.has_next %}
     <a href="?q={{ request.GET.q }}&page={{ page_obj.next_page_number }}">Next</a>
 {% endif %}
+</span>
 
 {% endblock %}
+</div>

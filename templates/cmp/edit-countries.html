@@ -3,7 +3,8 @@
 {% block title %}Country Form{% endblock %}
 {% block content %}
 
-<h1>Edit Country Details</h1>
+<div class="center-content">
+<h3>Edit Country Details</h3>
 
 <div>
     <form method="POST">
@@ -11,9 +12,9 @@
         {{ form.management_form }}
         {{ form.errors }}
         {{form | crispy}}
-        <button type="submit" class="btn btn-primary">Save</button>
+        <button type="submit" class="btn btn-primary">SAVE</button>
     </form>
-
-    </div>
+</div>
 
 {% endblock %}
+</div>
