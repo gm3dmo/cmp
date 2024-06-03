@@ -3,8 +3,8 @@
 {% block title %}Soldiers{% endblock %}
 {% block content %}
 
-<h1>Search Soldiers</h1>
-
+<div class="center-content">
+<h3>Search Soldiers</h3>
 <div name="search-input" class="search-input">
 <form method="get">
   <input type="text" name="q" value="{{ request.GET.q }}"  placeholder="Search soldiers to edit">
@@ -13,21 +13,33 @@
 </div>
 
 <div>
-{% for soldier in page_obj %}
-<p class="soldier-details">
-  <button class="glossy-button" onclick="location.href='{% url 'edit-soldiers' soldier.id %}'" type="button">Edit</button> 
-  <span class="soldier-info">{{ soldier.surname }}</span>
-  <span class="soldier-info">{{ soldier.initials }}</span>
-  <span class="soldier-info">{{ soldier.rank }}</span>
-</p>
-{% endfor %}
+<table class="content-table">
+  <thead class="">
+    <tr>
+      <th></th>
+      <th>SURNAME</th>
+      <th>INITIALS</th>
+      <th>ARMY No.</th>
+      <th>RANK</th>
+      <th>CASUALTY</th>
+    </tr>
+  </thead>
+
+  {% for soldier in page_obj %}
+    <tr>
+      <td><button class="glossy-button" onclick="location.href='{% url 'edit-soldiers' soldier.id %}'" type="button">EDIT</button></td>
+      <td><span class="soldier-info">{{ soldier.surname }}</span></td>
+      <td><span class="soldier-info">{{ soldier.initials }}</span></td>
+      <td><span class="soldier-info">{{ soldier.army_number }}</span></td>
+      <td><span class="soldier-info">{{ soldier.rank }}</span></td>
+      <td><span class="soldier-info">{{ soldier.soldierdeath.date }}</span></td>
+    </tr>
+   {% endfor %}
+</table>
 </div>
 
 <p>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</p>
 
-{% for soldier in page_obj %}
-    <!-- Display the soldier -->
-{% endfor %}
 
 {% if page_obj.has_previous %}
     <a href="?q={{ request.GET.q }}&page={{ page_obj.previous_page_number }}">Previous</a>
@@ -38,3 +50,4 @@
 {% endif %}
 
 {% endblock %}
+</div>

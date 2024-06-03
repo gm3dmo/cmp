@@ -419,7 +419,7 @@ def search_soldiers(request):
     else:
         soldiers = Soldier.objects.all().order_by('surname', 'initials')
 
-    paginator = Paginator(soldiers, 25)
+    paginator = Paginator(soldiers, 17)
     page_obj = paginator.get_page(page_number)
     #return render(request, 'cmp/search-soldiers.html', {'soldiers': soldiers})
     return render(request, 'cmp/search-soldiers.html', {'page_obj': page_obj})
