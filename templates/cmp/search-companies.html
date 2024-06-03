@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% load static crispy_forms_tags %}
+{% block title %}Companies{% endblock %}
+{% block content %}
+
+<h1>Search Companies</h1>
+
+<div name="search-input" class="search-input">
+<form method="get">
+  <input type="text" name="q" value="{{ request.GET.q }}"  placeholder="Search Companies">
+  <input type="submit" value="Search">
+</form>
+</div>
+
+<div>
+{% for company in page_obj %}
+<p class="soldier-details">
+  <button class="glossy-button" onclick="location.href='{% url 'edit-companies' company.id %}'" type="button">Edit</button> 
+  <span class="soldier-info">{{ company.name}} </span>
+</p>
+{% endfor %}
+</div>
+
+<p>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</p>
+
+
+{% if page_obj.has_previous %}
+    <a href="?q={{ request.GET.q }}&page={{ page_obj.previous_page_number }}">Previous</a>
+{% endif %}
+
+{% if page_obj.has_next %}
+    <a href="?q={{ request.GET.q }}&page={{ page_obj.next_page_number }}">Next</a>
+{% endif %}
+
+{% endblock %}

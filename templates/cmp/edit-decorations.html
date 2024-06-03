@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% load static crispy_forms_tags %}
+{% block title %}Companies Form{% endblock %}
+{% block content %}
+
+<h1>Edit Company</h1>
+<div>
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.management_form }}
+        {{ form.errors }}
+        {{form | crispy}}
+        <button type="submit" class="btn btn-primary">Save</button>
+    </form>
+</div>
+
+{% endblock %}

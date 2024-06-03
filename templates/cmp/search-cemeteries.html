@@ -13,11 +13,13 @@
 </div>
 
 
+<div>
 {% for cemetery in cemeteries %}
     <p>
         <a href="{% url 'edit-cemeteries' cemetery.id %}">{{ cemetery.name }}</a>
     </p>
 {% endfor %}
+</div>
 
 
 {% endblock %}

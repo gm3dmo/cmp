@@ -10,6 +10,8 @@ from .models import Cemetery
 from .models import PowCamp
 from .models import Soldier
 from .models import SoldierDeath
+from .models import Company
+from .models import Decoration
 
 
 class CustomUserCreationForm(UserCreationForm):
@@ -39,6 +41,17 @@ class editCemeteryForm(forms.ModelForm):
 class editCountryForm(forms.ModelForm):
     class Meta:
         model = Country
+        fields = "__all__"
+
+
+class editCompanyForm(forms.ModelForm):
+    class Meta:
+        model = Company 
+        fields = "__all__"
+
+class editDecorationForm(forms.ModelForm):
+    class Meta:
+        model = Decoration
         fields = "__all__"
 
 
