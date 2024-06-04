@@ -386,11 +386,14 @@ def edit_soldiers(request, soldier_id):
 
 def search_ranks(request):
     query = request.GET.get('q')
+    page_number = request.GET.get('page')
     if query:
         ranks = Rank.objects.filter(name__icontains=query).order_by('name')
     else:
         ranks = Rank.objects.all().order_by('name')
-    return render(request, 'cmp/search-ranks.html', {'ranks': ranks})
+    paginator = Paginator(ranks, 18) 
+    page_obj = paginator.get_page(page_number)
+    return render(request, 'cmp/search-ranks.html', {'page_obj': page_obj})
 
 
 def search_cemeteries(request):
@@ -399,16 +402,22 @@ def search_cemeteries(request):
         cemeteries = Cemetery.objects.filter(name__icontains=query).order_by('name')
     else:
         cemeteries = Cemetery.objects.all().order_by('name')
-    return render(request, 'cmp/search-cemeteries.html', {'cemeteries': cemeteries})
+    paginator = Paginator(cemeteries, 18) 
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    return render(request, 'cmp/search-cemeteries.html', {'page_obj': page_obj})
 
 
 def search_powcamps(request):
     query = request.GET.get('q')
+    page_number = request.GET.get('page')
     if query:
         powcamps = PowCamp.objects.filter(name__icontains=query).order_by('name')
     else:
         powcamps = PowCamp.objects.all().order_by('name')
-    return render(request, 'cmp/search-prisoner-of-war-camps.html', {'powcamps': powcamps})
+    paginator = Paginator(powcamps, 10)  # Show 10 powcamps per page
+    page_obj = paginator.get_page(page_number)
+    return render(request, 'cmp/search-prisoner-of-war-camps.html', {'page_obj': page_obj})
 
 
 def search_soldiers(request):
@@ -418,7 +427,6 @@ def search_soldiers(request):
         soldiers = Soldier.objects.filter(surname__icontains=query).order_by('surname', 'initials')
     else:
         soldiers = Soldier.objects.all().order_by('surname', 'initials')
-
     paginator = Paginator(soldiers, 17)
     page_obj = paginator.get_page(page_number)
     #return render(request, 'cmp/search-soldiers.html', {'soldiers': soldiers})
@@ -448,16 +456,18 @@ def search_companies(request):
     page_obj = paginator.get_page(page_number)
     return render(request, 'cmp/search-companies.html', {'page_obj': page_obj})
 
-    
+
 def search_countries(request):
     query = request.GET.get('q')
+    page_number = request.GET.get('page')
     if query:
         countries = Country.objects.filter(name__icontains=query).order_by('name')
     else:
         countries = Country.objects.all().order_by('name')
-
-    return render(request, 'cmp/search-countries.html', {'countries': countries})
-
+    paginator = Paginator(countries, 18) 
+    page_obj = paginator.get_page(page_number)
+    return render(request, 'cmp/search-countries.html', {'page_obj': page_obj})
+    
 
 def detail_ranks(request, rank_id):
     # get or return a 404
