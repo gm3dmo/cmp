@@ -33,21 +33,7 @@
 </table>
 </div>
 
-<p>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</p>
-
-{% for decoration in page_obj %}
-    <!-- Display the soldier -->
-{% endfor %}
-
-<span>
-{% if page_obj.has_previous %}
-    <a href="?q={{ request.GET.q }}&page={{ page_obj.previous_page_number }}">Previous</a>
-{% endif %}
-
-{% if page_obj.has_next %}
-    <a href="?q={{ request.GET.q }}&page={{ page_obj.next_page_number }}">Next</a>
-{% endif %}
-</span>
+{% include 'cmp/pagination-footer.html' %}
 
 {% endblock %}
 </div>
