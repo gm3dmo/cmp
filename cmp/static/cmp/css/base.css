@@ -106,7 +106,7 @@
       
       .content-table th, 
       .content-table td {
-        padding: 12px;
+        padding: 4px;
       }
       
       .content-table tbody tr {
@@ -144,6 +144,10 @@
           box-shadow: 0 5px 5px rgba(0,0,0,0.2);
           position: relative;
           overflow: hidden;
+      }
+
+      .small-font {
+      font-size: 6.2em;
       }
       
       .glossy-button:after {
