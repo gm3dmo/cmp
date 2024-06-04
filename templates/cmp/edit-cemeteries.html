@@ -11,8 +11,14 @@
             {{ form.management_form }}
             {{ form.errors }}
             {{form | crispy}}
-            <button type="submit" class="btn btn-primary">Save</button>
+            <button type="submit" class="btn btn-primary">SAVE</button>
         </form>
+    </div>
+    <div>
+      <form method="POST" action="{% url 'delete-cemetery' cemetery.id %}">
+        {% csrf_token %}
+        <button type="submit">DELETE</button>
+      </form>
     </div>
     {% endblock %}
 </div>
