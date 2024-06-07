@@ -190,5 +190,8 @@ STORAGES = {
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
 
+PAGE_SIZE=18
+
+
 MEDIA_ROOT = os.path.join(BASE_DIR, "cmp/media")
 MEDIA_URL = "/media/"

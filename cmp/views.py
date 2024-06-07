@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.core.paginator import Paginator
 from django.shortcuts import get_object_or_404, render, HttpResponse
 
@@ -391,7 +392,7 @@ def search_ranks(request):
         ranks = Rank.objects.filter(name__icontains=query).order_by('name')
     else:
         ranks = Rank.objects.all().order_by('name')
-    paginator = Paginator(ranks, 18) 
+    paginator = Paginator(ranks, settings.PAGE_SIZE) 
     page_obj = paginator.get_page(page_number)
     return render(request, 'cmp/search-ranks.html', {'page_obj': page_obj})
 
@@ -402,7 +403,7 @@ def search_cemeteries(request):
         cemeteries = Cemetery.objects.filter(name__icontains=query).order_by('name')
     else:
         cemeteries = Cemetery.objects.all().order_by('name')
-    paginator = Paginator(cemeteries, 18) 
+    paginator = Paginator(cemeteries, settings.PAGE_SIZE) 
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     return render(request, 'cmp/search-cemeteries.html', {'page_obj': page_obj})
@@ -415,7 +416,7 @@ def search_powcamps(request):
         powcamps = PowCamp.objects.filter(name__icontains=query).order_by('name')
     else:
         powcamps = PowCamp.objects.all().order_by('name')
-    paginator = Paginator(powcamps, 10)  # Show 10 powcamps per page
+    paginator = Paginator(powcamps, settings.PAGE_SIZE)  # Show 10 powcamps per page
     page_obj = paginator.get_page(page_number)
     return render(request, 'cmp/search-prisoner-of-war-camps.html', {'page_obj': page_obj})
 
@@ -427,7 +428,7 @@ def search_soldiers(request):
         soldiers = Soldier.objects.filter(surname__icontains=query).order_by('surname', 'initials')
     else:
         soldiers = Soldier.objects.all().order_by('surname', 'initials')
-    paginator = Paginator(soldiers, 17)
+    paginator = Paginator(soldiers, settings.PAGE_SIZE)
     page_obj = paginator.get_page(page_number)
     #return render(request, 'cmp/search-soldiers.html', {'soldiers': soldiers})
     return render(request, 'cmp/search-soldiers.html', {'page_obj': page_obj})
@@ -440,7 +441,7 @@ def search_decorations(request):
         decorations = Decoration.objects.filter(name__icontains=query).order_by('name')
     else:
         decorations = Decoration.objects.all().order_by('name')
-    paginator = Paginator(decorations, 25)
+    paginator = Paginator(decorations, settings.PAGE_SIZE)
     page_obj = paginator.get_page(page_number)
     return render(request, 'cmp/search-decorations.html', {'page_obj': page_obj})
 
@@ -452,7 +453,7 @@ def search_companies(request):
         companies = Company.objects.filter(name__icontains=query).order_by('name')
     else:
         companies = Company.objects.all().order_by('name')
-    paginator = Paginator(companies, 15)
+    paginator = Paginator(companies, settings.PAGE_SIZE)
     page_obj = paginator.get_page(page_number)
     return render(request, 'cmp/search-companies.html', {'page_obj': page_obj})
 
@@ -464,7 +465,7 @@ def search_countries(request):
         countries = Country.objects.filter(name__icontains=query).order_by('name')
     else:
         countries = Country.objects.all().order_by('name')
-    paginator = Paginator(countries, 18) 
+    paginator = Paginator(countries, settings.PAGE_SIZE) 
     page_obj = paginator.get_page(page_number)
     return render(request, 'cmp/search-countries.html', {'page_obj': page_obj})
     
