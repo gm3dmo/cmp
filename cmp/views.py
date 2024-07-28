@@ -568,17 +568,16 @@ def soldier(request, soldier_id):
     context = { "soldier": soldier, "cemetery_map":  cemetery_map  }
     return render(request, "cmp/soldier.html", context)
 
-    
 def index(request):
-    post = request.POST
-    if post:
-        try:
-            search_term = str(post.get("name"))
-        except ValueError:
-            print("woo")
-        
-        surname = request.POST.get('name')
+    if request.method == 'POST':
+        surname = request.POST.get('name', '')
         soldiers = Soldier.objects.filter(surname__icontains=surname).order_by('surname')
-        return render(request, 'cmp/soldier-results.html', {'soldiers': soldiers})
+        
+        # Pagination
+        paginator = Paginator(soldiers, 10)  # Show 10 soldiers per page
+        page_number = request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
+        
+        return render(request, 'cmp/soldier-results.html', {'page_obj': page_obj})
     else:
         return render(request, 'cmp/index.html')
