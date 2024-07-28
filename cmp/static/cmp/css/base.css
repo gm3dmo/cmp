@@ -86,14 +86,15 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    min-height: 100vh;
     margin-top: 2%;
 }
 
 
       .search-input {
+          margin-top: 20px; /* Adjust as needed */
           padding-bottom: 24px; 
       }
+
 
       .content-table thead tr {
         background-color: #8B0000;
