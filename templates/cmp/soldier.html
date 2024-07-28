@@ -9,8 +9,7 @@
 <h3>Corps of Military Police</h3>
 </div>
 
-<h4>Soldier Record</h4>
-
+<h4>Soldier Record </h4>
 <table class="table table-hover table-bordered table-lg">
   <thead class="thead-dark">
   </thead>
@@ -37,7 +36,7 @@
       {% endif %}
 
 
-      {% if soldier.soldierdeath.exists %}
+      {% if soldier.soldierdeath %}
          <tr><td colspan="2"><h4>Casualty Record:</h4></td></tr>
          <tr><td>Date of Death:</td><td>{{ soldier.soldierdeath.date }}</td></tr>
          <tr><td>Company:</td><td>{{ soldier.soldierdeath.company }}</td></tr>
