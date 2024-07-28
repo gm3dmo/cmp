@@ -4,14 +4,14 @@
 {% block content %}
 
 
-<div>
+<div class="center-content">
 <img src="{% static 'cmp/cmp-masthead.svg' %}" style="width:350px; height:auto;" alt="The badge of the Royal Military Police">
 <h2> Corps of Military Police</h2>
 <p></p>
 <h3>Casualties, Honours & Decorations, Prisoners of War</h3>
 </div>
-</div>
-<div name="search-input" class="search-input">
+
+<div class="center-content" name="search-input" class="search-input">
     <form hx-post="{% url 'index' %}" hx-trigger="submit" hx-target="#results">
         {% csrf_token %}
         <label for="name">Search for a soldier:</label>
@@ -19,6 +19,7 @@
         <input type="submit" value="Search">
     </form>
 </div>
+
 <div id="results" class="search-results">
      {% include 'cmp/soldier-results.html' %}
 </div>
