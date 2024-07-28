@@ -9,10 +9,8 @@ from .views import soldier_detail
 
 urlpatterns = [
 
-    #path('soldier/<int:soldier_id>/', soldier_detail, name='soldier_detail'),
-    path('soldier/<int:soldier_id>/', views.soldier, name='soldier'),
-
     path("", views.index, name="index"), 
+    path('soldier/<int:soldier_id>/', views.soldier, name='soldier'),
 
     path("sentry-debug/", views.trigger_error ),
 
@@ -68,15 +66,14 @@ urlpatterns = [
 
 
     # Soldiers
-    path('soldiers/', views.soldiers, name='soldiers'),
+    path('soldiers/', views.soldiers, name='soldiersrn'),
 
     # Soldier management
-    path("mgmt/soldiers", views.edit_soldiers, name="soldiers"),
-    path("mgmt/soldiers/<int:soldier_id>/", views.detail_soldiers, name="soldiers"),
+    path("mgmt/soldiers", views.edit_soldiers, name="soldiersa"),
+    path("mgmt/soldiers/<int:soldier_id>/", views.detail_soldiers, name="soldiersb"),
     path("mgmt/soldiers/edit/<int:soldier_id>", views.edit_soldiers, name="edit-soldiers"),
     path('mgmt/soldiers/search/', views.search_soldiers, name='search-soldiers'),
 
-    
 
     #path("soldier-search/", views.soldier_search, name="soldier-search" ),
     #path("soldier-search/<str:surname>"  , views.soldier_search , name="soldier-search" ),

@@ -364,6 +364,7 @@ def soldier_detail(request, soldier_id):
     soldier = get_object_or_404(Soldier, id=soldier_id)
     return render(request, 'cmp/soldier.html', {'soldier': soldier})
 
+
 def edit_soldiers(request, soldier_id):
     soldier = get_object_or_404(Soldier, id=soldier_id)
     death, created = SoldierDeath.objects.get_or_create(soldier=soldier)
@@ -565,13 +566,19 @@ def soldier(request, soldier_id):
         m_html = m._repr_html_()
         cemetery_map = m_html
 
-    context = { "soldier": soldier, "cemetery_map":  cemetery_map  }
+    context = { "soldier": soldier, 
+               "soldierdecorations":  soldierdecorations,
+               "soldierdeath":  soldierdeath,
+               "cemetery_map":  cemetery_map  
+    }
     return render(request, "cmp/soldier.html", context)
 
 def index(request):
     if request.method == 'POST':
         surname = request.POST.get('name', '')
         soldiers = Soldier.objects.filter(surname__icontains=surname).order_by('surname')
+
+
         
         # Pagination
         paginator = Paginator(soldiers, 10)  # Show 10 soldiers per page
