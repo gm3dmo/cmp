@@ -21,8 +21,8 @@ urlpatterns = [
     path('countries/', views.countries, name='countries'),
     path('cemeteries/', views.cemeteries, name='cemeteries'),
     path('pow-camps/', views.powcamps, name='powcamps'),
-
     path('ranks/', views.ranks, name='ranks'),
+    path('acknowledgements/', views.acknowledgements, name='acknowledgements'),
 
     # Mangagement URLs
     # create an index page for mgmt urls to link to /mgmt/countries

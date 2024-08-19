@@ -89,6 +89,12 @@
     margin-top: 2%;
 }
 
+.name-column {
+  width: 15%; /* Adjust this value as needed */
+}
+.tasks-column {
+  width: 85%; /* Adjust this value as needed */
+}
 
       .search-input {
           margin-top: 20px; /* Adjust as needed */
