@@ -24,7 +24,7 @@ class SoldierData:
 
 def main():
 
-    origin_archive = '/Users/gm3dmo/src/old-cmp/grave-images-2023-12-31.zip'
+    origin_archive = '/Users/gm3dmo/src/old-cmp/grave-images-2024-07-29.zip'
 
     target_archive = "/Users/gm3dmo/src/old-cmp/memorial-image-by-soldier-id.zip"
     # createa writeable zip archive called target_archive
@@ -44,7 +44,7 @@ def main():
                         logger.info(f"{counter} Soldier: {soldier.army_number} == {filename}")
                         soldier.photo_in_original = True
                         counter += 1
-                        new_filename = f"media/{soldier.id}/memorial/{soldier.id}.jpg"
+                        new_filename = f"{soldier.id}/memorial/{soldier.id}.jpg"
                         directory_path = os.path.dirname(new_filename)
                         os.makedirs(directory_path, exist_ok=True)
                         file_bytes = zip_ref.read(item)

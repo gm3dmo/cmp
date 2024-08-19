@@ -4,6 +4,9 @@ from django.shortcuts import get_object_or_404, render, HttpResponse
 
 from django.contrib.auth.decorators import login_required
 
+from .models import Acknowledgement
+from cmp.forms import editAcknowledgementForm
+
 from .models import Country
 from cmp.forms import editCountryForm
 
@@ -386,6 +389,18 @@ def edit_soldiers(request, soldier_id):
     return render(request, "cmp/edit-soldiers.html", {"form": form, 'death_form': death_form})
 
 
+def search_acknowledgements(request):
+    query = request.GET.get('q')
+    page_number = request.GET.get('page')
+    if query:
+        acknowledgements = Acknowledgement.objects.filter(name__icontains=query).order_by('surname')
+    else:
+        acknowledgements = Acknowledgement.objects.all().order_by('surname')
+    paginator = Paginator(acknowledgements, settings.PAGE_SIZE) 
+    page_obj = paginator.get_page(page_number)
+    return render(request, 'cmp/search-acknowledgements.html', {'page_obj': page_obj})
+
+
 def search_ranks(request):
     query = request.GET.get('q')
     page_number = request.GET.get('page')
@@ -471,6 +486,12 @@ def search_countries(request):
     return render(request, 'cmp/search-countries.html', {'page_obj': page_obj})
     
 
+def detail_acknowledgements(request, acknowledgement_id):
+    # get or return a 404
+    rank = get_object_or_404(Rank, pk=rank_id)
+    return render(request, "cmp/detail-ranks.html", {"rank": rank})
+
+
 def detail_ranks(request, rank_id):
     # get or return a 404
     rank = get_object_or_404(Rank, pk=rank_id)
@@ -523,6 +544,18 @@ def edit_ranks(request, rank_id):
         form.save()
         return HttpResponse("Rank Added")
     return render(request, "cmp/edit-ranks.html", {"form": form})
+
+
+def edit_acknowledgements(request, acknowledgement_id):
+    post = request.POST
+    form = editAcknowledgementForm(post or None)
+    if acknowledgement_id:
+        acknowledgement  = Acknowledgement.objects.get(id=acknowledgement_id)
+        form = editAcknowledgementForm(post or None, instance=acknowledgement)
+    if post and form.is_valid():
+        form.save()
+        return HttpResponse("Acknowledgement Added")
+    return render(request, "cmp/edit-acknowledgements.html", {"form": form})
     
 
 def edit_cemeteries(request, cemetery_id):
