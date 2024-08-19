@@ -10,14 +10,14 @@
     <thead>
       <tr>
         
-        <th><h3>Name</h3></th>
-        <th><h3>Tasks</h3></th>
+        <th class="name-column"><h3>Name</h3></th>
+        <th class="tasks-column"><h3>Tasks</h3></th>
       </tr>
     </thead>
     <tbody>
-      {% for person in acknowledgements |dictsort:"surname" %}
+      {% for person in acknowledgements|dictsort:"surname" %}
         <tr>
-          <td>{{ person.surname }}</td>
+          <td>{{ person.name }} {{ person.surname }} </td>
           <td>
                 {{ person.notes }}
               </a>

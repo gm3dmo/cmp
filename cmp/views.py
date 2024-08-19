@@ -68,6 +68,10 @@ def ranks(request):
     ranks = Rank.objects.all()
     return render(request, 'cmp/ranks.html', {'ranks': ranks})
 
+def acknowledgements(request):
+    acknowledgements = Acknowledgement.objects.all()
+    return render(request, 'cmp/acknowledgements.html', {'acknowledgements': acknowledgements})
+
 
 #def index(request):
 #    return render(request, "cmp/index.html")
