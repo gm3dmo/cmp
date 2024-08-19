@@ -64,9 +64,14 @@ urlpatterns = [
     path("mgmt/ranks/edit/<int:rank_id>", views.edit_ranks, name="edit-ranks"),
     path('mgmt/ranks/search/', views.search_ranks, name='search-ranks'),
 
+    #  Acknowledgements
+    #path("mgmt/acknowledgements", views.edit_acknowledgements, name="edit-acknowledgement"),
+    path("mgmt/acknowledgements/<int:acknowledgement_id>/", views.detail_acknowledgements, name="acknowledgements"),
+    path("mgmt/acknowledgements/edit/<int:acknowledgement_id>", views.edit_acknowledgements, name="edit-acknowledgements"),
+    path('mgmt/acknowledgements/search/', views.search_acknowledgements, name='search-acknowledgements'),
 
     # Soldiers
-    path('soldiers/', views.soldiers, name='soldiersrn'),
+    path('soldiers/', views.soldiers, name='soldiers'),
 
     # Soldier management
     path("mgmt/soldiers", views.edit_soldiers, name="soldiersa"),

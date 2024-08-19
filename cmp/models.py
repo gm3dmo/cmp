@@ -227,6 +227,14 @@ class SoldierImprisonment(models.Model):
         return self.pow_camp.name
 
 
+class Acknowledgement(models.Model):
+     surname = models.CharField(max_length=50, blank=True)
+     name = models.CharField(max_length=50, blank=True)
+     notes = models.TextField(max_length=50000, blank=True)
+     def __str__(self) -> str:
+         return self.surname
+
+
 class SoldierDecoration(models.Model):
     soldier = models.ForeignKey(
         Soldier, null=False, blank=False, on_delete=models.CASCADE

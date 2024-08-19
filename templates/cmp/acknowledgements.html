@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% load static crispy_forms_tags %}
+{% block title %}Acknowledgements{% endblock %}
+{% block content %}
+
+<div class="center-content">
+<h1>Acknowledgements</h1>
+
+<table>
+    <thead>
+      <tr>
+        
+        <th><h3>Name</h3></th>
+        <th><h3>Tasks</h3></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for person in acknowledgements |dictsort:"surname" %}
+        <tr>
+          <td>{{ person.surname }}</td>
+          <td>
+                {{ person.notes }}
+              </a>
+            </h2>
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}
+<div>

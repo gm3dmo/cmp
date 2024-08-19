@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% load static crispy_forms_tags %}
+{% block title %}Acknowledgements{% endblock %}
+{% block content %}
+
+<div class="center-content">
+<h3>Search Acknowledgements</h3>
+
+<div name="search-input" class="search-input">
+<form method="get">
+  <input type="text" name="q" placeholder="Search acknowledgements to edit">
+  <input type="submit" value="Search">
+</form>
+</div>
+
+   <div>
+     <table class="content-table">
+       <thead class="">
+         <tr>
+           <th></th>
+           <th>Surname</th><th>Name</th><th>Notes</th>
+         </tr>
+       </thead>
+       {% for acknowledgement in page_obj%}
+       <tr>
+        <td><button class="glossy-button" onclick="location.href='{% url 'edit-acknowledgements' acknowledgement.id %}'" type="button">EDIT</button></td>
+        <td><span class="soldier-info">{{ acknowledgement.surname}}</span></td>
+        <td><span class="soldier-info">{{ acknowledgement.name}}</span></td>
+        <td><span class="soldier-info">{{ acknowledgement.notes}}</span></td>
+      </tr>
+       {% endfor %}
+      </table>
+   </div>
+
+{% include 'cmp/pagination-footer.html' %}
+
+{% endblock %}
+</div>

@@ -12,6 +12,7 @@ from .models import Soldier
 from .models import SoldierDeath
 from .models import Company
 from .models import Decoration
+from .models import Acknowledgement
 
 
 class CustomUserCreationForm(UserCreationForm):
@@ -41,6 +42,11 @@ class editCemeteryForm(forms.ModelForm):
 class editCountryForm(forms.ModelForm):
     class Meta:
         model = Country
+        fields = "__all__"
+
+class editAcknowledgementForm(forms.ModelForm):
+    class Meta:
+        model = Acknowledgement 
         fields = "__all__"
 
 
