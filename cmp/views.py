@@ -2,6 +2,8 @@ from django.conf import settings
 from django.core.paginator import Paginator
 from django.shortcuts import get_object_or_404, render, HttpResponse
 
+from django.db.models import Q
+
 from django.contrib.auth.decorators import login_required
 
 from .models import Acknowledgement
@@ -445,12 +447,14 @@ def search_soldiers(request):
     query = request.GET.get('q')
     page_number = request.GET.get('page')
     if query:
-        soldiers = Soldier.objects.filter(surname__icontains=query).order_by('surname', 'initials')
+        soldiers = Soldier.objects.filter(
+            Q(surname__icontains=query) |
+            Q(army_number__icontains=query)
+        ).order_by('surname', 'initials')
     else:
         soldiers = Soldier.objects.all().order_by('surname', 'initials')
     paginator = Paginator(soldiers, settings.PAGE_SIZE)
     page_obj = paginator.get_page(page_number)
-    #return render(request, 'cmp/search-soldiers.html', {'soldiers': soldiers})
     return render(request, 'cmp/search-soldiers.html', {'page_obj': page_obj})
 
 
@@ -613,11 +617,10 @@ def soldier(request, soldier_id):
 def index(request):
     if request.method == 'POST':
         surname = request.POST.get('name', '')
-        soldiers = Soldier.objects.filter(surname__icontains=surname).order_by('surname')
-
-
-        
-        # Pagination
+        soldiers = Soldier.objects.filter(
+            Q(surname__icontains=surname) |
+            Q(army_number__icontains=surname)
+        ).order_by('surname')
         paginator = Paginator(soldiers, 10)  # Show 10 soldiers per page
         page_number = request.GET.get('page')
         page_obj = paginator.get_page(page_number)
