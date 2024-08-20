@@ -397,12 +397,12 @@ def search_acknowledgements(request):
     query = request.GET.get('q')
     page_number = request.GET.get('page')
     if query:
-        acknowledgements = Acknowledgement.objects.filter(name__icontains=query).order_by('surname')
+        acknowledgements = Acknowledgement.objects.filter(surname__icontains=query).order_by('surname')
     else:
         acknowledgements = Acknowledgement.objects.all().order_by('surname')
     paginator = Paginator(acknowledgements, settings.PAGE_SIZE) 
     page_obj = paginator.get_page(page_number)
-    return render(request, 'cmp/search-acknowledgements.html', {'page_obj': page_obj})
+    return render(request, 'cmp/search-acknowledgements.html', {'page_obj': page_obj,  'query': query})
 
 
 def search_ranks(request):
