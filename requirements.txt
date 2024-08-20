@@ -23,9 +23,7 @@ charset-normalizer==3.3.2
 click==8.1.7
     # via black
 coverage[toml]==7.6.1
-    # via
-    #   coverage
-    #   pytest-cov
+    # via pytest-cov
 crispy-bootstrap5==2024.2
     # via -r requirements.in
 decorator==5.1.1
@@ -123,7 +121,7 @@ pytest-django==4.8.0
     # via -r requirements.in
 requests==2.32.3
     # via folium
-sentry-sdk==1.39.1
+sentry-sdk==2.8.0
     # via -r requirements.in
 six==1.16.0
     # via asttokens
