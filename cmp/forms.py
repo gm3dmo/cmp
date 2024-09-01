@@ -67,14 +67,16 @@ class editRankForm(forms.ModelForm):
         fields = "__all__"
 
 
+class editSoldierDeathForm(forms.ModelForm):
+    class Meta:
+        model = SoldierDeath
+        fields = ["date", "cemetery", "image"]  
+
+
 class editSoldierForm(forms.ModelForm):
     class Meta:
         model = Soldier
         fields = "__all__"
 
 
-class editSoldierDeathForm(forms.ModelForm):
-    class Meta:
-        model = SoldierDeath
-        fields = ["date", "cemetery", "image"]  
 
