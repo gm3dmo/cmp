@@ -8,9 +8,9 @@
     <form method="POST" enctype="multipart/form-data">
         {% csrf_token %}
 
-        {{ form.as_p }}
-        {{ death_form.as_p }}
-        {{ form.errors }}
+        {{ form | crispy }}
+
+        {{ death_form | crispy }}
 
 
 
