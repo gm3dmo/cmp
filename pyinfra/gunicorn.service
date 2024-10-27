@@ -1,0 +1,11 @@
+[Install]
+WantedBy=multi-user.target
+
+[Unit]
+Description=Gunicorn service
+After=network.target
+
+[Service]
+WorkingDirectory=/home/azureuser/cmp
+ExecStart=/home/azureuser/cmp/.venv/bin/gunicorn
+
