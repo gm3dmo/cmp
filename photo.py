@@ -1,14 +1,23 @@
+
 import os
+import sys
 import django
 import zipfile
+import environ
 import logzero
 import pathlib
 
+from pathlib import Path
 from logzero import logger
-
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'core.settings')  # replace 'myproject.settings' with your settings module
 django.setup()
+
+
+env = environ.Env(
+    # set casting, default value
+    DEBUG=(bool, False)
+)
 
 from cmp.models import Soldier
 from cmp.models import SoldierDeath
@@ -24,9 +33,11 @@ class SoldierData:
 
 def main():
 
-    origin_archive = '/Users/gm3dmo/src/old-cmp/grave-images-2024-07-29.zip'
-
-    target_archive = "/Users/gm3dmo/src/old-cmp/memorial-image-by-soldier-id.zip"
+    origin_archive = Path(sys.argv[1])
+    logger.info(f"origin_archive: {origin_archive}")
+    
+    target_archive = "/var/tmp/memorial-image-by-soldier-id.zip"
+    logger.info(f"target_archive: {target_archive}")
     # createa writeable zip archive called target_archive
 
     with zipfile.ZipFile(origin_archive, 'r') as zip_ref:
@@ -44,7 +55,7 @@ def main():
                         logger.info(f"{counter} Soldier: {soldier.army_number} == {filename}")
                         soldier.photo_in_original = True
                         counter += 1
-                        new_filename = f"{soldier.id}/memorial/{soldier.id}.jpg"
+                        new_filename = Path(f"media-prep/{soldier.id}/memorial/{soldier.id}.jpg")
                         directory_path = os.path.dirname(new_filename)
                         os.makedirs(directory_path, exist_ok=True)
                         file_bytes = zip_ref.read(item)
@@ -61,6 +72,7 @@ def main():
 
 
     logger.info(f"Total number of soldiers: {counter}")
+    logger.info(f"new zip archive: {target_archive}")
 
 if __name__ == "__main__":
     main()
