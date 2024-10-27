@@ -2,6 +2,7 @@ name: cmp-django-base-build
 env:
   SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
   SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
+  CSRF_TO: ${{ secrets.CSRF_TO }}
 
 permissions:
   pull-requests: write
