@@ -3,6 +3,7 @@ env:
   SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
   SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
   CSRF_TO: ${{ secrets.CSRF_TO }}
+  Env: ${{ secrets.Env }}
 
 permissions:
   pull-requests: write
