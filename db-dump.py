@@ -45,8 +45,7 @@ def main():
     with zipfile.ZipFile(zip_filename, 'w', zipfile.ZIP_DEFLATED) as zipf:
        zipf.write(db_dump_file, arcname=dump_filename)
 
-
-print(f'Dump file zipped as {zip_filename}')
+    print(f'Dump file zipped as {zip_filename}')
 
 
 
