@@ -123,7 +123,7 @@ pytest-django==4.8.0
     # via -r requirements.in
 requests==2.32.3
     # via folium
-sentry-sdk==1.39.1
+sentry-sdk==2.8.0
     # via -r requirements.in
 six==1.16.0
     # via asttokens
