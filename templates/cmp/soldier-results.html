@@ -1,11 +1,27 @@
 {% extends "base.html" %}
 {% load static crispy_forms_tags %}
 {% block title %}Results{% endblock %}
-<br>
+
 {% block content %}
 
+<div class="center-content">
+    <img src="{% static 'cmp/cmp-masthead.svg' %}" style="width:350px; height:auto;" alt="The badge of the Royal Military Police">
+    <h2> Corps of Military Police</h2>
+    <p></p>
+    <h3>Casualties, Honours & Decorations, Prisoners of War</h3>
+</div>
+
+<div class="center-content">
+    <!-- Search Form -->
+<form method="get" action="{% url 'index' %}">
+    <input type="text" name="name" value="{{ surname }}" placeholder="Search by surname or army number">
+    <button type="submit">Search</button>
+</form>
+</div>
+
+
 {% if page_obj %}   
-<br>
+<div class="center-content">
 <table class="content-table">
     <thead>
         <tr>
@@ -24,16 +40,30 @@
             <td>{{ soldier.army_number}}</td>
         </tr>
         {% endfor %}
+    </tbody>
 </table>
+<div></div>
+<div>
+</div>
 
-{% if page_obj.has_previous %}
-    <a href="?page={{ page_obj.previous_page_number }}">Previous</a>
+
+<div class="pagination">
+    <span class="step-links">
+        {% if page_obj.has_previous %}
+            <a href="?page=1&name={{ surname }}">First</a>
+            <a href="?page={{ page_obj.previous_page_number }}&name={{ surname }}">Previous</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+        </span>
+
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}&name={{ surname }}">Next</a>
+            <a href="?page={{ page_obj.paginator.num_pages }}&name={{ surname }}">Last</a>
+        {% endif %}
+    </span>
+</div>
+
 {% endif %}
-
-{% if page_obj.has_next %}
-    <a href="?page={{ page_obj.next_page_number }}">Next</a>
-{% endif %}
-
-{% endif %} 
-
 {% endblock %}
