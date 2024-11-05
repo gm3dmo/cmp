@@ -35,11 +35,9 @@ from .models import SoldierDeath
 from .models import SoldierDecoration
 
 from django.shortcuts import render, redirect
-from .forms import ProvostOfficerForm, ProvostAppointmentForm
 
 from .forms import editSoldierForm, editSoldierDeathForm
-from django.shortcuts import render, redirect
-from .forms import ProvostOfficerForm, ProvostAppointmentForm
+#from .forms import ProvostOfficerForm, ProvostAppointmentForm
 
 import folium
 from django.views.generic import TemplateView
