@@ -34,8 +34,12 @@ from .models import SoldierDeath
  
 from .models import SoldierDecoration
 
+from django.shortcuts import render, redirect
+from .forms import ProvostOfficerForm, ProvostAppointmentForm
 
 from .forms import editSoldierForm, editSoldierDeathForm
+from django.shortcuts import render, redirect
+from .forms import ProvostOfficerForm, ProvostAppointmentForm
 
 import folium
 from django.views.generic import TemplateView
@@ -614,17 +618,43 @@ def soldier(request, soldier_id):
     }
     return render(request, "cmp/soldier.html", context)
 
+
 def index(request):
     if request.method == 'POST':
         surname = request.POST.get('name', '')
-        soldiers = Soldier.objects.filter(
-            Q(surname__icontains=surname) |
-            Q(army_number__icontains=surname)
-        ).order_by('surname')
-        paginator = Paginator(soldiers, 10)  # Show 10 soldiers per page
-        page_number = request.GET.get('page')
-        page_obj = paginator.get_page(page_number)
-        
-        return render(request, 'cmp/soldier-results.html', {'page_obj': page_obj})
     else:
-        return render(request, 'cmp/index.html')
+        surname = request.GET.get('name', '')
+
+    soldiers = Soldier.objects.filter(
+        Q(surname__icontains=surname) |
+        Q(army_number__icontains=surname)
+    ).order_by('surname')
+    paginator = Paginator(soldiers, 10)  # Show 10 soldiers per page
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    context = {
+        'page_obj': page_obj,
+        'surname': surname,
+    }
+    return render(request, 'cmp/soldier-results.html', context)
+
+
+def create_provost_officer(request):
+    if request.method == 'POST':
+        officer_form = ProvostOfficerForm(request.POST)
+        appointment_form = ProvostAppointmentForm(request.POST)
+        if officer_form.is_valid() and appointment_form.is_valid():
+            soldier = officer_form.save()
+            appointment = appointment_form.save(commit=False)
+            appointment.soldier = soldier
+            appointment.save()
+            return redirect('success_url')  # Replace with your success URL
+    else:
+        officer_form = ProvostOfficerForm()
+        appointment_form = ProvostAppointmentForm()
+
+    return render(request, 'cmp/create-provost-officer.html', {
+        'officer_form': officer_form,
+        'appointment_form': appointment_form,
+    })
