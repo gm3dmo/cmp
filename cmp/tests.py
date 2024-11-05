@@ -254,7 +254,12 @@ class testViewsModule(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "cmp/countries.html")
     
+    #def test_index_view(self):
+    #    response = self.client.get("/")
+    #    self.assertEqual(response.status_code, 200)
+    #    self.assertTemplateUsed(response, "cmp/index.html")
+
     def test_index_view(self):
-        response = self.client.get("/")
+        response = self.client.get(reverse('index'))
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, "cmp/index.html")
+        self.assertTemplateUsed(response, "cmp/soldier-results.html")
