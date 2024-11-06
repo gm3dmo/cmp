@@ -36,6 +36,8 @@ from .models import SoldierDecoration
 
 from django.shortcuts import render, redirect
 
+from .models import SoldierImprisonment
+
 from .forms import editSoldierForm, editSoldierDeathForm
 #from .forms import ProvostOfficerForm, ProvostAppointmentForm
 
@@ -631,9 +633,23 @@ def index(request):
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
+    cmp_soldier_count = Soldier.objects.count()  # Get the total count of Soldier entries
+    cmp_casualty_count = SoldierDeath.objects.count()  # Get the total count of Soldier entries
+    cmp_cemetery_count = Cemetery.objects.count()  # Get the total count of Soldier entries
+    cmp_country_count = Cemetery.objects.count()  # Get the total count of Soldier entries
+    cmp_country_count = Cemetery.objects.values('country').distinct().count()
+    cmp_decoration_count = SoldierDecoration.objects.count()
+    cmp_prisoner_count = SoldierImprisonment.objects.count()
+
     context = {
         'page_obj': page_obj,
         'surname': surname,
+        'cmp_soldier_count': cmp_soldier_count,
+        'cmp_casualty_count': cmp_casualty_count,
+        'cmp_cemetery_count': cmp_cemetery_count,
+        'cmp_country_count': cmp_country_count,
+        'cmp_prisoner_count': cmp_prisoner_count,
+        'cmp_decoration_count': cmp_decoration_count
     }
     return render(request, 'cmp/soldier-results.html', context)
 
