@@ -64,6 +64,7 @@ INSTALLED_APPS = [
     "django_extensions",
     "whitenoise.runserver_nostatic",
     "django.contrib.staticfiles",
+    "django.contrib.humanize",
     "django_htmx",
     "cmp",
     "crispy_forms",
