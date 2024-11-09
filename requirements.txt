@@ -10,29 +10,29 @@ asgiref==3.8.1
     #   django-htmx
 asttokens==2.4.1
     # via stack-data
-black==24.8.0
+black==24.10.0
     # via -r requirements.in
-branca==0.7.2
+branca==0.8.0
     # via folium
-certifi==2024.7.4
+certifi==2024.8.30
     # via
     #   requests
     #   sentry-sdk
-charset-normalizer==3.3.2
+charset-normalizer==3.4.0
     # via requests
 click==8.1.7
     # via black
-coverage[toml]==7.6.1
+coverage[toml]==7.6.4
     # via
     #   coverage
     #   pytest-cov
-crispy-bootstrap5==2024.2
+crispy-bootstrap5==2024.10
     # via -r requirements.in
 decorator==5.1.1
     # via
     #   ipdb
     #   ipython
-django==5.1
+django==5.1.1
     # via
     #   -r requirements.in
     #   crispy-bootstrap5
@@ -51,23 +51,23 @@ django-environ==0.11.2
     # via -r requirements.in
 django-extensions==3.2.3
     # via -r requirements.in
-django-htmx==1.19.0
+django-htmx==1.21.0
     # via -r requirements.in
 django-storages==1.14.4
     # via -r requirements.in
-executing==2.0.1
+executing==2.1.0
     # via stack-data
 flake8==7.1.1
     # via -r requirements.in
-folium==0.17.0
+folium==0.18.0
     # via -r requirements.in
-idna==3.7
+idna==3.10
     # via requests
 iniconfig==2.0.0
     # via pytest
 ipdb==0.13.13
     # via -r requirements.in
-ipython==8.26.0
+ipython==8.29.0
     # via ipdb
 jedi==0.19.1
     # via ipython
@@ -75,7 +75,7 @@ jinja2==3.1.4
     # via
     #   branca
     #   folium
-markupsafe==2.1.5
+markupsafe==3.0.2
     # via jinja2
 matplotlib-inline==0.1.7
     # via ipython
@@ -83,7 +83,7 @@ mccabe==0.7.0
     # via flake8
 mypy-extensions==1.0.0
     # via black
-numpy==2.1.0
+numpy==2.1.3
     # via folium
 packaging==24.1
     # via
@@ -95,13 +95,13 @@ pathspec==0.12.1
     # via black
 pexpect==4.9.0
     # via ipython
-pillow==10.4.0
+pillow==11.0.0
     # via -r requirements.in
-platformdirs==4.2.2
+platformdirs==4.3.6
     # via black
 pluggy==1.5.0
     # via pytest
-prompt-toolkit==3.0.47
+prompt-toolkit==3.0.48
     # via ipython
 ptyprocess==0.7.0
     # via pexpect
@@ -113,13 +113,13 @@ pyflakes==3.2.0
     # via flake8
 pygments==2.18.0
     # via ipython
-pytest==8.3.2
+pytest==8.3.3
     # via
     #   pytest-cov
     #   pytest-django
-pytest-cov==5.0.0
+pytest-cov==6.0.0
     # via -r requirements.in
-pytest-django==4.8.0
+pytest-django==4.9.0
     # via -r requirements.in
 requests==2.32.3
     # via folium
@@ -139,13 +139,13 @@ traitlets==5.14.3
     #   matplotlib-inline
 typing-extensions==4.12.2
     # via ipython
-urllib3==2.2.2
+urllib3==2.2.3
     # via
     #   requests
     #   sentry-sdk
 wcwidth==0.2.13
     # via prompt-toolkit
-whitenoise==6.7.0
+whitenoise==6.8.2
     # via -r requirements.in
-xyzservices==2024.6.0
+xyzservices==2024.9.0
     # via folium
