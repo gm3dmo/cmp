@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% load static crispy_forms_tags %}
+{% block title %}Provost Officer{% endblock %}
+{% block content %}
+
+<div class="center-content">
+
+    <h1>Create Provost Officer</h1>
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.management_form }}
+        {{ form.errors }}
+        {{ officer_form | crispy }}
+        <button type="submit" class="btn btn-primary">SAVE</button>
+    </form>
+    {% if officer_form.errors %}
+    <div class="form-errors">
+        <h2>Officer Form Errors:</h2>
+        <ul>
+            {% for field, errors in officer_form.errors.items %}
+                <li>{{ field }}: {{ errors }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endif %}
+{% if appointment_form.errors %}
+    <div class="form-errors">
+        <h2>Appointment Form Errors:</h2>
+        <ul>
+            {% for field, errors in appointment_form.errors.items %}
+                <li>{{ field }}: {{ errors }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endif %}
+
+<div>
+{% endblock %}

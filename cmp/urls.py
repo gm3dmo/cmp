@@ -70,6 +70,9 @@ urlpatterns = [
     path("mgmt/acknowledgements/edit/<int:acknowledgement_id>", views.edit_acknowledgements, name="edit-acknowledgements"),
     path('mgmt/acknowledgements/search/', views.search_acknowledgements, name='search-acknowledgements'),
 
+    # Provost Officers
+    path('mgmt/create-provost-officer/', views.create_provost_officer, name='create-provost-officer'),
+
     # Soldiers
     path('soldiers/', views.soldiers, name='soldiers'),
 

@@ -120,6 +120,7 @@ class Soldier(models.Model):
     initials = models.CharField(max_length=255, unique=False, default="", blank=True)
     army_number = models.CharField(max_length=255, unique=False, default="", blank=True)
     rank = models.ForeignKey("Rank", on_delete=models.CASCADE, related_name="ranks")
+    provost_officer = models.BooleanField(default=False)  
     notes = models.TextField(unique=False, default="", blank=True)
 
     def __str__(self):
