@@ -23,7 +23,7 @@
 <div class="center-content">
     <!-- Search Form -->
 <form method="get" action="{% url 'index' %}">
-    <input type="text" name="name" value="{{ surname }}" placeholder="Search by surname or army number">
+    <input type="text" name="name" value="{{ surname }}" placeholder="Search by surname or army number" class="search-input">
     <button type="submit">Search</button>
 </form>
 </div>
@@ -71,6 +71,11 @@
         {% endif %}
     </span>
 </div>
+
+{% else %}
+<div class="center-content">
+<p>No results found for "{{ surname }}" </p>
+<div>
 
 {% endif %}
 {% endblock %}
