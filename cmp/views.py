@@ -39,7 +39,7 @@ from django.shortcuts import render, redirect
 from .models import SoldierImprisonment
 
 from .forms import editSoldierForm, editSoldierDeathForm
-#from .forms import ProvostOfficerForm, ProvostAppointmentForm
+from .forms import ProvostOfficerForm, ProvostAppointmentForm
 
 import folium
 from django.views.generic import TemplateView
@@ -654,16 +654,26 @@ def index(request):
     return render(request, 'cmp/soldier-results.html', context)
 
 
+from django.shortcuts import render, redirect
+from .forms import ProvostOfficerForm, ProvostAppointmentForm
+
 def create_provost_officer(request):
     if request.method == 'POST':
         officer_form = ProvostOfficerForm(request.POST)
         appointment_form = ProvostAppointmentForm(request.POST)
         if officer_form.is_valid() and appointment_form.is_valid():
-            soldier = officer_form.save()
+            soldier = officer_form.save(commit=False)
+            print(f"woo{soldier}")
+            soldier.provost_officer = True  # Set provost_officer to True
+            soldier.save()  # Save the Soldier instance
             appointment = appointment_form.save(commit=False)
-            appointment.soldier = soldier
-            appointment.save()
+            appointment.soldier = soldier  # Set the soldier field
+            appointment.save()  # Save the ProvostAppointment instance
             return redirect('success_url')  # Replace with your success URL
+        else:
+            # Print form errors to the console for debugging
+            print(officer_form.errors)
+            print(appointment_form.errors)
     else:
         officer_form = ProvostOfficerForm()
         appointment_form = ProvostAppointmentForm()

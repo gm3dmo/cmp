@@ -13,6 +13,7 @@ from .models import SoldierDeath
 from .models import Company
 from .models import Decoration
 from .models import Acknowledgement
+from .models import ProvostAppointment
 
 
 class CustomUserCreationForm(UserCreationForm):
@@ -78,5 +79,27 @@ class editSoldierForm(forms.ModelForm):
         model = Soldier
         fields = "__all__"
 
+
+class ProvostOfficerForm(forms.ModelForm):
+    class Meta:
+        model = Soldier
+        fields = ['id', 'surname', 'initials', 'army_number', 'rank', 'notes']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['rank'].queryset = Rank.objects.filter(rank_class="OF").order_by('name')
+
+    def save(self, commit=True):
+        soldier = super().save(commit=False)
+        soldier.provost_officer = True  # Set provost_officer to True
+        print(soldier)
+        if commit:
+            soldier.save()
+        return soldier
+
+class ProvostAppointmentForm(forms.ModelForm):
+    class Meta:
+        model = ProvostAppointment
+        fields = ['soldier', 'rank', 'date', 'notes']
 
 

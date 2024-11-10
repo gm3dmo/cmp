@@ -2,7 +2,7 @@ from pyinfra.operations import files
 
 # Define your Caddyfile configuration
 caddyfile_config = '''
-cmp.oxenfor.de {
+www.corpsofmilitarypolice.org, corpsofmilitarypolice.org {
     root * /usr/share/caddy
     file_server
     reverse_proxy 127.0.0.1:8000
