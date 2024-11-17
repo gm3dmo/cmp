@@ -1,4 +1,4 @@
-Django==5.1.1
+Django==5.1.3
 django-environ
 django-debug-toolbar
 django-extensions
@@ -17,3 +17,4 @@ folium
 Pillow
 pip-tools
 pip
+gunicorn
