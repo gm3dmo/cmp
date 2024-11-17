@@ -1,4 +1,4 @@
-Django==5.1.1
+Django==5.1.3
 django-environ
 django-debug-toolbar
 django-extensions
@@ -6,6 +6,7 @@ django-htmx
 django-storages
 pytest-django
 sentry-sdk
+logzero
 pytest-cov # used to generate coverage report
 flake8 # used to check code style
 black # used to format code
@@ -17,3 +18,4 @@ folium
 Pillow
 pip-tools
 pip
+gunicorn
