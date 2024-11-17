@@ -5,7 +5,7 @@ django-extensions
 django-htmx
 django-storages
 pytest-django
-sentry-sdk==2.8.0
+sentry-sdk
 pytest-cov # used to generate coverage report
 flake8 # used to check code style
 black # used to format code
@@ -15,3 +15,5 @@ crispy-bootstrap5
 ipdb
 folium
 Pillow
+pip-tools
+pip
