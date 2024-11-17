@@ -12,6 +12,9 @@ from datetime import datetime
 from pathlib import Path
 from logzero import logger
 
+from azure.identity import DefaultAzureCredential
+from azure.storage.blob import BlobServiceClient, BlobClient, ContainerClient
+
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'core.settings')  # replace 'myproject.settings' with your settings module
 django.setup()
 
@@ -24,6 +27,13 @@ env = environ.Env(
 
 def main():
 
+    account_url = str(f"{env('ACCOUNT_URL')}")
+    container_name = str(f"{env('container_name')}")
+    default_credential = DefaultAzureCredential()
+    blob_service_client = BlobServiceClient(account_url, credential=default_credential)
+
+    logger.info(f"storage_account: {account_url}")
+    logger.info(f"container_name: {container_name}")
     current_date = datetime.now()
     db_filename = 'db.sqlite3'
     db_connfile = f'file:{db_filename}?mode=ro'
@@ -32,7 +42,7 @@ def main():
 
     dump_filename= f"""cmp-{current_date.strftime('%Y-%m-%d-%s')}.dump"""
     db_dump_file = Path(f"""{env('ARCHIVE_DIR')}/db-backups/{dump_filename}""")
-    logger.info(f"db_dump_file {db_dump_file}")
+    logger.info(f"db_dump_file: {db_dump_file}")
 
     with io.open(db_dump_file, 'w') as p:
         for line in conn.iterdump():
@@ -42,10 +52,21 @@ def main():
 
     # Zip the dump file
     zip_filename = db_dump_file.with_suffix('.zip')
+    zs=str(zip_filename)
+    logger.info(f"type of z {type(zip_filename)}")
     with zipfile.ZipFile(zip_filename, 'w', zipfile.ZIP_DEFLATED) as zipf:
        zipf.write(db_dump_file, arcname=dump_filename)
 
     logger.info(f'Dump file: {db_dump_file} zipped to: {zip_filename}')
+
+    blob_client = blob_service_client.get_blob_client(container=container_name, blob=zs)
+
+    print(f"Uploading to Azure Storage as blob: {zip_filename}")
+
+    # Upload the created file
+    with open(file=zs, mode="rb") as data:
+        blob_client.upload_blob(data)
+
 
 
 if __name__ == "__main__":
