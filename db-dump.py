@@ -52,8 +52,13 @@ def main():
 
     # Zip the dump file
     zip_filename = db_dump_file.with_suffix('.zip')
-    zs=str(zip_filename)
+    blob_filename = Path(zip_filename).name
+
+    zs=str(blob_filename)
+
+
     logger.info(f"type of z {type(zip_filename)}")
+    logger.info(f"zs: {zs}")
     with zipfile.ZipFile(zip_filename, 'w', zipfile.ZIP_DEFLATED) as zipf:
        zipf.write(db_dump_file, arcname=dump_filename)
 
@@ -61,10 +66,9 @@ def main():
 
     blob_client = blob_service_client.get_blob_client(container=container_name, blob=zs)
 
-    print(f"Uploading to Azure Storage as blob: {zip_filename}")
+    print(f"Uploading to Azure Storage as blob: {blob_filename}")
 
-    # Upload the created file
-    with open(file=zs, mode="rb") as data:
+    with open(file=zip_filename, mode="rb") as data:
         blob_client.upload_blob(data)
 
 
