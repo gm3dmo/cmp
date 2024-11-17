@@ -38,15 +38,14 @@ def main():
         for line in conn.iterdump():
             p.write('%s\n' % line)
 
-    print(f'Data Saved as {db_dump_file}')
+    logger.info(f'{db_filename} dumped to {db_dump_file}')
 
     # Zip the dump file
     zip_filename = db_dump_file.with_suffix('.zip')
     with zipfile.ZipFile(zip_filename, 'w', zipfile.ZIP_DEFLATED) as zipf:
        zipf.write(db_dump_file, arcname=dump_filename)
 
-    print(f'Dump file zipped as {zip_filename}')
-
+    logger.info(f'Dump file: {db_dump_file} zipped to: {zip_filename}')
 
 
 if __name__ == "__main__":
