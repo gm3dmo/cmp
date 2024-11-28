@@ -8,6 +8,10 @@
         text-align: left;
     }
 
+    .form-label {
+      color: #8B0000;
+  }
+
     h1, h3, h3, h4, h5, h6 {
         color: #8B0000; 
     }
