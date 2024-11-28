@@ -21,6 +21,7 @@
         <th>Surname</th>
         <th>Name</th>
         <th>Notes</th>
+        <th>Last Updated</th>
       </tr>
     </thead>
 
@@ -34,6 +35,7 @@
       <td><span class="soldier-info">{{ acknowledgement.surname }}</span></td>
       <td><span class="soldier-info">{{ acknowledgement.name }}</span></td>
       <td><span class="soldier-info">{{ acknowledgement.notes }}</span></td>
+      <td><span class="soldier-info">{{ acknowledgement.last_modified|date:"Y-m-d H:i" }}</span></td>
     </tr>
     {% endfor %}    
 

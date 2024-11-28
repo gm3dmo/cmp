@@ -11,7 +11,7 @@
       <tr>
         
         <th class="name-column"><h3>Name</h3></th>
-        <th class="tasks-column"><h3>Tasks</h3></th>
+        <th class="tasks-column"><h3>Task</h3></th>
       </tr>
     </thead>
     <tbody>
@@ -19,7 +19,7 @@
         <tr>
           <td>{{ person.name }} {{ person.surname }} </td>
           <td>
-                {{ person.notes }}
+                {{ person.notes | linebreaksbr }}
               </a>
             </h2>
           </td>

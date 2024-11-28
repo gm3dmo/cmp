@@ -380,17 +380,28 @@ def soldier_detail(request, soldier_id):
 
 def edit_soldiers(request, soldier_id):
     soldier = get_object_or_404(Soldier, id=soldier_id)
-    death, created = SoldierDeath.objects.get_or_create(soldier=soldier)
+    try:
+        death = SoldierDeath.objects.get(soldier=soldier)
+    except SoldierDeath.DoesNotExist:
+        death = None
 
     if request.method == 'POST':
         form = editSoldierForm(request.POST, instance=soldier)
         death_form = editSoldierDeathForm(request.POST, request.FILES, instance=death)
 
         if form.is_valid() and death_form.is_valid():
-            form.save()
-            death_form.save()
+            soldier = form.save()
+            # Only save death record if there's actual death data
+            if death_form.has_changed() and death_form.cleaned_data.get('date'):
+                death_instance = death_form.save(commit=False)
+                death_instance.soldier = soldier
+                death_instance.save()
+            elif death and not death_form.cleaned_data.get('date'):
+                # If there's an existing death record but date is cleared, delete it
+                death.delete()
+            
             messages.success(request, "Soldier updated successfully")
-            return redirect('soldier', soldier_id=soldier.id)  # Redirect to the soldier detail page
+            return redirect('soldier', soldier_id=soldier.id)
 
     else:  # GET request
         form = editSoldierForm(instance=soldier)
@@ -561,13 +572,21 @@ def edit_ranks(request, rank_id):
 def edit_acknowledgements(request, acknowledgement_id):
     post = request.POST
     form = editAcknowledgementForm(post or None)
+    last_modified = None
     if acknowledgement_id:
-        acknowledgement  = Acknowledgement.objects.get(id=acknowledgement_id)
+        acknowledgement = Acknowledgement.objects.get(id=acknowledgement_id)
         form = editAcknowledgementForm(post or None, instance=acknowledgement)
+        last_modified = acknowledgement.last_modified
     if post and form.is_valid():
-        form.save()
-        return HttpResponse("Acknowledgement Added")
-    return render(request, "cmp/edit-acknowledgements.html", {"form": form})
+        acknowledgement = form.save()
+        messages.success(
+            request, 
+            f'Acknowledgement saved successfully at {acknowledgement.last_modified.strftime("%Y-%m-%d %H:%M:%S")}'
+        )
+    return render(request, "cmp/edit-acknowledgements.html", {
+        "form": form,
+        "last_modified": last_modified
+    })
     
 
 def edit_cemeteries(request, cemetery_id):
