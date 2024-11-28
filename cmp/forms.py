@@ -15,6 +15,7 @@ from .models import Decoration
 from .models import Acknowledgement
 from .models import ProvostAppointment
 
+from crispy_forms.helper import FormHelper
 
 class CustomUserCreationForm(UserCreationForm):
     class Meta:
@@ -29,24 +30,39 @@ class CustomUserChangeForm(UserChangeForm):
 
 
 class editPowCampForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.label_class = 'form-label'  
     class Meta:
         model = PowCamp
         fields = "__all__"
 
 
 class editCemeteryForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.label_class = 'form-label'  
     class Meta:
         model = Cemetery 
         fields = "__all__"
 
 
 class editCountryForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.label_class = 'form-label'  
     class Meta:
         model = Country
         fields = "__all__"
 
 class editAcknowledgementForm(forms.ModelForm):
-
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.label_class = 'form-label'  
     class Meta:
         model = Acknowledgement
         created_at = forms.DateTimeField(disabled=True, required=False)
@@ -55,53 +71,73 @@ class editAcknowledgementForm(forms.ModelForm):
 
 
 class editCompanyForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.label_class = 'form-label'  
     class Meta:
         model = Company 
         fields = "__all__"
 
 class editDecorationForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.label_class = 'form-label'  
     class Meta:
         model = Decoration
         fields = "__all__"
 
 
 class editRankForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.label_class = 'form-label'  
     class Meta:
         model = Rank
         fields = "__all__"
 
 
 class editSoldierDeathForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.label_class = 'form-label'  
     class Meta:
         model = SoldierDeath
         fields = ["date", "cemetery", "image"]  
 
 
 class editSoldierForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.label_class = 'form-label'  
     class Meta:
         model = Soldier
         fields = "__all__"
 
 
 class ProvostOfficerForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.label_class = 'form-label'  
+        super().__init__(*args, **kwargs)
+        self.fields['rank'].queryset = Rank.objects.filter(rank_class="OF").order_by('name')
     provost_officer = forms.BooleanField(
         initial=True,
         disabled=True,
         required=True,
         help_text="All officers created through this form are automatically marked as Provost Officers"
     )
-    
     class Meta:
         model = Soldier
         fields = ['surname', 'initials', 'army_number', 'rank', 'provost_officer', 'notes']
         widgets = {
             'notes': forms.Textarea(attrs={'rows': 3}),
         }
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields['rank'].queryset = Rank.objects.filter(rank_class="OF").order_by('name')
-
     def save(self, commit=True):
         soldier = super().save(commit=False)
         soldier.provost_officer = True  # Set provost_officer to True
@@ -110,7 +146,13 @@ class ProvostOfficerForm(forms.ModelForm):
             soldier.save()
         return soldier
 
+
 class ProvostAppointmentForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.label_class = 'form-label'  
+        
     class Meta:
         model = ProvostAppointment
         fields = ['rank', 'date', 'notes']
