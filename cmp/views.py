@@ -577,8 +577,7 @@ def edit_acknowledgements(request, acknowledgement_id):
         form = editAcknowledgementForm(post or None, instance=acknowledgement)
     if post and form.is_valid():
         form.save()
-        return HttpResponse("Acknowledgement Added")
-    return render(request, "cmp/edit-acknowledgements.html", {"form": form})
+        return render(request, "cmp/edit-acknowledgements.html", {"form": form})
     
 
 def edit_cemeteries(request, cemetery_id):
