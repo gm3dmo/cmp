@@ -84,9 +84,19 @@ class editSoldierForm(forms.ModelForm):
 
 
 class ProvostOfficerForm(forms.ModelForm):
+    provost_officer = forms.BooleanField(
+        initial=True,
+        disabled=True,
+        required=True,
+        help_text="All officers created through this form are automatically marked as Provost Officers"
+    )
+    
     class Meta:
         model = Soldier
-        fields = ['id', 'surname', 'initials', 'army_number', 'rank', 'notes']
+        fields = ['surname', 'initials', 'army_number', 'rank', 'provost_officer', 'notes']
+        widgets = {
+            'notes': forms.Textarea(attrs={'rows': 3}),
+        }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -103,6 +113,7 @@ class ProvostOfficerForm(forms.ModelForm):
 class ProvostAppointmentForm(forms.ModelForm):
     class Meta:
         model = ProvostAppointment
-        fields = ['soldier', 'rank', 'date', 'notes']
-
-
+        fields = ['rank', 'date', 'notes']
+        widgets = {
+            'notes': forms.Textarea(attrs={'rows': 3}),
+        }
