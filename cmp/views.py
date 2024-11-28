@@ -572,12 +572,21 @@ def edit_ranks(request, rank_id):
 def edit_acknowledgements(request, acknowledgement_id):
     post = request.POST
     form = editAcknowledgementForm(post or None)
+    last_modified = None
     if acknowledgement_id:
-        acknowledgement  = Acknowledgement.objects.get(id=acknowledgement_id)
+        acknowledgement = Acknowledgement.objects.get(id=acknowledgement_id)
         form = editAcknowledgementForm(post or None, instance=acknowledgement)
+        last_modified = acknowledgement.last_modified
     if post and form.is_valid():
-        form.save()
-        return render(request, "cmp/edit-acknowledgements.html", {"form": form})
+        acknowledgement = form.save()
+        messages.success(
+            request, 
+            f'Acknowledgement saved successfully at {acknowledgement.last_modified.strftime("%Y-%m-%d %H:%M:%S")}'
+        )
+    return render(request, "cmp/edit-acknowledgements.html", {
+        "form": form,
+        "last_modified": last_modified
+    })
     
 
 def edit_cemeteries(request, cemetery_id):

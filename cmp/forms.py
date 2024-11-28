@@ -46,9 +46,12 @@ class editCountryForm(forms.ModelForm):
         fields = "__all__"
 
 class editAcknowledgementForm(forms.ModelForm):
+
     class Meta:
-        model = Acknowledgement 
-        fields = "__all__"
+        model = Acknowledgement
+        created_at = forms.DateTimeField(disabled=True, required=False)
+        exclude = ['created_at']  # This will hide created_at from the form
+        fields = '__all__'
 
 
 class editCompanyForm(forms.ModelForm):

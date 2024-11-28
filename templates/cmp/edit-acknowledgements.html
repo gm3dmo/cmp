@@ -5,13 +5,35 @@
 
 <h1> Edit Acknowledgement</h1>
 <div>
-    <form method="POST">
+    <form method="post">
         {% csrf_token %}
-        {{ form.management_form }}
-        {{ form.errors }}
-        {{form | crispy}}
+        {{ form|crispy }}
+        
+        {% if created_at %}
+        <div class="form-group">
+            <p><small class="text-muted">Created: {{ created_at|date:"Y-m-d H:i:s" }}</small></p>
+        </div>
+        {% endif %}
+        
+        {% if last_modified %}
+        <div class="form-group">
+            <p><small class="text-muted">Last modified: {{ last_modified|date:"Y-m-d H:i:s" }}</small></p>
+        </div>
+        {% endif %}
+        
         <button type="submit" class="btn btn-primary">Save</button>
+        <a href="{% url 'search-acknowledgements' %}" class="btn btn-secondary">Back</a>
     </form>
+</div>
+
+
+
+<div class="messages mt-3">
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }}">
+        {{ message }}
+    </div>
+    {% endfor %}
 </div>
 
 {% endblock %}

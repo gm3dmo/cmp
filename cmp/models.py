@@ -3,6 +3,7 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
+from django.utils import timezone
 
 from PIL import Image
 from django.conf import settings
@@ -243,6 +244,8 @@ class Acknowledgement(models.Model):
      surname = models.CharField(max_length=50, blank=True)
      name = models.CharField(max_length=50, blank=True)
      notes = models.TextField(max_length=50000, blank=True)
+     last_modified = models.DateTimeField(auto_now=True)
+     created_at = models.DateTimeField(default=timezone.now)
      def __str__(self) -> str:
          return self.surname
 
