@@ -123,8 +123,17 @@ class Soldier(models.Model):
     provost_officer = models.BooleanField(default=False)  
     notes = models.TextField(unique=False, default="", blank=True)
 
+    def first_initial(self):
+        """Return the first initial of the soldier e.g. LC should return L"""
+        if self.initials:
+            return self.initials[0]
+        else:
+            return ""
+
     def __str__(self):
         return self.surname
+    
+
 
 
 class ProvostAppointment(models.Model):
@@ -188,22 +197,24 @@ class SoldierDeath(models.Model):
     )
 
     def __str__(self):
-        return "%s %s %s" % (self.Soldier, self.date, self.cemetery)
+        return "%s %s %s" % (self.soldier, self.date, self.cemetery)
 
     def cwgc_url(self):
         """Build a URL for a link to CWGC site."""
+        if not self.date:  # Check if date is None
+            return None  # or return a default URL
         wg_site = "http://www.cwgc.org"
         if self.cwgc_id:
             wg_string = "find-war-dead/casualty/%s/" % (self.cwgc_id)
             wg_url = "%s/%s" % (wg_site, wg_string)
             return wg_url
         else:
-            dk = self.Date
+            dk = self.date
             wg_string = (
                 'search/SearchResults.aspx?surname=%s&initials=%s&war=0&yearfrom=%s&yearto=%s&force=%s&nationality=&send.x=26&send.y=19"'
                 % (
-                    self.Soldier.Surname,
-                    self.Soldier.first_initial(),
+                    self.soldier.surname,
+                    self.soldier.first_initial(),
                     dk.year,
                     dk.year,
                     "Army",
