@@ -680,19 +680,31 @@ def create_provost_officer(request):
     if request.method == 'POST':
         officer_form = ProvostOfficerForm(request.POST)
         appointment_form = ProvostAppointmentForm(request.POST)
-        if officer_form.is_valid() and appointment_form.is_valid():
+        
+        if officer_form.is_valid():
+            # Save the soldier first
             soldier = officer_form.save(commit=False)
-            print(f"woo{soldier}")
-            soldier.provost_officer = True  # Set provost_officer to True
-            soldier.save()  # Save the Soldier instance
-            appointment = appointment_form.save(commit=False)
-            appointment.soldier = soldier  # Set the soldier field
-            appointment.save()  # Save the ProvostAppointment instance
-            return redirect('success_url')  # Replace with your success URL
-        else:
-            # Print form errors to the console for debugging
-            print(officer_form.errors)
-            print(appointment_form.errors)
+            soldier.provost_officer = True
+            soldier.save()
+            
+            # Now create a new appointment form instance with the saved soldier
+            appointment_form = ProvostAppointmentForm(
+                request.POST,
+                initial={'soldier': soldier}
+            )
+            
+            if appointment_form.is_valid():
+                appointment = appointment_form.save(commit=False)
+                appointment.soldier = soldier
+                appointment.save()
+                return redirect('success_url')  # Replace with your success URL
+            else:
+                # If appointment form is invalid, delete the created soldier to maintain consistency
+                soldier.delete()
+        
+        # Print form errors to the console for debugging
+        print(officer_form.errors)
+        print(appointment_form.errors)
     else:
         officer_form = ProvostOfficerForm()
         appointment_form = ProvostAppointmentForm()
@@ -701,3 +713,10 @@ def create_provost_officer(request):
         'officer_form': officer_form,
         'appointment_form': appointment_form,
     })
+
+def delete_acknowledgement(request, pk):
+    acknowledgement = get_object_or_404(Acknowledgement, pk=pk)
+    if request.method == 'GET':
+        acknowledgement.delete()
+        messages.success(request, 'Acknowledgement deleted successfully.')
+    return redirect('search-acknowledgements')

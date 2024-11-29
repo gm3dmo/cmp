@@ -6,6 +6,7 @@ Description=Gunicorn service
 After=network.target
 
 [Service]
+User=azureuser
 WorkingDirectory=/home/azureuser/cmp
 ExecStart=/home/azureuser/cmp/.venv/bin/gunicorn
 

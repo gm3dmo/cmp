@@ -123,6 +123,11 @@ class Soldier(models.Model):
     rank = models.ForeignKey("Rank", on_delete=models.CASCADE, related_name="ranks")
     provost_officer = models.BooleanField(default=False)  
     notes = models.TextField(unique=False, default="", blank=True)
+    created_at = models.DateTimeField(default=timezone.now)
+    last_modified = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['surname', 'initials']
 
     def first_initial(self):
         """Return the first initial of the soldier e.g. LC should return L"""

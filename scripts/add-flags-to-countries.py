@@ -1,16 +1,35 @@
 
 def run():
 
+    from pathlib import Path
+    import environ
+    import os
     import sys
     import urllib3
     import csv
+    import time
     from cmp.models import Country
+
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'core.settings')
+
+    env = environ.Env(
+    DEBUG=(bool, False)
+    )
+
+    github_token= str(f"{env('READ_PAT')}")
+
+    print()
+    title = sys.argv[2]
+
+    headers = {
+       'Accept': 'application/vnd.github.v3.raw',
+       'Authorization': f'Bearer {github_token}'
+    }
     
-    ref_data_url =  "https://raw.githubusercontent.com/mledoze/countries/master/dist/countries.csv"
+    ref_data_url = "https://raw.githubusercontent.com/mledoze/countries/master/dist/countries.csv"
     http = urllib3.PoolManager()
-    r = http.request('GET', ref_data_url)
+    r = http.request('GET', ref_data_url, headers=headers)
     print(r.status)
-    # load the response into a csv dictionary reader
     reader = csv.DictReader(r.data.decode('utf-8').splitlines())
 
     # create a dictionary from the reader with key ccna2 and value flag
