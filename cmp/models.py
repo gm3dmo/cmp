@@ -123,7 +123,7 @@ class Soldier(models.Model):
     rank = models.ForeignKey("Rank", on_delete=models.CASCADE, related_name="ranks")
     provost_officer = models.BooleanField(default=False)  
     notes = models.TextField(unique=False, default="", blank=True)
-    created_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(default=timezone.now)
     last_modified = models.DateTimeField(auto_now=True)
 
     class Meta:
