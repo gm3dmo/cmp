@@ -69,6 +69,7 @@ urlpatterns = [
     path("mgmt/acknowledgements/<int:acknowledgement_id>/", views.detail_acknowledgements, name="acknowledgements"),
     path("mgmt/acknowledgements/edit/<int:acknowledgement_id>", views.edit_acknowledgements, name="edit-acknowledgements"),
     path('mgmt/acknowledgements/search/', views.search_acknowledgements, name='search-acknowledgements'),
+    path('mgmt/acknowledgements/delete/<int:pk>/', views.delete_acknowledgement, name='delete-acknowledgements'),
 
     # Provost Officers
     path('mgmt/create-provost-officer/', views.create_provost_officer, name='create-provost-officer'),

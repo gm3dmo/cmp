@@ -139,9 +139,6 @@
 
       .glossy-button {
           font-family: 'Helvetica', sans-serif;
-          background: #1b3003; /* fallback for old browsers */
-          background: -webkit-linear-gradient(top, #487910, #36670c); /* Chrome 10-25, Safari 5.1-6 */
-          background: linear-gradient(to bottom, #254205, #3b6b12); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
           border: none;
           color: white;
           padding: 3px 3px;
@@ -163,7 +160,6 @@
       
       .glossy-button:after {
           content: "";
-          background: rgba(255,255,255,0.2);
           display: block;
           position: absolute;
           width: 100%;
@@ -178,3 +174,13 @@
       .glossy-button:hover:after {
           transform: skewX(-45deg) translateX(100%);
       }
+
+      .delete-button {
+          background: linear-gradient(to bottom, #ff0000, #d64242) !important;
+          color: white !important;
+      }
+
+      .delete-button:hover {
+          background: linear-gradient(to bottom, #cc0000, #990000) !important;
+      }
+

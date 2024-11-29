@@ -713,3 +713,10 @@ def create_provost_officer(request):
         'officer_form': officer_form,
         'appointment_form': appointment_form,
     })
+
+def delete_acknowledgement(request, pk):
+    acknowledgement = get_object_or_404(Acknowledgement, pk=pk)
+    if request.method == 'GET':
+        acknowledgement.delete()
+        messages.success(request, 'Acknowledgement deleted successfully.')
+    return redirect('search-acknowledgements')
