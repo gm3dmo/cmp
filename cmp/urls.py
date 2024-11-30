@@ -46,7 +46,9 @@ urlpatterns = [
     path("mgmt/decorations", views.edit_decorations, name="edit-decorations"),
     path("mgmt/decorations/<int:decoration_id>/", views.detail_decorations, name="decorations"),
     path("mgmt/decorations/edit/<int:decoration_id>", views.edit_decorations, name="edit-decorations"),
+    path("mgmt/decorations/edit/", views.edit_decorations, name="add-decoration"),
     path("mgmt/decorations/search/", views.search_decorations, name='search-decorations'),
+    path("mgmt/decorations/delete/<int:id>/", views.delete_decoration, name='delete-decoration'),
 
     # Cemeteries 
     path("mgmt/cemeteries", views.edit_cemeteries, name="edit-cemeteries"),

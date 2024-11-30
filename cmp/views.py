@@ -361,15 +361,25 @@ def edit_companies(request, id=None):  # Changed parameter name to match URL
 
 
 def edit_decorations(request, decoration_id=None):
-    post = request.POST
-    form = editDecorationForm(post or None)
     if decoration_id:
-        decoration = Decoration.objects.get(id=decoration_id)
-        form = editDecorationForm(post or None, instance=decoration)
-    if post and form.is_valid():
-        form.save()
-        return HttpResponse("Decoration Added")
-    return render(request, "cmp/edit-decorations.html", {"form": form})
+        decoration = get_object_or_404(Decoration, id=decoration_id)
+        if request.method == 'POST':
+            form = editDecorationForm(request.POST, instance=decoration)
+        else:
+            form = editDecorationForm(instance=decoration)
+    else:
+        decoration = None
+        form = editDecorationForm(request.POST or None)
+
+    if request.method == 'POST' and form.is_valid():
+        decoration = form.save()
+        messages.success(request, f'Decoration "{decoration.name}" successfully {"updated" if decoration_id else "added"}!')
+        return redirect('search-decorations')  # Redirect to search page
+
+    return render(request, 'cmp/edit-decorations.html', {
+        'form': form,
+        'decoration': decoration
+    })
 
 
 def edit_countries(request, country_id=None):
@@ -782,3 +792,10 @@ def delete_company(request, id):
     company.delete()
     messages.success(request, f'Company "{name}" successfully deleted!')
     return redirect('search-companies')
+
+def delete_decoration(request, id):
+    decoration = get_object_or_404(Decoration, id=id)
+    name = decoration.name  # Store the name before deletion
+    decoration.delete()
+    messages.success(request, f'Decoration "{name}" successfully deleted!')
+    return redirect('search-decorations')
