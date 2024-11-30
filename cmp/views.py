@@ -338,16 +338,26 @@ def edit_country(request, country_id):
     return render(request, "cmp/edit-countries.html", {"form": form})
 
 
-def edit_companies(request, company_id=None):
-    post = request.POST
-    form = editCompanyForm(post or None)
-    if company_id:
-        company = Company.objects.get(id=company_id)
-        form = editCompanyForm(post or None, instance=company)
-    if post and form.is_valid():
-        form.save()
-        return HttpResponse("Company Added")
-    return render(request, "cmp/edit-companies.html", {"form": form})
+def edit_companies(request, id=None):  # Changed parameter name to match URL
+    if id:
+        company = get_object_or_404(Company, id=id)
+        if request.method == 'POST':
+            form = editCompanyForm(request.POST, instance=company)
+        else:
+            form = editCompanyForm(instance=company)
+    else:
+        company = None
+        form = editCompanyForm(request.POST or None)
+
+    if request.method == 'POST' and form.is_valid():
+        company = form.save()
+        messages.success(request, f'Company "{company.name}" successfully {"updated" if id else "added"}!')
+        return redirect('search-companies')
+
+    return render(request, 'cmp/edit-companies.html', {
+        'form': form,
+        'company': company
+    })
 
 
 def edit_decorations(request, decoration_id=None):
@@ -765,3 +775,10 @@ def delete_cemetery(request, id):
     cemetery.delete()
     messages.success(request, f'Cemetery "{name}" successfully deleted!')
     return redirect('search-cemeteries')
+
+def delete_company(request, id):
+    company = get_object_or_404(Company, id=id)
+    name = company.name  # Store the name before deletion
+    company.delete()
+    messages.success(request, f'Company "{name}" successfully deleted!')
+    return redirect('search-companies')

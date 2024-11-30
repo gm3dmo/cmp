@@ -8,7 +8,7 @@ from .views import soldier_detail
 
 
 urlpatterns = [
-    # For creating new records (no ID)
+    # ... your other URL patterns ...
 
     path("", views.index, name="index"), 
     path('soldier/<int:soldier_id>/', views.soldier, name='soldier'),
@@ -37,9 +37,10 @@ urlpatterns = [
 
     # Companies
     path("mgmt/companies", views.edit_companies, name="edit-companies"),
-    path("mgmt/companies/<int:company_id>/", views.detail_companies, name="companies"),
-    path("mgmt/companies/edit/<int:company_id>", views.edit_companies, name="edit-companies"),
+    path("mgmt/companies/<int:id>/", views.detail_companies, name="companies"),
+    path("mgmt/companies/edit/<int:id>/", views.edit_companies, name='edit-companies'),
     path("mgmt/companies/search/", views.search_companies, name='search-companies'),
+    path('mgmt/companies/delete/<int:id>/', views.delete_company, name='delete-company'),
 
     # Decorations
     path("mgmt/decorations", views.edit_decorations, name="edit-decorations"),
