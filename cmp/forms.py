@@ -30,13 +30,45 @@ class CustomUserChangeForm(UserChangeForm):
 
 
 class editPowCampForm(forms.ModelForm):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.helper = FormHelper()
-        self.helper.label_class = 'form-label'  
+    name = forms.CharField(
+        widget=forms.TextInput(attrs={
+            'class': 'wide-input'
+        })
+    )
+    nearest_city = forms.CharField(
+        widget=forms.TextInput(attrs={
+            'class': 'wide-input'
+        }),
+        required=False
+    )
+    notes = forms.CharField(
+        widget=forms.Textarea(attrs={
+            'class': 'wide-input'
+        }),
+        required=False
+    )
+    wartime_country = forms.CharField(
+        widget=forms.TextInput(attrs={
+            'class': 'wide-input'
+        }),
+        required=False
+    )
+    latitude = forms.CharField(
+        widget=forms.TextInput(attrs={
+            'class': 'wide-input'
+        }),
+        required=False
+    )
+    longitude = forms.CharField(
+        widget=forms.TextInput(attrs={
+            'class': 'wide-input'
+        }),
+        required=False
+    )
+
     class Meta:
         model = PowCamp
-        fields = "__all__"
+        fields = '__all__'
 
 
 class editCemeteryForm(forms.ModelForm):

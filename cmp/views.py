@@ -317,13 +317,26 @@ def edit_cemeteries(request, id=None):
     })
 
 
-def edit_powcamps(request):
-    post = request.POST
-    form = editPowCampForm(post or None)
-    if post and form.is_valid():
-        form.save()
-        return HttpResponse("POW Camp Added")
-    return render(request, "cmp/edit-pow-camps.html", {"form": form})
+def edit_powcamps(request, id=None):
+    if id:
+        powcamp = get_object_or_404(PowCamp, id=id)
+        if request.method == 'POST':
+            form = editPowCampForm(request.POST, instance=powcamp)
+        else:
+            form = editPowCampForm(instance=powcamp)
+    else:
+        powcamp = None
+        form = editPowCampForm(request.POST or None)
+
+    if request.method == 'POST' and form.is_valid():
+        powcamp = form.save()
+        messages.success(request, f'PoW Camp "{powcamp.name}" successfully {"updated" if id else "added"}!')
+        return redirect('search-powcamps')
+
+    return render(request, 'cmp/edit-pow-camps.html', {
+        'form': form,
+        'powcamp': powcamp
+    })
 
 
 def edit_country(request, country_id):
@@ -394,16 +407,26 @@ def edit_countries(request, country_id=None):
     return render(request, "cmp/edit-countries.html", {"form": form})
 
 
-def edit_powcamps(request, powcamp_id=None):
-    post = request.POST
-    form = editPowCampForm(post or None)
-    if powcamp_id:
-        powcamp = PowCamp.objects.get(id=powcamp_id)
-        form = editPowCampForm(post or None, instance=powcamp)
-    if post and form.is_valid():
-        form.save()
-        return HttpResponse("Prisoner of War Camp Added")
-    return render(request, "cmp/edit-prisoner-of-war-camps.html", {"form": form})
+def edit_powcamps(request, id=None):  # Make sure parameter is named 'id'
+    if id:
+        powcamp = get_object_or_404(PowCamp, id=id)
+        if request.method == 'POST':
+            form = editPowCampForm(request.POST, instance=powcamp)
+        else:
+            form = editPowCampForm(instance=powcamp)
+    else:
+        powcamp = None
+        form = editPowCampForm(request.POST or None)
+
+    if request.method == 'POST' and form.is_valid():
+        powcamp = form.save()
+        messages.success(request, f'PoW Camp "{powcamp.name}" successfully {"updated" if id else "added"}!')
+        return redirect('search-powcamps')
+
+    return render(request, 'cmp/edit-pow-camps.html', {
+        'form': form,
+        'powcamp': powcamp
+    })
 
 
 from django.shortcuts import render, get_object_or_404, redirect
@@ -492,7 +515,7 @@ def search_powcamps(request):
         powcamps = PowCamp.objects.all().order_by('name')
     paginator = Paginator(powcamps, settings.PAGE_SIZE)  # Show 10 powcamps per page
     page_obj = paginator.get_page(page_number)
-    return render(request, 'cmp/search-prisoner-of-war-camps.html', {'page_obj': page_obj})
+    return render(request, 'cmp/search-pow-camps.html', {'page_obj': page_obj})
 
 
 def search_soldiers(request):
@@ -816,3 +839,38 @@ def delete_rank(request, id):
     rank.delete()
     messages.success(request, f'Rank "{name}" successfully deleted!')
     return redirect('search-ranks')
+
+def edit_prisoner_of_war_camps(request, id=None):
+    if id:
+        powcamp = get_object_or_404(PowCamp, id=id)
+        if request.method == 'POST':
+            form = editPrisonerOfWarCampForm(request.POST, instance=powcamp)
+        else:
+            form = editPrisonerOfWarCampForm(instance=powcamp)
+    else:
+        powcamp = None
+        form = editPrisonerOfWarCampForm(request.POST or None)
+
+    if request.method == 'POST' and form.is_valid():
+        powcamp = form.save()
+        messages.success(request, f'PoW Camp "{powcamp.name}" successfully {"updated" if id else "added"}!')
+        return redirect('search-prisoner-of-war-camps')
+
+    return render(request, 'cmp/edit-prisoner-of-war-camps.html', {
+        'form': form,
+        'powcamp': powcamp
+    })
+
+def delete_prisoner_of_war_camp(request, id):
+    powcamp = get_object_or_404(PrisonerOfWarCamp, id=id)
+    name = powcamp.name  # Store the name before deletion
+    powcamp.delete()
+    messages.success(request, f'PoW Camp "{name}" successfully deleted!')
+    return redirect('search-prisoner-of-war-camps')
+
+def delete_powcamp(request, id):
+    powcamp = get_object_or_404(PowCamp, id=id)
+    name = powcamp.name  # Store the name before deletion
+    powcamp.delete()
+    messages.success(request, f'PoW Camp "{name}" successfully deleted!')
+    return redirect('search-powcamps')

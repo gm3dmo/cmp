@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% load static crispy_forms_tags %}
+{% block title %}PoW Camps{% endblock %}
+{% block content %}
+
+<div class="center-content">
+{% if messages %}
+    {% for message in messages %}
+        <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">
+            {{ message }}
+        </div>
+    {% endfor %}
+{% endif %}
+
+<h3>Search/Edit/Add/Delete PoW Camps</h3>
+
+  <div class="center-content">
+    <button class="glossy-button add-button" onclick="location.href='{% url 'edit-powcamps' %}'" type="button">Add New PoW Camp</button>
+  </div>
+
+<div name="search-input" class="search-input">
+<form method="get">
+  <input type="text" name="q" placeholder="PoW Camp">
+  <input type="submit" value="Search">
+</form>
+</div>
+
+<div>
+  <table class="content-table">
+    <thead class="">
+      <tr>
+        <th></th>
+        <th>Name</th>
+        <th>Country</th>
+        <th></th>
+      </tr>
+    </thead>
+{% for powcamp in page_obj %}
+    <tr>
+      <td><button class="glossy-button edit-button" onclick="location.href='{% url 'edit-powcamps' powcamp.id %}'" type="button">EDIT</button></td>
+      <td><span class="soldier-info">{{ powcamp.name|title }}</span></td>
+      <td><span class="soldier-info">{{ powcamp.country.flag }} {{ powcamp.country.name|title }}</span></td>
+      <td><button class="glossy-button delete-button" onclick="if(confirm('Are you sure you want to delete this PoW Camp?')) { location.href='{% url 'delete-powcamp' powcamp.id %}'; }" type="button">DELETE</button></td>
+    </tr>
+{% endfor %}
+  </table>
+</div>
+
+{% include 'cmp/pagination-footer.html' %}
+
+{% endblock %}
+</div>

@@ -59,10 +59,10 @@ urlpatterns = [
     path("mgmt/cemeteries/delete/<int:id>/", views.delete_cemetery, name="delete-cemetery"),
 
     # POW Camps
-    path("mgmt/prisoner-of-war-camps", views.edit_powcamps, name="edit-powcamps"),
-    path("mgmt/prisoner-of-war-camps/<int:powcamp_id>/", views.detail_powcamps, name="powcamps"),
-    path("mgmt/prisoner-of-war-camps/edit/<int:powcamp_id>", views.edit_powcamps, name="edit-prisoner-of-war-camps"),
-    path("mgmt/prisoner-of-war-camps/search/", views.search_powcamps, name='search-prisoner-of-war-camps'),
+    path("mgmt/pow-camps/search/", views.search_powcamps, name='search-powcamps'),
+    path("mgmt/pow-camps/edit/<int:id>/", views.edit_powcamps, name='edit-powcamps'),
+    path("mgmt/pow-camps/edit/", views.edit_powcamps, name='edit-powcamps'),
+    path("mgmt/pow-camps/delete/<int:id>/", views.delete_powcamp, name='delete-powcamp'),
 
     # Ranks
     path("mgmt/ranks/search/", views.search_ranks, name='search-ranks'),
