@@ -4,7 +4,20 @@
 {% block content %}
 
 <div class="center-content">
-<h3>Search Soldiers</h3>
+{% if messages %}
+    {% for message in messages %}
+        <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">
+            {{ message }}
+        </div>
+    {% endfor %}
+{% endif %}
+
+<h3>Search/Edit/Add/Delete Soldiers</h3>
+
+<div class="center-content">
+    <button class="glossy-button add-button" onclick="location.href='{% url 'edit-soldier' %}'" type="button">Add New Soldier</button>
+</div>
+
 <div name="search-input" class="search-input">
 <form method="get">
   <input type="text" name="q" value="{{ request.GET.q }}"  placeholder="Surname/army number">
@@ -17,22 +30,24 @@
   <thead class="">
     <tr>
       <th></th>
-      <th>SURNAME</th>
-      <th>INITIALS</th>
-      <th>ARMY No.</th>
-      <th>RANK</th>
-      <th>CASUALTY</th>
+      <th>Surname</th>
+      <th>Initials</th>
+      <th>Army No.</th>
+      <th>Rank</th>
+      <th>Casualty</th>
+      <th></th>
     </tr>
   </thead>
 
   {% for soldier in page_obj %}
     <tr>
-      <td><button class="glossy-button edit-button" onclick="location.href='{% url 'edit-soldiers' soldier.id %}'" type="button">EDIT</button></td>
+      <td><button class="glossy-button edit-button" onclick="location.href='{% url 'edit-soldier' soldier.id %}'" type="button">EDIT</button></td>
       <td><span class="soldier-info">{{ soldier.surname }}</span></td>
       <td><span class="soldier-info">{{ soldier.initials }}</span></td>
       <td><span class="soldier-info">{{ soldier.army_number }}</span></td>
       <td><span class="soldier-info">{{ soldier.rank }}</span></td>
       <td><span class="soldier-info">{{ soldier.soldierdeath.date }}</span></td>
+      <td><button class="glossy-button delete-button" onclick="if(confirm('Are you sure you want to delete this soldier?')) { location.href='{% url 'delete-soldier' soldier.id %}'; }" type="button">DELETE</button></td>
     </tr>
    {% endfor %}
 </table>

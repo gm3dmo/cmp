@@ -295,25 +295,48 @@ def original_unit(request, army_number):
     return HttpResponse("No Match Found")
 
 
-def edit_cemeteries(request, cemetery_id):
-    post = request.POST
-    form = editCemeteryForm(post or None)
-    if cemetery_id:
-        cemetery = Cemetery.objects.get(id=cemetery_id)
-        form = editCemeteryForm(post or None, instance=cemetery)
-    if post and form.is_valid():
-        form.save()
-        return HttpResponse("Cemetery Added")
-    return render(request, "cmp/edit-cemeteries.html", {"form": form})
+def edit_cemeteries(request, id=None):
+    if id:
+        cemetery = get_object_or_404(Cemetery, id=id)
+        if request.method == 'POST':
+            form = CemeteryForm(request.POST, instance=cemetery)
+        else:
+            form = CemeteryForm(instance=cemetery)
+    else:
+        cemetery = None
+        form = CemeteryForm(request.POST or None)
+
+    if request.method == 'POST' and form.is_valid():
+        cemetery = form.save()
+        messages.success(request, f'Cemetery successfully {"updated" if id else "added"}!')
+        return redirect('search-cemeteries')
+
+    return render(request, 'cmp/edit-cemeteries.html', {
+        'form': form,
+        'cemetery': cemetery
+    })
 
 
-def edit_powcamps(request):
-    post = request.POST
-    form = editPowCampForm(post or None)
-    if post and form.is_valid():
-        form.save()
-        return HttpResponse("POW Camp Added")
-    return render(request, "cmp/edit-pow-camps.html", {"form": form})
+def edit_powcamps(request, id=None):
+    if id:
+        powcamp = get_object_or_404(PowCamp, id=id)
+        if request.method == 'POST':
+            form = editPowCampForm(request.POST, instance=powcamp)
+        else:
+            form = editPowCampForm(instance=powcamp)
+    else:
+        powcamp = None
+        form = editPowCampForm(request.POST or None)
+
+    if request.method == 'POST' and form.is_valid():
+        powcamp = form.save()
+        messages.success(request, f'PoW Camp "{powcamp.name}" successfully {"updated" if id else "added"}!')
+        return redirect('search-powcamps')
+
+    return render(request, 'cmp/edit-pow-camps.html', {
+        'form': form,
+        'powcamp': powcamp
+    })
 
 
 def edit_country(request, country_id):
@@ -328,28 +351,48 @@ def edit_country(request, country_id):
     return render(request, "cmp/edit-countries.html", {"form": form})
 
 
-def edit_companies(request, company_id=None):
-    post = request.POST
-    form = editCompanyForm(post or None)
-    if company_id:
-        company = Company.objects.get(id=company_id)
-        form = editCompanyForm(post or None, instance=company)
-    if post and form.is_valid():
-        form.save()
-        return HttpResponse("Company Added")
-    return render(request, "cmp/edit-companies.html", {"form": form})
+def edit_companies(request, id=None):  # Changed parameter name to match URL
+    if id:
+        company = get_object_or_404(Company, id=id)
+        if request.method == 'POST':
+            form = editCompanyForm(request.POST, instance=company)
+        else:
+            form = editCompanyForm(instance=company)
+    else:
+        company = None
+        form = editCompanyForm(request.POST or None)
+
+    if request.method == 'POST' and form.is_valid():
+        company = form.save()
+        messages.success(request, f'Company "{company.name}" successfully {"updated" if id else "added"}!')
+        return redirect('search-companies')
+
+    return render(request, 'cmp/edit-companies.html', {
+        'form': form,
+        'company': company
+    })
 
 
 def edit_decorations(request, decoration_id=None):
-    post = request.POST
-    form = editDecorationForm(post or None)
     if decoration_id:
-        decoration = Decoration.objects.get(id=decoration_id)
-        form = editDecorationForm(post or None, instance=decoration)
-    if post and form.is_valid():
-        form.save()
-        return HttpResponse("Decoration Added")
-    return render(request, "cmp/edit-decorations.html", {"form": form})
+        decoration = get_object_or_404(Decoration, id=decoration_id)
+        if request.method == 'POST':
+            form = editDecorationForm(request.POST, instance=decoration)
+        else:
+            form = editDecorationForm(instance=decoration)
+    else:
+        decoration = None
+        form = editDecorationForm(request.POST or None)
+
+    if request.method == 'POST' and form.is_valid():
+        decoration = form.save()
+        messages.success(request, f'Decoration "{decoration.name}" successfully {"updated" if decoration_id else "added"}!')
+        return redirect('search-decorations')  # Redirect to search page
+
+    return render(request, 'cmp/edit-decorations.html', {
+        'form': form,
+        'decoration': decoration
+    })
 
 
 def edit_countries(request, country_id=None):
@@ -364,16 +407,26 @@ def edit_countries(request, country_id=None):
     return render(request, "cmp/edit-countries.html", {"form": form})
 
 
-def edit_powcamps(request, powcamp_id=None):
-    post = request.POST
-    form = editPowCampForm(post or None)
-    if powcamp_id:
-        powcamp = PowCamp.objects.get(id=powcamp_id)
-        form = editPowCampForm(post or None, instance=powcamp)
-    if post and form.is_valid():
-        form.save()
-        return HttpResponse("Prisoner of War Camp Added")
-    return render(request, "cmp/edit-prisoner-of-war-camps.html", {"form": form})
+def edit_powcamps(request, id=None):  # Make sure parameter is named 'id'
+    if id:
+        powcamp = get_object_or_404(PowCamp, id=id)
+        if request.method == 'POST':
+            form = editPowCampForm(request.POST, instance=powcamp)
+        else:
+            form = editPowCampForm(instance=powcamp)
+    else:
+        powcamp = None
+        form = editPowCampForm(request.POST or None)
+
+    if request.method == 'POST' and form.is_valid():
+        powcamp = form.save()
+        messages.success(request, f'PoW Camp "{powcamp.name}" successfully {"updated" if id else "added"}!')
+        return redirect('search-powcamps')
+
+    return render(request, 'cmp/edit-pow-camps.html', {
+        'form': form,
+        'powcamp': powcamp
+    })
 
 
 from django.shortcuts import render, get_object_or_404, redirect
@@ -385,36 +438,42 @@ def soldier_detail(request, soldier_id):
     return render(request, 'cmp/soldier.html', {'soldier': soldier})
 
 
-def edit_soldiers(request, soldier_id):
-    soldier = get_object_or_404(Soldier, id=soldier_id)
-    try:
-        death = SoldierDeath.objects.get(soldier=soldier)
-    except SoldierDeath.DoesNotExist:
-        death = None
+def edit_soldier(request, id=None):  # Changed to id to match URL pattern
+    if id:
+        soldier = get_object_or_404(Soldier, id=id)
+        try:
+            death = SoldierDeath.objects.get(soldier=soldier)
+        except SoldierDeath.DoesNotExist:
+            death = None
 
-    if request.method == 'POST':
-        form = editSoldierForm(request.POST, instance=soldier)
-        death_form = editSoldierDeathForm(request.POST, request.FILES, instance=death)
+        if request.method == 'POST':
+            form = editSoldierForm(request.POST, instance=soldier)
+            death_form = editSoldierDeathForm(request.POST, request.FILES, instance=death)
+        else:
+            form = editSoldierForm(instance=soldier)
+            death_form = editSoldierDeathForm(instance=death)
+    else:
+        soldier = None
+        form = editSoldierForm(request.POST or None)
+        death_form = editSoldierDeathForm(request.POST or None)
 
-        if form.is_valid() and death_form.is_valid():
-            soldier = form.save()
-            # Only save death record if there's actual death data
-            if death_form.has_changed() and death_form.cleaned_data.get('date'):
-                death_instance = death_form.save(commit=False)
-                death_instance.soldier = soldier
-                death_instance.save()
-            elif death and not death_form.cleaned_data.get('date'):
-                # If there's an existing death record but date is cleared, delete it
-                death.delete()
-            
-            messages.success(request, "Soldier updated successfully")
-            return redirect('soldier', soldier_id=soldier.id)
+    if request.method == 'POST' and form.is_valid() and death_form.is_valid():
+        soldier = form.save()
+        if death_form.has_changed() and death_form.cleaned_data.get('date'):
+            death_instance = death_form.save(commit=False)
+            death_instance.soldier = soldier
+            death_instance.save()
+        elif death and not death_form.cleaned_data.get('date'):
+            death.delete()
+        
+        messages.success(request, f'Soldier "{soldier.surname}, {soldier.initials}" successfully {"updated" if id else "added"}!')
+        return redirect('search-soldiers')
 
-    else:  # GET request
-        form = editSoldierForm(instance=soldier)
-        death_form = editSoldierDeathForm(instance=death)
-
-    return render(request, "cmp/edit-soldiers.html", {"form": form, 'death_form': death_form})
+    return render(request, "cmp/edit-soldiers.html", {
+        "form": form, 
+        'death_form': death_form,
+        'soldier': soldier
+    })
 
 
 def search_acknowledgement(request):
@@ -462,7 +521,7 @@ def search_powcamps(request):
         powcamps = PowCamp.objects.all().order_by('name')
     paginator = Paginator(powcamps, settings.PAGE_SIZE)  # Show 10 powcamps per page
     page_obj = paginator.get_page(page_number)
-    return render(request, 'cmp/search-prisoner-of-war-camps.html', {'page_obj': page_obj})
+    return render(request, 'cmp/search-pow-camps.html', {'page_obj': page_obj})
 
 
 def search_soldiers(request):
@@ -564,34 +623,48 @@ def detail_soldiers(request, soldier_id):
     return render(request, "cmp/detail-soldiers.html", {"soldier": soldier})
 
 
-def edit_ranks(request, rank_id):
-    post = request.POST
-    form = editRankForm(post or None)
-    if rank_id:
-        rank= Rank.objects.get(id=rank_id)
-        form = editRankForm(post or None, instance=rank)
-    if post and form.is_valid():
-        form.save()
-        return HttpResponse("Rank Added")
-    return render(request, "cmp/edit-ranks.html", {"form": form})
+def edit_ranks(request, id=None):
+    if id:
+        rank = get_object_or_404(Rank, id=id)
+        if request.method == 'POST':
+            form = editRankForm(request.POST, instance=rank)
+        else:
+            form = editRankForm(instance=rank)
+    else:
+        rank = None
+        form = editRankForm(request.POST or None)
+
+    if request.method == 'POST' and form.is_valid():
+        rank = form.save()
+        messages.success(request, f'Rank "{rank.name}" successfully {"updated" if id else "added"}!')
+        return redirect('search-ranks')
+
+    return render(request, 'cmp/edit-ranks.html', {
+        'form': form,
+        'rank': rank
+    })
 
 
 def edit_acknowledgement(request, id=None):
-    print("wooo")
-    print(f"Debug - Received ID: {id}")  # Add this debug line
-    print(f"Debug - Request method: {request.method}")  # Add this debug line
+    print(f"Debug - Received ID: {id}")
+    print(f"Debug - Request method: {request.method}")
     
     if id:
         acknowledgement = get_object_or_404(Acknowledgement, id=id)
+        print(f"Debug - Found acknowledgement: {acknowledgement.id}")
         if request.method == 'POST':
             form = AcknowledgementForm(request.POST, instance=acknowledgement)
+            print("Debug - Created form with POST data and instance")
         else:
             form = AcknowledgementForm(instance=acknowledgement)
+            print("Debug - Created form with instance only")
     else:
         form = AcknowledgementForm(request.POST or None)
+        print("Debug - Created new form without instance")
     
     if request.method == 'POST' and form.is_valid():
         acknowledgement = form.save()
+        print(f"Debug - Saved form with ID: {acknowledgement.id}")
         action = "updated" if id else "added"
         messages.success(
             request, 
@@ -602,16 +675,26 @@ def edit_acknowledgement(request, id=None):
     return render(request, "cmp/edit-acknowledgement.html", {"form": form})
 
 
-def edit_cemeteries(request, cemetery_id):
-    post = request.POST
-    form = editCemeteryForm(post or None)
-    if cemetery_id:
-        cemetery = Cemetery.objects.get(id=cemetery_id)
-        form = editCemeteryForm(post or None, instance=cemetery)
-    if post and form.is_valid():
-        form.save()
-        return HttpResponse("CemeteryAdded")
-    return render(request, "cmp/edit-cemeteries.html", {"form": form})
+def edit_cemeteries(request, id=None):
+    if id:
+        cemetery = get_object_or_404(Cemetery, id=id)
+        if request.method == 'POST':
+            form = editCemeteryForm(request.POST, instance=cemetery)  # Using editCemeteryForm
+        else:
+            form = editCemeteryForm(instance=cemetery)  # Using editCemeteryForm
+    else:
+        cemetery = None
+        form = editCemeteryForm(request.POST or None)  # Using editCemeteryForm
+
+    if request.method == 'POST' and form.is_valid():
+        cemetery = form.save()
+        messages.success(request, f'Cemetery successfully {"updated" if id else "added"}!')
+        return redirect('search-cemeteries')
+
+    return render(request, 'cmp/edit-cemeteries.html', {
+        'form': form,
+        'cemetery': cemetery
+    })
 
 
 def soldier(request, soldier_id):
@@ -661,8 +744,8 @@ def index(request):
         Q(surname__icontains=surname) |
         Q(army_number__icontains=surname)
     ).order_by('surname')
-    paginator = Paginator(soldiers, 10)  # Show 10 soldiers per page
-    page_number = request.GET.get('page')
+    paginator = Paginator(soldiers, 10)  # 10 items per page
+    page_number = request.GET.get('page', 1)
     page_obj = paginator.get_page(page_number)
 
     cmp_soldier_count = Soldier.objects.count()  # Get the total count of Soldier entries
@@ -734,3 +817,74 @@ def delete_acknowledgement(request, pk):
     acknowledgement.delete()
     messages.success(request, f'Acknowledgement for {surname}, {name} successfully deleted!')
     return redirect('search-acknowledgement')
+
+def delete_cemetery(request, id):
+    cemetery = get_object_or_404(Cemetery, id=id)
+    name = cemetery.name  # Store the name before deletion
+    cemetery.delete()
+    messages.success(request, f'Cemetery "{name}" successfully deleted!')
+    return redirect('search-cemeteries')
+
+def delete_company(request, id):
+    company = get_object_or_404(Company, id=id)
+    name = company.name  # Store the name before deletion
+    company.delete()
+    messages.success(request, f'Company "{name}" successfully deleted!')
+    return redirect('search-companies')
+
+def delete_decoration(request, id):
+    decoration = get_object_or_404(Decoration, id=id)
+    name = decoration.name  # Store the name before deletion
+    decoration.delete()
+    messages.success(request, f'Decoration "{name}" successfully deleted!')
+    return redirect('search-decorations')
+
+def delete_rank(request, id):
+    rank = get_object_or_404(Rank, id=id)
+    name = rank.name  # Store the name before deletion
+    rank.delete()
+    messages.success(request, f'Rank "{name}" successfully deleted!')
+    return redirect('search-ranks')
+
+def edit_prisoner_of_war_camps(request, id=None):
+    if id:
+        powcamp = get_object_or_404(PowCamp, id=id)
+        if request.method == 'POST':
+            form = editPrisonerOfWarCampForm(request.POST, instance=powcamp)
+        else:
+            form = editPrisonerOfWarCampForm(instance=powcamp)
+    else:
+        powcamp = None
+        form = editPrisonerOfWarCampForm(request.POST or None)
+
+    if request.method == 'POST' and form.is_valid():
+        powcamp = form.save()
+        messages.success(request, f'PoW Camp "{powcamp.name}" successfully {"updated" if id else "added"}!')
+        return redirect('search-prisoner-of-war-camps')
+
+    return render(request, 'cmp/edit-prisoner-of-war-camps.html', {
+        'form': form,
+        'powcamp': powcamp
+    })
+
+def delete_prisoner_of_war_camp(request, id):
+    powcamp = get_object_or_404(PrisonerOfWarCamp, id=id)
+    name = powcamp.name  # Store the name before deletion
+    powcamp.delete()
+    messages.success(request, f'PoW Camp "{name}" successfully deleted!')
+    return redirect('search-prisoner-of-war-camps')
+
+def delete_powcamp(request, id):
+    powcamp = get_object_or_404(PowCamp, id=id)
+    name = powcamp.name  # Store the name before deletion
+    powcamp.delete()
+    messages.success(request, f'PoW Camp "{name}" successfully deleted!')
+    return redirect('search-powcamps')
+
+
+def delete_soldier(request, id):
+    soldier = get_object_or_404(Soldier, id=id)
+    name = f"{soldier.surname}, {soldier.initials}"  # Store the name before deletion
+    soldier.delete()
+    messages.success(request, f'Soldier "{name}" successfully deleted!')
+    return redirect('search-soldiers')

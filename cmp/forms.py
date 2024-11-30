@@ -30,23 +30,62 @@ class CustomUserChangeForm(UserChangeForm):
 
 
 class editPowCampForm(forms.ModelForm):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.helper = FormHelper()
-        self.helper.label_class = 'form-label'  
+    name = forms.CharField(
+        widget=forms.TextInput(attrs={
+            'class': 'wide-input'
+        })
+    )
+    nearest_city = forms.CharField(
+        widget=forms.TextInput(attrs={
+            'class': 'wide-input'
+        }),
+        required=False
+    )
+    notes = forms.CharField(
+        widget=forms.Textarea(attrs={
+            'class': 'wide-input'
+        }),
+        required=False
+    )
+    wartime_country = forms.CharField(
+        widget=forms.TextInput(attrs={
+            'class': 'wide-input'
+        }),
+        required=False
+    )
+    latitude = forms.CharField(
+        widget=forms.TextInput(attrs={
+            'class': 'wide-input'
+        }),
+        required=False
+    )
+    longitude = forms.CharField(
+        widget=forms.TextInput(attrs={
+            'class': 'wide-input'
+        }),
+        required=False
+    )
+
     class Meta:
         model = PowCamp
-        fields = "__all__"
+        fields = '__all__'
 
 
 class editCemeteryForm(forms.ModelForm):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.helper = FormHelper()
-        self.helper.label_class = 'form-label'  
+    name = forms.CharField(
+        widget=forms.TextInput(attrs={
+            'class': 'wide-input',
+            'style': 'width: 500px;'
+        })
+    )
+    country = forms.ModelChoiceField(
+        queryset=Country.objects.all().order_by('name'),
+        empty_label="Select a country"
+    )
+
     class Meta:
-        model = Cemetery 
-        fields = "__all__"
+        model = Cemetery
+        fields = ['name', 'country', 'latitude', 'longitude']
 
 
 class editCountryForm(forms.ModelForm):
@@ -90,13 +129,15 @@ class editDecorationForm(forms.ModelForm):
 
 
 class editRankForm(forms.ModelForm):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.helper = FormHelper()
-        self.helper.label_class = 'form-label'  
+    name = forms.CharField(
+        widget=forms.TextInput(attrs={
+            'class': 'wide-input',
+        })
+    )
+
     class Meta:
         model = Rank
-        fields = "__all__"
+        fields = '__all__'
 
 
 class editSoldierDeathForm(forms.ModelForm):

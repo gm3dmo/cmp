@@ -247,3 +247,11 @@
     color: #666;
     font-weight: 600;
 }
+
+.wide-input {
+    width: 500px !important;  /* Same width as cemetery form */
+    max-width: 100%;
+    padding: 8px;
+    margin: 5px 0;
+    box-sizing: border-box;
+}
