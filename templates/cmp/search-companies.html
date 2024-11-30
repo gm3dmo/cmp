@@ -8,7 +8,7 @@
 
 <div name="search-input" class="search-input">
 <form method="get">
-  <input type="text" name="q" value="{{ request.GET.q }}"  placeholder="Search Companies">
+  <input type="text" name="q" value="{{ request.GET.q }}"  placeholder="Company">
   <input type="submit" value="Search">
 </form>
 </div>
@@ -24,7 +24,7 @@
 
    {% for company in page_obj %}
    <tr>
-    <td><button class="glossy-button" onclick="location.href='{% url 'edit-companies' company.id %}'" type="button">EDIT</button></td>
+    <td><button class="glossy-button edit-button" onclick="location.href='{% url 'edit-companies' company.id %}'" type="button">EDIT</button></td>
     <td><span class="soldier-info">{{ company.name|title }}</span></td>
   </tr>
 

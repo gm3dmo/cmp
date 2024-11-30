@@ -1,11 +1,31 @@
-<div>
-    <span>
-     {% if page_obj.has_previous %}
-         <a href="?q={{ request.GET.q }}&page={{ page_obj.previous_page_number }}">Previous</a>
-     {% endif %}
-     {% if page_obj.has_next %}
-         <a href="?q={{ request.GET.q }}&page={{ page_obj.next_page_number }}">Next</a>
-     {% endif %}
-     </span>
-    <p>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</p>
+<div class="pagination">
+    <span class="pagination-links">
+        {% if page_obj.has_previous %}
+            <a href="?q={{ request.GET.q }}&page={{ page_obj.previous_page_number }}" class="page-arrow">&larr; PREVIOUS</a>
+        {% endif %}
+
+        {% if page_obj.number > 3 %}
+            <a href="?q={{ request.GET.q }}&page=1" class="page-number">1</a>
+            <span class="ellipsis">...</span>
+        {% endif %}
+
+        {% for i in page_obj.paginator.page_range %}
+            {% if i >= page_obj.number|add:"-2" and i <= page_obj.number|add:"2" %}
+                {% if i == page_obj.number %}
+                    <span class="current-page">{{ i }}</span>
+                {% else %}
+                    <a href="?q={{ request.GET.q }}&page={{ i }}" class="page-number">{{ i }}</a>
+                {% endif %}
+            {% endif %}
+        {% endfor %}
+
+        {% if page_obj.number < page_obj.paginator.num_pages|add:"-2" %}
+            <span class="ellipsis">...</span>
+            <a href="?q={{ request.GET.q }}&page={{ page_obj.paginator.num_pages }}" class="page-number">{{ page_obj.paginator.num_pages }}</a>
+        {% endif %}
+
+        {% if page_obj.has_next %}
+            <a href="?q={{ request.GET.q }}&page={{ page_obj.next_page_number }}" class="page-arrow">NEXT &rarr;</a>
+        {% endif %}
+    </span>
 </div>

@@ -8,7 +8,7 @@
 
 <div name="search-input" class="search-input">
 <form method="get">
-  <input type="text" name="q" placeholder="Search ranks to edit">
+  <input type="text" name="q" placeholder="Rank">
   <input type="submit" value="Search">
 </form>
 </div>
@@ -23,7 +23,7 @@
        </thead>
        {% for rank in page_obj%}
        <tr>
-        <td><button class="glossy-button" onclick="location.href='{% url 'edit-ranks' rank.id %}'" type="button">EDIT</button></td>
+        <td><button class="glossy-button edit-button" onclick="location.href='{% url 'edit-ranks' rank.id %}'" type="button">EDIT</button></td>
         <td><span class="soldier-info">{{ rank.name}}</span></td>
       </tr>
        {% endfor %}

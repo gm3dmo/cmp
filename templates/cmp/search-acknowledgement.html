@@ -43,7 +43,7 @@
       {% if acknowledgement.id %}
       <td><button class="glossy-button edit-button" onclick="location.href='{% url 'edit-acknowledgement' acknowledgement.id %}'" type="button">EDIT</button></td>
       {% else %}
-      <td><button class="glossy-button" disabled>EDIT</button></td>
+      <td><button class="glossy-button edit-button" disabled>EDIT</button></td>
       {% endif %}
       <td><span class="soldier-info">{{ acknowledgement.surname }}</span></td>
       <td><span class="soldier-info">{{ acknowledgement.name }}</span></td>
