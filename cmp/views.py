@@ -45,6 +45,13 @@ import folium
 from django.views.generic import TemplateView
 import logging
 
+from django.shortcuts import render, get_object_or_404
+from django.http import HttpResponse
+from .models import Acknowledgement
+from .forms import AcknowledgementForm
+
+from django.contrib import messages
+
 
 def mgmt_index(request):
     return render(request, 'cmp/mgmt-index.html')
@@ -410,7 +417,7 @@ def edit_soldiers(request, soldier_id):
     return render(request, "cmp/edit-soldiers.html", {"form": form, 'death_form': death_form})
 
 
-def search_acknowledgements(request):
+def search_acknowledgement(request):
     query = request.GET.get('q')
     page_number = request.GET.get('page')
     if query:
@@ -419,7 +426,7 @@ def search_acknowledgements(request):
         acknowledgements = Acknowledgement.objects.all().order_by('surname')
     paginator = Paginator(acknowledgements, settings.PAGE_SIZE) 
     page_obj = paginator.get_page(page_number)
-    return render(request, 'cmp/search-acknowledgements.html', {'page_obj': page_obj,  'query': query})
+    return render(request, 'cmp/search-acknowledgement.html', {'page_obj': page_obj,  'query': query})
 
 
 def search_ranks(request):
@@ -509,7 +516,7 @@ def search_countries(request):
     return render(request, 'cmp/search-countries.html', {'page_obj': page_obj})
     
 
-def detail_acknowledgements(request, acknowledgement_id):
+def detail_acknowledgement(request, acknowledgement_id):
     # get or return a 404
     rank = get_object_or_404(Rank, pk=rank_id)
     return render(request, "cmp/detail-ranks.html", {"rank": rank})
@@ -569,25 +576,24 @@ def edit_ranks(request, rank_id):
     return render(request, "cmp/edit-ranks.html", {"form": form})
 
 
-def edit_acknowledgements(request, acknowledgement_id):
+def edit_acknowledgement(request, id=None):
     post = request.POST
-    form = editAcknowledgementForm(post or None)
-    last_modified = None
-    if acknowledgement_id:
-        acknowledgement = Acknowledgement.objects.get(id=acknowledgement_id)
-        form = editAcknowledgementForm(post or None, instance=acknowledgement)
-        last_modified = acknowledgement.last_modified
+    form = AcknowledgementForm(post or None)
+    if id:
+        acknowledgement = get_object_or_404(Acknowledgement, id=id)
+        form = AcknowledgementForm(post or None, instance=acknowledgement)
+    
     if post and form.is_valid():
         acknowledgement = form.save()
+        action = "updated" if id else "added"
         messages.success(
             request, 
-            f'Acknowledgement saved successfully at {acknowledgement.last_modified.strftime("%Y-%m-%d %H:%M:%S")}'
+            f'Acknowledgement for {acknowledgement.surname}, {acknowledgement.name} successfully {action}!'
         )
-    return render(request, "cmp/edit-acknowledgements.html", {
-        "form": form,
-        "last_modified": last_modified
-    })
-    
+        return redirect('search-acknowledgement')
+        
+    return render(request, "cmp/edit-acknowledgement.html", {"form": form})
+
 
 def edit_cemeteries(request, cemetery_id):
     post = request.POST
@@ -716,7 +722,8 @@ def create_provost_officer(request):
 
 def delete_acknowledgement(request, pk):
     acknowledgement = get_object_or_404(Acknowledgement, pk=pk)
-    if request.method == 'GET':
-        acknowledgement.delete()
-        messages.success(request, 'Acknowledgement deleted successfully.')
-    return redirect('search-acknowledgements')
+    surname = acknowledgement.surname
+    name = acknowledgement.name
+    acknowledgement.delete()
+    messages.success(request, f'Acknowledgement for {surname}, {name} successfully deleted!')
+    return redirect('search-acknowledgement')
