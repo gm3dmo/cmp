@@ -5,7 +5,7 @@
 
 <h1> Edit Acknowledgement</h1>
 <div>
-    <form method="post" action="{% url 'edit-acknowledgement' %}">
+    <form method="post" action="{{ request.path }}">
         {% csrf_token %}
         {{ form|crispy }}
         
