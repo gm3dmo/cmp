@@ -12,7 +12,11 @@
     {% endfor %}
 {% endif %}
 
-<h3>Search Companies</h3>
+<h3>Search/Edit/Add/Delete Companies</h3>
+
+<div class="center-content">
+    <button class="glossy-button add-button" onclick="location.href='{% url 'edit-companies' %}'" type="button">Add New Company</button>
+</div>
 
 <div name="search-input" class="search-input">
 <form method="get">
@@ -26,7 +30,7 @@
     <thead class="">
       <tr>
         <th></th>
-        <th>NAME</th>
+        <th>Name</th>
         <th></th>
       </tr>
     </thead>
