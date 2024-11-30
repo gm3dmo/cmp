@@ -97,13 +97,15 @@ class editDecorationForm(forms.ModelForm):
 
 
 class editRankForm(forms.ModelForm):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.helper = FormHelper()
-        self.helper.label_class = 'form-label'  
+    name = forms.CharField(
+        widget=forms.TextInput(attrs={
+            'class': 'wide-input',
+        })
+    )
+
     class Meta:
         model = Rank
-        fields = "__all__"
+        fields = '__all__'
 
 
 class editSoldierDeathForm(forms.ModelForm):

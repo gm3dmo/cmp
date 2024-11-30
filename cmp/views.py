@@ -594,7 +594,7 @@ def detail_soldiers(request, soldier_id):
     return render(request, "cmp/detail-soldiers.html", {"soldier": soldier})
 
 
-def edit_ranks(request, id=None):  # Changed rank_id to id
+def edit_ranks(request, id=None):
     if id:
         rank = get_object_or_404(Rank, id=id)
         if request.method == 'POST':
