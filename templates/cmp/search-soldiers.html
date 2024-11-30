@@ -27,7 +27,7 @@
 
   {% for soldier in page_obj %}
     <tr>
-      <td><button class="glossy-button" onclick="location.href='{% url 'edit-soldiers' soldier.id %}'" type="button">EDIT</button></td>
+      <td><button class="glossy-button edit-button" onclick="location.href='{% url 'edit-soldiers' soldier.id %}'" type="button">EDIT</button></td>
       <td><span class="soldier-info">{{ soldier.surname }}</span></td>
       <td><span class="soldier-info">{{ soldier.initials }}</span></td>
       <td><span class="soldier-info">{{ soldier.army_number }}</span></td>

@@ -25,7 +25,7 @@
 
 {% for decoration in page_obj %}
 <tr>
-  <td><button class="glossy-button" onclick="location.href='{% url 'edit-decorations' decoration.id %}'" type="button">EDIT</button></td>
+  <td><button class="glossy-button edit-button" onclick="location.href='{% url 'edit-decorations' decoration.id %}'" type="button">EDIT</button></td>
   <td><span class="soldier-info">{{ decoration.name}}</span></td>
   <td><span class="soldier-info">{{ decoration.country.flag }} {{ decoration.country.name|title }} </span></td>
 </tr>
