@@ -4,7 +4,19 @@
 {% block content %}
 
 <div class="center-content">
-<h3>Search Ranks</h3>
+{% if messages %}
+    {% for message in messages %}
+        <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">
+            {{ message }}
+        </div>
+    {% endfor %}
+{% endif %}
+
+<h3>Search/Edit/Add/Delete Ranks</h3>
+
+  <div class="center-content">
+    <button class="glossy-button add-button" onclick="location.href='{% url 'add-rank' %}'" type="button">Add New Rank</button>
+  </div>
 
 <div name="search-input" class="search-input">
 <form method="get">
@@ -18,13 +30,15 @@
        <thead class="">
          <tr>
            <th></th>
-           <th>NAME</th>
+           <th>Name</th>
+           <th></th>
          </tr>
        </thead>
        {% for rank in page_obj%}
        <tr>
         <td><button class="glossy-button edit-button" onclick="location.href='{% url 'edit-ranks' rank.id %}'" type="button">EDIT</button></td>
         <td><span class="soldier-info">{{ rank.name}}</span></td>
+        <td><button class="glossy-button delete-button" onclick="if(confirm('Are you sure you want to delete this rank?')) { location.href='{% url 'delete-rank' rank.id %}'; }" type="button">DELETE</button></td>
       </tr>
        {% endfor %}
       </table>

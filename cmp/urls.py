@@ -65,10 +65,11 @@ urlpatterns = [
     path("mgmt/prisoner-of-war-camps/search/", views.search_powcamps, name='search-prisoner-of-war-camps'),
 
     # Ranks
-    path("mgmt/ranks", views.edit_ranks, name="edit-ranks"),
-    path("mgmt/ranks/<int:rank_id>/", views.detail_ranks, name="ranks"),
-    path("mgmt/ranks/edit/<int:rank_id>", views.edit_ranks, name="edit-ranks"),
-    path('mgmt/ranks/search/', views.search_ranks, name='search-ranks'),
+    path("mgmt/ranks/search/", views.search_ranks, name='search-ranks'),
+    path("mgmt/ranks/edit/<int:id>/", views.edit_ranks, name='edit-ranks'),
+    path("mgmt/ranks/edit/", views.edit_ranks, name='add-rank'),
+    path("mgmt/ranks/delete/<int:id>/", views.delete_rank, name='delete-rank'),
+    path("mgmt/ranks/<int:id>/", views.detail_ranks, name="ranks"),
 
     #  Acknowledgements
     path("mgmt/acknowledgement/<int:acknowledgement_id>/", views.detail_acknowledgement, name="acknowledgement"),

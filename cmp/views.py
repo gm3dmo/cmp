@@ -594,16 +594,26 @@ def detail_soldiers(request, soldier_id):
     return render(request, "cmp/detail-soldiers.html", {"soldier": soldier})
 
 
-def edit_ranks(request, rank_id):
-    post = request.POST
-    form = editRankForm(post or None)
-    if rank_id:
-        rank= Rank.objects.get(id=rank_id)
-        form = editRankForm(post or None, instance=rank)
-    if post and form.is_valid():
-        form.save()
-        return HttpResponse("Rank Added")
-    return render(request, "cmp/edit-ranks.html", {"form": form})
+def edit_ranks(request, id=None):  # Changed rank_id to id
+    if id:
+        rank = get_object_or_404(Rank, id=id)
+        if request.method == 'POST':
+            form = editRankForm(request.POST, instance=rank)
+        else:
+            form = editRankForm(instance=rank)
+    else:
+        rank = None
+        form = editRankForm(request.POST or None)
+
+    if request.method == 'POST' and form.is_valid():
+        rank = form.save()
+        messages.success(request, f'Rank "{rank.name}" successfully {"updated" if id else "added"}!')
+        return redirect('search-ranks')
+
+    return render(request, 'cmp/edit-ranks.html', {
+        'form': form,
+        'rank': rank
+    })
 
 
 def edit_acknowledgement(request, id=None):
@@ -799,3 +809,10 @@ def delete_decoration(request, id):
     decoration.delete()
     messages.success(request, f'Decoration "{name}" successfully deleted!')
     return redirect('search-decorations')
+
+def delete_rank(request, id):
+    rank = get_object_or_404(Rank, id=id)
+    name = rank.name  # Store the name before deletion
+    rank.delete()
+    messages.success(request, f'Rank "{name}" successfully deleted!')
+    return redirect('search-ranks')
