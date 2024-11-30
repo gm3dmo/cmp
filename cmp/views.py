@@ -295,16 +295,26 @@ def original_unit(request, army_number):
     return HttpResponse("No Match Found")
 
 
-def edit_cemeteries(request, cemetery_id):
-    post = request.POST
-    form = editCemeteryForm(post or None)
-    if cemetery_id:
-        cemetery = Cemetery.objects.get(id=cemetery_id)
-        form = editCemeteryForm(post or None, instance=cemetery)
-    if post and form.is_valid():
-        form.save()
-        return HttpResponse("Cemetery Added")
-    return render(request, "cmp/edit-cemeteries.html", {"form": form})
+def edit_cemeteries(request, id=None):
+    if id:
+        cemetery = get_object_or_404(Cemetery, id=id)
+        if request.method == 'POST':
+            form = CemeteryForm(request.POST, instance=cemetery)
+        else:
+            form = CemeteryForm(instance=cemetery)
+    else:
+        cemetery = None
+        form = CemeteryForm(request.POST or None)
+
+    if request.method == 'POST' and form.is_valid():
+        cemetery = form.save()
+        messages.success(request, f'Cemetery successfully {"updated" if id else "added"}!')
+        return redirect('search-cemeteries')
+
+    return render(request, 'cmp/edit-cemeteries.html', {
+        'form': form,
+        'cemetery': cemetery
+    })
 
 
 def edit_powcamps(request):
@@ -577,21 +587,25 @@ def edit_ranks(request, rank_id):
 
 
 def edit_acknowledgement(request, id=None):
-    print("wooo")
-    print(f"Debug - Received ID: {id}")  # Add this debug line
-    print(f"Debug - Request method: {request.method}")  # Add this debug line
+    print(f"Debug - Received ID: {id}")
+    print(f"Debug - Request method: {request.method}")
     
     if id:
         acknowledgement = get_object_or_404(Acknowledgement, id=id)
+        print(f"Debug - Found acknowledgement: {acknowledgement.id}")
         if request.method == 'POST':
             form = AcknowledgementForm(request.POST, instance=acknowledgement)
+            print("Debug - Created form with POST data and instance")
         else:
             form = AcknowledgementForm(instance=acknowledgement)
+            print("Debug - Created form with instance only")
     else:
         form = AcknowledgementForm(request.POST or None)
+        print("Debug - Created new form without instance")
     
     if request.method == 'POST' and form.is_valid():
         acknowledgement = form.save()
+        print(f"Debug - Saved form with ID: {acknowledgement.id}")
         action = "updated" if id else "added"
         messages.success(
             request, 
@@ -602,16 +616,26 @@ def edit_acknowledgement(request, id=None):
     return render(request, "cmp/edit-acknowledgement.html", {"form": form})
 
 
-def edit_cemeteries(request, cemetery_id):
-    post = request.POST
-    form = editCemeteryForm(post or None)
-    if cemetery_id:
-        cemetery = Cemetery.objects.get(id=cemetery_id)
-        form = editCemeteryForm(post or None, instance=cemetery)
-    if post and form.is_valid():
-        form.save()
-        return HttpResponse("CemeteryAdded")
-    return render(request, "cmp/edit-cemeteries.html", {"form": form})
+def edit_cemeteries(request, id=None):
+    if id:
+        cemetery = get_object_or_404(Cemetery, id=id)
+        if request.method == 'POST':
+            form = editCemeteryForm(request.POST, instance=cemetery)  # Using editCemeteryForm
+        else:
+            form = editCemeteryForm(instance=cemetery)  # Using editCemeteryForm
+    else:
+        cemetery = None
+        form = editCemeteryForm(request.POST or None)  # Using editCemeteryForm
+
+    if request.method == 'POST' and form.is_valid():
+        cemetery = form.save()
+        messages.success(request, f'Cemetery successfully {"updated" if id else "added"}!')
+        return redirect('search-cemeteries')
+
+    return render(request, 'cmp/edit-cemeteries.html', {
+        'form': form,
+        'cemetery': cemetery
+    })
 
 
 def soldier(request, soldier_id):
@@ -661,8 +685,8 @@ def index(request):
         Q(surname__icontains=surname) |
         Q(army_number__icontains=surname)
     ).order_by('surname')
-    paginator = Paginator(soldiers, 10)  # Show 10 soldiers per page
-    page_number = request.GET.get('page')
+    paginator = Paginator(soldiers, 10)  # 10 items per page
+    page_number = request.GET.get('page', 1)
     page_obj = paginator.get_page(page_number)
 
     cmp_soldier_count = Soldier.objects.count()  # Get the total count of Soldier entries
@@ -734,3 +758,10 @@ def delete_acknowledgement(request, pk):
     acknowledgement.delete()
     messages.success(request, f'Acknowledgement for {surname}, {name} successfully deleted!')
     return redirect('search-acknowledgement')
+
+def delete_cemetery(request, id):
+    cemetery = get_object_or_404(Cemetery, id=id)
+    name = cemetery.name  # Store the name before deletion
+    cemetery.delete()
+    messages.success(request, f'Cemetery "{name}" successfully deleted!')
+    return redirect('search-cemeteries')

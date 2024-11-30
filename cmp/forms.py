@@ -40,13 +40,20 @@ class editPowCampForm(forms.ModelForm):
 
 
 class editCemeteryForm(forms.ModelForm):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.helper = FormHelper()
-        self.helper.label_class = 'form-label'  
+    name = forms.CharField(
+        widget=forms.TextInput(attrs={
+            'class': 'wide-input',
+            'style': 'width: 500px;'
+        })
+    )
+    country = forms.ModelChoiceField(
+        queryset=Country.objects.all().order_by('name'),
+        empty_label="Select a country"
+    )
+
     class Meta:
-        model = Cemetery 
-        fields = "__all__"
+        model = Cemetery
+        fields = ['name', 'country', 'latitude', 'longitude']
 
 
 class editCountryForm(forms.ModelForm):

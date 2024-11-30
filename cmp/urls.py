@@ -50,8 +50,10 @@ urlpatterns = [
     # Cemeteries 
     path("mgmt/cemeteries", views.edit_cemeteries, name="edit-cemeteries"),
     path("mgmt/cemeteries/<int:cemetery_id>/", views.detail_cemeteries, name="cemeteries"),
-    path("mgmt/cemeteries/edit/<int:cemetery_id>", views.edit_cemeteries, name="edit-cemeteries"),
+    path("mgmt/cemeteries/edit/<int:id>/", views.edit_cemeteries, name='edit-cemetery'),
+    path("mgmt/cemeteries/edit/", views.edit_cemeteries, name='add-cemetery'),
     path("mgmt/cemeteries/search/", views.search_cemeteries, name='search-cemeteries'),
+    path("mgmt/cemeteries/delete/<int:id>/", views.delete_cemetery, name="delete-cemetery"),
 
     # POW Camps
     path("mgmt/prisoner-of-war-camps", views.edit_powcamps, name="edit-powcamps"),
