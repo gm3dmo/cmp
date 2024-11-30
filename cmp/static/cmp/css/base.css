@@ -204,9 +204,12 @@
 /* Pagination Styles */
 .pagination {
     text-align: center;
-    margin: 20px 0;
+    margin: 20px auto;
     font-size: 16px;
     font-weight: 600;
+    width: 100%;
+    display: flex;
+    justify-content: center;
 }
 
 .pagination-links {
