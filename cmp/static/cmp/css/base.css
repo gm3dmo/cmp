@@ -91,6 +91,7 @@
     flex-direction: column;
     align-items: center;
     margin-top: 2%;
+    margin: 2px auto;
 }
 
 .name-column {
@@ -101,8 +102,8 @@
 }
 
       .search-input {
-          margin-top: 20px; /* Adjust as needed */
-          padding-bottom: 24px; 
+          margin-top: 10px; /* Adjust as needed */
+          padding-bottom: 4px; 
       }
 
 
