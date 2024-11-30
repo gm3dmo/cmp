@@ -577,13 +577,20 @@ def edit_ranks(request, rank_id):
 
 
 def edit_acknowledgement(request, id=None):
-    post = request.POST
-    form = AcknowledgementForm(post or None)
+    print("wooo")
+    print(f"Debug - Received ID: {id}")  # Add this debug line
+    print(f"Debug - Request method: {request.method}")  # Add this debug line
+    
     if id:
         acknowledgement = get_object_or_404(Acknowledgement, id=id)
-        form = AcknowledgementForm(post or None, instance=acknowledgement)
+        if request.method == 'POST':
+            form = AcknowledgementForm(request.POST, instance=acknowledgement)
+        else:
+            form = AcknowledgementForm(instance=acknowledgement)
+    else:
+        form = AcknowledgementForm(request.POST or None)
     
-    if post and form.is_valid():
+    if request.method == 'POST' and form.is_valid():
         acknowledgement = form.save()
         action = "updated" if id else "added"
         messages.success(
@@ -591,7 +598,7 @@ def edit_acknowledgement(request, id=None):
             f'Acknowledgement for {acknowledgement.surname}, {acknowledgement.name} successfully {action}!'
         )
         return redirect('search-acknowledgement')
-        
+    
     return render(request, "cmp/edit-acknowledgement.html", {"form": form})
 
 

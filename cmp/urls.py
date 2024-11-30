@@ -8,6 +8,7 @@ from .views import soldier_detail
 
 
 urlpatterns = [
+    # For creating new records (no ID)
 
     path("", views.index, name="index"), 
     path('soldier/<int:soldier_id>/', views.soldier, name='soldier'),
@@ -67,9 +68,6 @@ urlpatterns = [
     #  Acknowledgements
     path("mgmt/acknowledgement/<int:acknowledgement_id>/", views.detail_acknowledgement, name="acknowledgement"),
     path('mgmt/acknowledgement/delete/<int:pk>/', views.delete_acknowledgement, name='delete-acknowledgement'),
-    path('mgmt/acknowledgement/edit/', views.edit_acknowledgement, name='edit-acknowledgement'),
-    path('mgmt/acknowledgement/edit/<int:id>/', views.edit_acknowledgement, name='edit-acknowledgement'),
-
     path('mgmt/acknowledgement/search/', views.search_acknowledgement, name='search-acknowledgement'),
     path('mgmt/acknowledgement/edit/', views.edit_acknowledgement, name='edit-acknowledgement'),
     path('mgmt/acknowledgement/edit/<int:id>/', views.edit_acknowledgement, name='edit-acknowledgement'),
