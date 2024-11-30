@@ -33,19 +33,23 @@
 <table class="content-table">
     <thead>
         <tr>
+            <th></th>
             <th>Surname</th>
             <th>Initials</th>
             <th>Rank</th>
-            <th>Army Number</th>
+            <th>Army No.</th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
         {% for soldier in page_obj %}
         <tr>
+            <td></td>
             <td><a href="{% url 'soldier' soldier.id %}">{{ soldier.surname }}</a></td>
             <td>{{ soldier.initials }}</td>
             <td>{{ soldier.rank }}</td>
             <td>{{ soldier.army_number}}</td>
+            <td></td>
         </tr>
         {% endfor %}
     </tbody>

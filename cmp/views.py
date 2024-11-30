@@ -438,36 +438,42 @@ def soldier_detail(request, soldier_id):
     return render(request, 'cmp/soldier.html', {'soldier': soldier})
 
 
-def edit_soldiers(request, soldier_id):
-    soldier = get_object_or_404(Soldier, id=soldier_id)
-    try:
-        death = SoldierDeath.objects.get(soldier=soldier)
-    except SoldierDeath.DoesNotExist:
-        death = None
+def edit_soldier(request, id=None):  # Changed to id to match URL pattern
+    if id:
+        soldier = get_object_or_404(Soldier, id=id)
+        try:
+            death = SoldierDeath.objects.get(soldier=soldier)
+        except SoldierDeath.DoesNotExist:
+            death = None
 
-    if request.method == 'POST':
-        form = editSoldierForm(request.POST, instance=soldier)
-        death_form = editSoldierDeathForm(request.POST, request.FILES, instance=death)
+        if request.method == 'POST':
+            form = editSoldierForm(request.POST, instance=soldier)
+            death_form = editSoldierDeathForm(request.POST, request.FILES, instance=death)
+        else:
+            form = editSoldierForm(instance=soldier)
+            death_form = editSoldierDeathForm(instance=death)
+    else:
+        soldier = None
+        form = editSoldierForm(request.POST or None)
+        death_form = editSoldierDeathForm(request.POST or None)
 
-        if form.is_valid() and death_form.is_valid():
-            soldier = form.save()
-            # Only save death record if there's actual death data
-            if death_form.has_changed() and death_form.cleaned_data.get('date'):
-                death_instance = death_form.save(commit=False)
-                death_instance.soldier = soldier
-                death_instance.save()
-            elif death and not death_form.cleaned_data.get('date'):
-                # If there's an existing death record but date is cleared, delete it
-                death.delete()
-            
-            messages.success(request, "Soldier updated successfully")
-            return redirect('soldier', soldier_id=soldier.id)
+    if request.method == 'POST' and form.is_valid() and death_form.is_valid():
+        soldier = form.save()
+        if death_form.has_changed() and death_form.cleaned_data.get('date'):
+            death_instance = death_form.save(commit=False)
+            death_instance.soldier = soldier
+            death_instance.save()
+        elif death and not death_form.cleaned_data.get('date'):
+            death.delete()
+        
+        messages.success(request, f'Soldier "{soldier.surname}, {soldier.initials}" successfully {"updated" if id else "added"}!')
+        return redirect('search-soldiers')
 
-    else:  # GET request
-        form = editSoldierForm(instance=soldier)
-        death_form = editSoldierDeathForm(instance=death)
-
-    return render(request, "cmp/edit-soldiers.html", {"form": form, 'death_form': death_form})
+    return render(request, "cmp/edit-soldiers.html", {
+        "form": form, 
+        'death_form': death_form,
+        'soldier': soldier
+    })
 
 
 def search_acknowledgement(request):
@@ -874,3 +880,11 @@ def delete_powcamp(request, id):
     powcamp.delete()
     messages.success(request, f'PoW Camp "{name}" successfully deleted!')
     return redirect('search-powcamps')
+
+
+def delete_soldier(request, id):
+    soldier = get_object_or_404(Soldier, id=id)
+    name = f"{soldier.surname}, {soldier.initials}"  # Store the name before deletion
+    soldier.delete()
+    messages.success(request, f'Soldier "{name}" successfully deleted!')
+    return redirect('search-soldiers')

@@ -86,15 +86,11 @@ urlpatterns = [
     path('soldiers/', views.soldiers, name='soldiers'),
 
     # Soldier management
-    path("mgmt/soldiers", views.edit_soldiers, name="soldiersa"),
-    path("mgmt/soldiers/<int:soldier_id>/", views.detail_soldiers, name="soldiersb"),
-    path("mgmt/soldiers/edit/<int:soldier_id>", views.edit_soldiers, name="edit-soldiers"),
-    path('mgmt/soldiers/search/', views.search_soldiers, name='search-soldiers'),
-
-
-    #path("soldier-search/", views.soldier_search, name="soldier-search" ),
-    #path("soldier-search/<str:surname>"  , views.soldier_search , name="soldier-search" ),
-
+    path("mgmt/soldiers/search/", views.search_soldiers, name='search-soldiers'),
+    path("mgmt/soldiers/edit/<int:id>/", views.edit_soldier, name='edit-soldier'),
+    path("mgmt/soldiers/edit/", views.edit_soldier, name='edit-soldier'),
+    path("mgmt/soldiers/delete/<int:id>/", views.delete_soldier, name='delete-soldier'),
+    path("mgmt/soldiers/<int:id>/", views.detail_soldiers, name='soldier-detail'),
 
 ]
 

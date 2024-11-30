@@ -1,10 +1,10 @@
 {% extends "base.html" %}
 {% load static crispy_forms_tags %}
-{% block title %}Edit/Update Soldier{% endblock %}
+{% block title %}{% if soldier %}Edit{% else %}Add{% endif %} Soldier{% endblock %}
 {% block content %}
 
 <div>
-    <h1 class="mgmt-title">Update Soldier Record </h1>
+    <h1 class="mgmt-title">{% if soldier %}Edit{% else %}Add{% endif %} Soldier Record</h1>
     <form method="POST" enctype="multipart/form-data">
         {% csrf_token %}
 
@@ -12,11 +12,14 @@
 
         {{ death_form | crispy }}
 
-
-
-        <button type="submit" class="btn btn-primary">Save</button>
+        <button type="submit" class="glossy-button add-button">SAVE</button>
+        {% if soldier %}
+            <button type="button" class="glossy-button delete-button" 
+                onclick="if(confirm('Are you sure you want to delete this soldier?')) { 
+                    window.location.href='{% url 'delete-soldier' soldier.id %}';
+                }">DELETE</button>
+        {% endif %}
     </form>
 </div>
-
 
 {% endblock %}
