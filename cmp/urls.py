@@ -65,11 +65,15 @@ urlpatterns = [
     path('mgmt/ranks/search/', views.search_ranks, name='search-ranks'),
 
     #  Acknowledgements
-    #path("mgmt/acknowledgements", views.edit_acknowledgements, name="edit-acknowledgement"),
-    path("mgmt/acknowledgements/<int:acknowledgement_id>/", views.detail_acknowledgements, name="acknowledgements"),
-    path("mgmt/acknowledgements/edit/<int:acknowledgement_id>", views.edit_acknowledgements, name="edit-acknowledgements"),
-    path('mgmt/acknowledgements/search/', views.search_acknowledgements, name='search-acknowledgements'),
-    path('mgmt/acknowledgements/delete/<int:pk>/', views.delete_acknowledgement, name='delete-acknowledgements'),
+    path("mgmt/acknowledgement/<int:acknowledgement_id>/", views.detail_acknowledgement, name="acknowledgement"),
+    path('mgmt/acknowledgement/delete/<int:pk>/', views.delete_acknowledgement, name='delete-acknowledgement'),
+    path('mgmt/acknowledgement/edit/', views.edit_acknowledgement, name='edit-acknowledgement'),
+    path('mgmt/acknowledgement/edit/<int:id>/', views.edit_acknowledgement, name='edit-acknowledgement'),
+
+    path('mgmt/acknowledgement/search/', views.search_acknowledgement, name='search-acknowledgement'),
+    path('mgmt/acknowledgement/edit/', views.edit_acknowledgement, name='edit-acknowledgement'),
+    path('mgmt/acknowledgement/edit/<int:id>/', views.edit_acknowledgement, name='edit-acknowledgement'),
+
 
     # Provost Officers
     path('mgmt/create-provost-officer/', views.create_provost_officer, name='create-provost-officer'),
@@ -86,6 +90,7 @@ urlpatterns = [
 
     #path("soldier-search/", views.soldier_search, name="soldier-search" ),
     #path("soldier-search/<str:surname>"  , views.soldier_search , name="soldier-search" ),
+
 
 ]
 

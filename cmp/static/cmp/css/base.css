@@ -184,3 +184,19 @@
           background: linear-gradient(to bottom, #cc0000, #990000) !important;
       }
 
+
+    .add-button {
+      background-color: #4CAF50; /* Green */
+      border: none;
+      color: white;
+      padding: 3px 8px;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 10px;
+      margin: 4px 2px;
+      margin-right: 4px; 
+      cursor: pointer;
+      transition-duration: 0.4s;
+      border-radius: 12px; /* Add this line */
+  }

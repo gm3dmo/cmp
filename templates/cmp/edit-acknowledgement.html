@@ -5,7 +5,7 @@
 
 <h1> Edit Acknowledgement</h1>
 <div>
-    <form method="post">
+    <form method="post" action="{% url 'edit-acknowledgement' %}">
         {% csrf_token %}
         {{ form|crispy }}
         
@@ -22,7 +22,7 @@
         {% endif %}
         
         <button type="submit" class="btn btn-primary">Save</button>
-        <a href="{% url 'search-acknowledgements' %}" class="btn btn-secondary">Back</a>
+        <button type="button" class="btn btn-secondary" onclick="location.href='{% url 'search-acknowledgement' %}'">Back</button>
     </form>
 </div>
 

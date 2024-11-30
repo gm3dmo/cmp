@@ -159,3 +159,8 @@ class ProvostAppointmentForm(forms.ModelForm):
         widgets = {
             'notes': forms.Textarea(attrs={'rows': 3}),
         }
+
+class AcknowledgementForm(forms.ModelForm):
+    class Meta:
+        model = Acknowledgement
+        fields = ['surname', 'name', 'notes']
