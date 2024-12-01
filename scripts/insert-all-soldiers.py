@@ -1,4 +1,3 @@
-
 def run():
 
     from pathlib import Path
@@ -32,19 +31,24 @@ def run():
     title = sys.argv[2]
     
     start_fetch_time = time.time()
-    ref_data_url = "https://api.github.com/repos/gm3dmo/old-cmp/contents/data/soldier-utf-8.csv"
+    ref_data_url = "https://api.github.com/repos/gm3dmo/old-cmp/contents/data/soldier.csv"
 
     http = urllib3.PoolManager()
     r = http.request('GET', ref_data_url, headers=headers)
     end_fetch_time = time.time()
-    # load the response into a csv dictionary reader
-    reader = csv.DictReader(r.data.decode('utf-8').splitlines())
-    # breakpoint()
+    
+    # Read raw data and split into lines while preserving line endings
+    raw_data = r.data.decode('utf-8')
+    lines = raw_data.splitlines(keepends=True)
+    
+    # Create CSV reader with the first line as header
+    reader = csv.DictReader(lines)
+    
     start_insert_time = time.time()
     for row in reader:
-        # id,surname,initials,army_number,rank_id,notes
-        #print(f"""{row['id']} {row['surname']}""")
         try:
+            # Debug print to see what we're getting from CSV
+            
             Soldier.objects.create(
                 id = row['id'],
                 surname = row['surname'],
@@ -52,10 +56,13 @@ def run():
                 army_number = row['army_number'],
                 rank_id = row['rank_id'],
                 notes = row['notes']
-        )
+            )
+            
+            # Debug print to verify what was saved
+            saved_soldier = Soldier.objects.get(id=row['id'])
+            
         except Exception as e:
             print(f"""💥row: ({row}) """)
-
             raise e
 
     end_insert_time = time.time()
