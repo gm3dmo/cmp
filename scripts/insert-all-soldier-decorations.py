@@ -32,7 +32,8 @@ def run():
     }
 
     start_fetch_time = time.time()
-    ref_data_url = "https://api.github.com/repos/gm3dmo/old-cmp/contents/data/soldier-decoration.csv"
+    ref_data_url = "https://api.github.com/repos/gm3dmo/old-cmp/contents/data/soldier-decoration-utf-8.csv"
+
     http = urllib3.PoolManager()
     r = http.request('GET', ref_data_url, headers=headers)
     end_fetch_time = time.time()
