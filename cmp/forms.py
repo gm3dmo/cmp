@@ -16,6 +16,8 @@ from .models import Acknowledgement
 from .models import ProvostAppointment
 
 from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Layout, Field, Div, HTML
+from crispy_forms.bootstrap import Accordion, AccordionGroup
 
 class CustomUserCreationForm(UserCreationForm):
     class Meta:
@@ -141,13 +143,31 @@ class editRankForm(forms.ModelForm):
 
 
 class editSoldierDeathForm(forms.ModelForm):
+    class Meta:
+        model = SoldierDeath
+        fields = ['date', 'company', 'cemetery', 'cwgc_id', 'image']
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
-        self.helper.label_class = 'form-label'  
-    class Meta:
-        model = SoldierDeath
-        fields = ["date", "cemetery", "image"]  
+        self.helper.form_tag = False
+        
+        # Create the accordion layout
+        self.helper.layout = Layout(
+            Accordion(
+                AccordionGroup(
+                    'Death Details',
+                    'date',
+                    'company',
+                    'cemetery',
+                    'cwgc_id',
+                    'image',
+                    active=False,
+                    css_class="bg-light-blue"
+                ),
+                css_id="death-details-accordion"
+            )
+        )
 
 
 class editSoldierForm(forms.ModelForm):
@@ -205,3 +225,21 @@ class AcknowledgementForm(forms.ModelForm):
     class Meta:
         model = Acknowledgement
         fields = ['surname', 'name', 'notes']
+
+class SoldierForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.layout = Layout(
+            # Regular fields that exist in the Soldier model
+            Field('surname'),
+            Field('initials'),
+            Field('army_number'),
+            Field('rank'),
+            Field('provost_officer'),
+            Field('notes'),
+        )
+
+    class Meta:
+        model = Soldier
+        fields = ['surname', 'initials', 'army_number', 'rank', 'provost_officer', 'notes']

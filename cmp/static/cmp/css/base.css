@@ -256,3 +256,17 @@
     margin: 5px 0;
     box-sizing: border-box;
 }
+
+.bg-light-blue {
+  background-color: #e7f1ff !important;
+}
+
+/* Optional: Style the accordion header differently */
+.bg-light-blue .accordion-button {
+  background-color: #cce3ff;
+}
+
+/* Optional: Style the accordion header when not collapsed */
+.bg-light-blue .accordion-button:not(.collapsed) {
+  background-color: #b8daff;
+}
