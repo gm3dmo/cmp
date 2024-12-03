@@ -10,14 +10,64 @@ from .models import Cemetery
 from .models import PowCamp
 from .models import Soldier
 from .models import SoldierDeath
+from .models import SoldierImprisonment
 from .models import Company
 from .models import Decoration
 from .models import Acknowledgement
 from .models import ProvostAppointment
+from django.forms import inlineformset_factory
 
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Field, Div, HTML
 from crispy_forms.bootstrap import Accordion, AccordionGroup
+
+# First, create a helper class for the formset
+class SoldierImprisonmentFormSetHelper(FormHelper):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.form_tag = False
+        
+        # Check if there's any existing data
+        has_data = False
+        if hasattr(self, 'form') and hasattr(self.form, 'instance'):
+            has_data = SoldierImprisonment.objects.filter(soldier=self.form.instance).exists()
+        
+        # Set the title based on whether there's data
+        title = 'Prisoner of War Details' if has_data else 'Prisoner of War Details (None Recorded)'
+        
+        self.layout = Layout(
+            Accordion(
+                AccordionGroup(
+                    title,
+                    'pow_camp',
+                    'pow_number',
+                    'date_from',
+                    'date_to',
+                    'notes',
+                    active=has_data,
+                    css_class='bg-light'
+                ),
+                css_id="imprisonment-details-accordion"
+            )
+        )
+
+# Then create the formset with the helper
+SoldierImprisonmentInlineFormSet = inlineformset_factory(
+    Soldier,
+    SoldierImprisonment,
+    fields=['pow_camp', 'pow_number', 'date_from', 'date_to', 'notes'],
+    extra=1,
+    can_delete=True,
+    can_order=False,
+    min_num=0,  # Minimum number of forms
+    validate_min=False,  # Don't validate minimum number of forms
+    max_num=None,  # Maximum number of forms (None = unlimited)
+    validate_max=False,  # Don't validate maximum number of forms
+    absolute_max=1000,  # Absolute maximum number of forms
+)
+
+# Add the helper to the formset
+SoldierImprisonmentInlineFormSet.helper = SoldierImprisonmentFormSetHelper()
 
 class CustomUserCreationForm(UserCreationForm):
     class Meta:
@@ -32,6 +82,31 @@ class CustomUserChangeForm(UserChangeForm):
 
 
 class editPowCampForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        
+        # Determine header class and active state based on whether form has data
+        header_class = 'bg-light' if self.instance and self.instance.pk else 'bg-light-blue'
+        is_active = bool(self.instance and self.instance.pk)
+        
+        self.helper.layout = Layout(
+            Field('name'),
+            Accordion(
+                AccordionGroup(
+                    'POW Details',
+                    Field('nearest_city'),
+                    Field('notes'),
+                    Field('wartime_country'),
+                    Field('latitude'),
+                    Field('longitude'),
+                    active=is_active,
+                    button_class=header_class
+                ),
+                css_id="powcamp-details-accordion"
+            )
+        )
+
     name = forms.CharField(
         widget=forms.TextInput(attrs={
             'class': 'wide-input'
@@ -150,20 +225,25 @@ class editSoldierDeathForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
-        self.helper.form_tag = False
         
-        # Create the accordion layout
+        # Determine header class and active state based on whether form has data
+        header_class = 'bg-light' if self.instance and self.instance.pk else 'bg-light-blue'
+        is_active = bool(self.instance and self.instance.pk)
+        
+        # Set title based on whether there's data
+        title = 'Death Details' if self.instance and self.instance.pk else 'Death Details (None Recorded)'
+        
         self.helper.layout = Layout(
             Accordion(
                 AccordionGroup(
-                    'Death Details',
+                    title,
                     'date',
                     'company',
                     'cemetery',
                     'cwgc_id',
                     'image',
-                    active=False,
-                    css_class="bg-light-blue"
+                    active=is_active,
+                    button_class=header_class
                 ),
                 css_id="death-details-accordion"
             )
@@ -175,9 +255,37 @@ class editSoldierForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.label_class = 'form-label'  
+
+        # Determine header class and active state based on whether form has data
+        header_class = 'bg-light' if self.instance and self.instance.pk else 'bg-light-blue'
+        is_active = bool(self.instance and self.instance.pk)
+        
+        self.helper.layout = Layout(
+            Field('surname'),
+            Field('initials'),
+            Field('army_number'),
+            Field('rank'),
+            Field('provost_officer'),
+            Field('notes'),
+            Accordion(
+                AccordionGroup(
+                    'Prisoner of War Details',
+                    'imprisonment_formset',
+                    active=is_active,
+                    button_class=header_class
+                ),
+                css_id="imprisonment-details-accordion"
+            )
+        )
+        # Initialize the formset
+        self.imprisonment_formset = SoldierImprisonmentInlineFormSet(
+            instance=self.instance,
+            prefix='imprisonment'
+        )
+
     class Meta:
         model = Soldier
-        fields = "__all__"
+        exclude = ['created_at']  # Exclude the created_at field
 
 
 class ProvostOfficerForm(forms.ModelForm):
@@ -230,14 +338,32 @@ class SoldierForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
+        
+        # Determine header class and active state based on whether form has data
+        header_class = 'bg-light' if self.instance and self.instance.pk else 'bg-light-blue'
+        is_active = bool(self.instance and self.instance.pk)
+        
         self.helper.layout = Layout(
-            # Regular fields that exist in the Soldier model
             Field('surname'),
             Field('initials'),
             Field('army_number'),
             Field('rank'),
             Field('provost_officer'),
             Field('notes'),
+            Accordion(
+                AccordionGroup(
+                    'Prisoner of War Details',
+                    'imprisonment_formset',
+                    active=is_active,
+                    button_class=header_class
+                ),
+                css_id="imprisonment-details-accordion"
+            )
+        )
+        # Initialize the formset
+        self.imprisonment_formset = SoldierImprisonmentInlineFormSet(
+            instance=self.instance,
+            prefix='imprisonment'
         )
 
     class Meta:

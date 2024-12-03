@@ -11,6 +11,7 @@ from django.conf import settings
 from .managers import CustomUserManager
 
 
+
 class CustomUser(AbstractUser):
     username = None
     email = models.EmailField(_("email address"), unique=True)
