@@ -177,9 +177,10 @@ class editSoldierForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.label_class = 'form-label'  
+
     class Meta:
         model = Soldier
-        fields = "__all__"
+        exclude = ['created_at']  # Exclude the created_at field
 
 
 class ProvostOfficerForm(forms.ModelForm):
