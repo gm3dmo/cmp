@@ -11,6 +11,7 @@ from .models import PowCamp
 from .models import Soldier
 from .models import SoldierDeath
 from .models import SoldierImprisonment
+from .models import SoldierDecoration
 from .models import Company
 from .models import Decoration
 from .models import Acknowledgement
@@ -27,12 +28,12 @@ class SoldierImprisonmentFormSetHelper(FormHelper):
         super().__init__(*args, **kwargs)
         self.form_tag = False
         
-        # Check if there's any existing data
+        # Check if there's any data in the formset
         has_data = False
-        if hasattr(self, 'form') and hasattr(self.form, 'instance'):
-            has_data = SoldierImprisonment.objects.filter(soldier=self.form.instance).exists()
+        if hasattr(self, 'formset'):
+            has_data = any(not form.empty_permitted or form.initial for form in self.formset)
         
-        # Set the title based on whether there's data
+        # Set title based on whether there's data
         title = 'Prisoner of War Details' if has_data else 'Prisoner of War Details (None Recorded)'
         
         self.layout = Layout(
@@ -44,7 +45,7 @@ class SoldierImprisonmentFormSetHelper(FormHelper):
                     'date_from',
                     'date_to',
                     'notes',
-                    active=has_data,
+                    active=has_data,  # Only active if there's data
                     css_class='bg-light'
                 ),
                 css_id="imprisonment-details-accordion"
@@ -57,17 +58,12 @@ SoldierImprisonmentInlineFormSet = inlineformset_factory(
     SoldierImprisonment,
     fields=['pow_camp', 'pow_number', 'date_from', 'date_to', 'notes'],
     extra=1,
-    can_delete=True,
-    can_order=False,
-    min_num=0,  # Minimum number of forms
-    validate_min=False,  # Don't validate minimum number of forms
-    max_num=None,  # Maximum number of forms (None = unlimited)
-    validate_max=False,  # Don't validate maximum number of forms
-    absolute_max=1000,  # Absolute maximum number of forms
+    can_delete=True
 )
 
 # Add the helper to the formset
 SoldierImprisonmentInlineFormSet.helper = SoldierImprisonmentFormSetHelper()
+
 
 class CustomUserCreationForm(UserCreationForm):
     class Meta:
@@ -377,3 +373,50 @@ class SoldierForm(forms.ModelForm):
     class Meta:
         model = Soldier
         fields = ['surname', 'initials', 'army_number', 'rank', 'provost_officer', 'notes']
+
+
+class SoldierDecorationFormSetHelper(FormHelper):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.form_tag = False
+        
+        # Check if there's any data in the formset
+        has_data = False
+        if hasattr(self, 'formset'):
+            has_data = any(not form.empty_permitted or form.initial for form in self.formset)
+        
+        # Set title based on whether there's data
+        title = 'Decoration Details' if has_data else 'Decoration Details (None Recorded)'
+        
+        self.layout = Layout(
+            Accordion(
+                AccordionGroup(
+                    title,
+                    'decoration',
+                    'gazette_issue',
+                    'gazette_page',
+                    'gazette_date',
+                    'theatre',
+                    'country',
+                    'citation',
+                    'notes',
+                    active=has_data,  # Only active if there's data
+                    css_class='bg-light'
+                ),
+                css_id="decoration-details-accordion"
+            )
+        )
+
+# Create the formset with the helper
+SoldierDecorationInlineFormSet = inlineformset_factory(
+    Soldier,
+    SoldierDecoration,
+    fields=['decoration', 'gazette_issue', 'gazette_page', 'gazette_date', 'theatre', 'country', 'citation', 'notes'],
+    extra=1,
+    can_delete=True
+)
+
+# Add the helper to the formset
+SoldierDecorationInlineFormSet.helper = SoldierDecorationFormSetHelper()
+
+
