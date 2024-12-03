@@ -39,7 +39,10 @@ from django.shortcuts import render, redirect
 from .models import SoldierImprisonment
 
 from .forms import editSoldierForm, editSoldierDeathForm, SoldierImprisonmentInlineFormSet
+from .forms import SoldierDecorationInlineFormSet
 from .forms import ProvostOfficerForm, ProvostAppointmentForm
+
+
 
 import folium
 from django.views.generic import TemplateView
@@ -444,23 +447,27 @@ def edit_soldier(request, id):
         form = editSoldierForm(request.POST, instance=soldier)
         death_form = editSoldierDeathForm(request.POST, request.FILES, instance=getattr(soldier, 'soldierdeath', None))
         imprisonment_formset = SoldierImprisonmentInlineFormSet(request.POST, instance=soldier, prefix='imprisonment')
+        decoration_formset = SoldierDecorationInlineFormSet(request.POST, instance=soldier, prefix='decoration')
         
-        if form.is_valid() and death_form.is_valid() and imprisonment_formset.is_valid():
+        if form.is_valid() and death_form.is_valid() and imprisonment_formset.is_valid() and decoration_formset.is_valid():
             form.save()
             if death_form.has_changed():
                 death_form.save()
             imprisonment_formset.save()
+            decoration_formset.save()
             messages.success(request, f'Soldier "{soldier.surname}, {soldier.initials}" successfully updated!')
             return redirect('search-soldiers')
     else:
         form = editSoldierForm(instance=soldier)
         death_form = editSoldierDeathForm(instance=getattr(soldier, 'soldierdeath', None))
         imprisonment_formset = SoldierImprisonmentInlineFormSet(instance=soldier, prefix='imprisonment')
+        decoration_formset = SoldierDecorationInlineFormSet(instance=soldier, prefix='decoration')
     
     return render(request, 'cmp/edit-soldiers.html', {
         'form': form,
         'death_form': death_form,
         'imprisonment_formset': imprisonment_formset,
+        'decoration_formset': decoration_formset,
         'soldier': soldier,
     })
 
