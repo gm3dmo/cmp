@@ -260,6 +260,14 @@ class editSoldierForm(forms.ModelForm):
         header_class = 'bg-light' if self.instance and self.instance.pk else 'bg-light-blue'
         is_active = bool(self.instance and self.instance.pk)
         
+        # Check if there are any imprisonment records
+        has_imprisonment = False
+        if self.instance and self.instance.pk:
+            has_imprisonment = SoldierImprisonment.objects.filter(soldier=self.instance).exists()
+        
+        # Set title based on whether there's data
+        title = 'Prisoner of War Details' if has_imprisonment else 'Prisoner of War Details (None Recorded)'
+        
         self.helper.layout = Layout(
             Field('surname'),
             Field('initials'),
@@ -269,9 +277,9 @@ class editSoldierForm(forms.ModelForm):
             Field('notes'),
             Accordion(
                 AccordionGroup(
-                    'Prisoner of War Details',
+                    title,
                     'imprisonment_formset',
-                    active=is_active,
+                    active=has_imprisonment,
                     button_class=header_class
                 ),
                 css_id="imprisonment-details-accordion"
