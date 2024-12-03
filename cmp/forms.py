@@ -150,9 +150,11 @@ class editSoldierDeathForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
-        self.helper.form_tag = False
         
-        # Create the accordion layout
+        # Determine header class and active state based on whether form has data
+        header_class = 'bg-light' if self.instance and self.instance.pk else 'bg-light-blue'
+        is_active = bool(self.instance and self.instance.pk)
+        
         self.helper.layout = Layout(
             Accordion(
                 AccordionGroup(
@@ -162,8 +164,8 @@ class editSoldierDeathForm(forms.ModelForm):
                     'cemetery',
                     'cwgc_id',
                     'image',
-                    active=False,
-                    css_class="bg-light-blue"
+                    active=is_active,  # Set active based on form data
+                    button_class=header_class  # Use button_class for header styling
                 ),
                 css_id="death-details-accordion"
             )
