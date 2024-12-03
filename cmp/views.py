@@ -38,7 +38,7 @@ from django.shortcuts import render, redirect
 
 from .models import SoldierImprisonment
 
-from .forms import editSoldierForm, editSoldierDeathForm
+from .forms import editSoldierForm, editSoldierDeathForm, SoldierImprisonmentInlineFormSet
 from .forms import ProvostOfficerForm, ProvostAppointmentForm
 
 import folium
@@ -438,41 +438,30 @@ def soldier_detail(request, soldier_id):
     return render(request, 'cmp/soldier.html', {'soldier': soldier})
 
 
-def edit_soldier(request, id=None):  # Changed to id to match URL pattern
-    if id:
-        soldier = get_object_or_404(Soldier, id=id)
-        try:
-            death = SoldierDeath.objects.get(soldier=soldier)
-        except SoldierDeath.DoesNotExist:
-            death = None
-
-        if request.method == 'POST':
-            form = editSoldierForm(request.POST, instance=soldier)
-            death_form = editSoldierDeathForm(request.POST, request.FILES, instance=death)
-        else:
-            form = editSoldierForm(instance=soldier)
-            death_form = editSoldierDeathForm(instance=death)
-    else:
-        soldier = None
-        form = editSoldierForm(request.POST or None)
-        death_form = editSoldierDeathForm(request.POST or None)
-
-    if request.method == 'POST' and form.is_valid() and death_form.is_valid():
-        soldier = form.save()
-        if death_form.has_changed() and death_form.cleaned_data.get('date'):
-            death_instance = death_form.save(commit=False)
-            death_instance.soldier = soldier
-            death_instance.save()
-        elif death and not death_form.cleaned_data.get('date'):
-            death.delete()
+def edit_soldier(request, id):
+    soldier = get_object_or_404(Soldier, pk=id)
+    if request.method == 'POST':
+        form = editSoldierForm(request.POST, instance=soldier)
+        death_form = editSoldierDeathForm(request.POST, request.FILES, instance=getattr(soldier, 'soldierdeath', None))
+        imprisonment_formset = SoldierImprisonmentInlineFormSet(request.POST, instance=soldier, prefix='imprisonment')
         
-        messages.success(request, f'Soldier "{soldier.surname}, {soldier.initials}" successfully {"updated" if id else "added"}!')
-        return redirect('search-soldiers')
-
-    return render(request, "cmp/edit-soldiers.html", {
-        "form": form, 
+        if form.is_valid() and death_form.is_valid() and imprisonment_formset.is_valid():
+            form.save()
+            if death_form.has_changed():
+                death_form.save()
+            imprisonment_formset.save()
+            messages.success(request, f'Soldier "{soldier.surname}, {soldier.initials}" successfully updated!')
+            return redirect('search-soldiers')
+    else:
+        form = editSoldierForm(instance=soldier)
+        death_form = editSoldierDeathForm(instance=getattr(soldier, 'soldierdeath', None))
+        imprisonment_formset = SoldierImprisonmentInlineFormSet(instance=soldier, prefix='imprisonment')
+    
+    return render(request, 'cmp/edit-soldiers.html', {
+        'form': form,
         'death_form': death_form,
-        'soldier': soldier
+        'imprisonment_formset': imprisonment_formset,
+        'soldier': soldier,
     })
 
 
@@ -888,3 +877,28 @@ def delete_soldier(request, id):
     soldier.delete()
     messages.success(request, f'Soldier "{name}" successfully deleted!')
     return redirect('search-soldiers')
+
+def soldier_edit(request, pk):
+    soldier = get_object_or_404(Soldier, pk=pk)
+    if request.method == 'POST':
+        form = SoldierForm(request.POST, instance=soldier)
+        imprisonment_formset = SoldierImprisonmentInlineFormSet(
+            request.POST,
+            instance=soldier,
+            prefix='imprisonment'
+        )
+        if form.is_valid() and imprisonment_formset.is_valid():
+            form.save()
+            imprisonment_formset.save()
+            return redirect('success_url')  # Replace with your success URL
+    else:
+        form = SoldierForm(instance=soldier)
+        imprisonment_formset = SoldierImprisonmentInlineFormSet(
+            instance=soldier,
+            prefix='imprisonment'
+        )
+    return render(request, 'cmp/edit-soldier.html', {
+        'form': form,
+        'imprisonment_formset': imprisonment_formset,
+        'soldier': soldier
+    })
