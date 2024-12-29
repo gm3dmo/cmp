@@ -235,7 +235,7 @@ class SoldierImprisonment(models.Model):
     soldier = models.ForeignKey("Soldier", on_delete=models.CASCADE)
     legacy_company = models.CharField(max_length=255, unique=False, default="", blank=True)
     pow_number = models.CharField(max_length=255, unique=False, default="", blank=True)
-    pow_camp = models.ForeignKey("PowCamp", on_delete=models.CASCADE)
+    pow_camp = models.ForeignKey("PowCamp", on_delete=models.CASCADE, null=True, blank=True)
     date_from = models.DateField(null=True, blank=True)
     date_to = models.DateField(null=True, blank=True)
     legacy_date_from = models.CharField(max_length=255, unique=False, default="", blank=True)
