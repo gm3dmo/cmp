@@ -88,7 +88,7 @@ urlpatterns = [
     # Soldier management
     path("mgmt/soldiers/search/", views.search_soldiers, name='search-soldiers'),
     path("mgmt/soldiers/edit/<int:id>/", views.edit_soldier, name='edit-soldier'),
-    path("mgmt/soldiers/edit/", views.edit_soldier, name='edit-soldier'),
+    path("mgmt/soldiers/edit/", views.edit_soldier, name='create-soldier'),
     path("mgmt/soldiers/delete/<int:id>/", views.delete_soldier, name='delete-soldier'),
     path("mgmt/soldiers/<int:id>/", views.detail_soldiers, name='soldier-detail'),
 
