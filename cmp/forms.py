@@ -251,6 +251,8 @@ class editSoldierForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.label_class = 'form-label'  
+        self.fields['provost_officer'].disabled = True
+
 
         # Determine header class and active state based on whether form has data
         header_class = 'bg-light' if self.instance and self.instance.pk else 'bg-light-blue'
@@ -342,6 +344,7 @@ class SoldierForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
+
         
         # Determine header class and active state based on whether form has data
         header_class = 'bg-light' if self.instance and self.instance.pk else 'bg-light-blue'
@@ -352,7 +355,7 @@ class SoldierForm(forms.ModelForm):
             Field('initials'),
             Field('army_number'),
             Field('rank'),
-            Field('provost_officer'),
+            #Field('provost_officer'),
             Field('notes'),
             Accordion(
                 AccordionGroup(
