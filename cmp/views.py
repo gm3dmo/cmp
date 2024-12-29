@@ -469,6 +469,10 @@ def edit_soldier(request, id=None):
             imprisonment_formset = SoldierImprisonmentFormSetWithHelper(request.POST, instance=soldier, prefix='imprisonment')
             decoration_formset = SoldierDecorationInlineFormSet(request.POST, instance=soldier, prefix='decoration')
             
+            # Add helpers to formsets
+            imprisonment_formset.helper = SoldierImprisonmentFormSetHelper()
+            decoration_formset.helper = SoldierDecorationFormSetHelper()
+            
             print("=== Form Validation ===")
             print(f"Main form bound: {form.is_bound}")
             print(f"Death form bound: {death_form.is_bound}")
