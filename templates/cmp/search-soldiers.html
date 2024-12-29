@@ -15,7 +15,7 @@
 <h3>Search/Edit/Add/Delete Soldiers</h3>
 
 <div class="center-content">
-    <button class="glossy-button add-button" onclick="location.href='{% url 'edit-soldier' %}'" type="button">Add New Soldier</button>
+    <a href="{% url 'create-soldier' %}" class="glossy-button add-button">Add New Soldier</a>
 </div>
 
 <div name="search-input" class="search-input">
@@ -41,7 +41,7 @@
 
   {% for soldier in page_obj %}
     <tr>
-      <td><button class="glossy-button edit-button" onclick="location.href='{% url 'edit-soldier' soldier.id %}'" type="button">EDIT</button></td>
+      <td><button class="glossy-button edit-button" onclick="location.href='{% url 'edit-soldier' id=soldier.id %}'" type="button">EDIT</button></td>
       <td><span class="soldier-info">{{ soldier.surname }}</span></td>
       <td><span class="soldier-info">{{ soldier.initials }}</span></td>
       <td><span class="soldier-info">{{ soldier.army_number }}</span></td>

@@ -19,22 +19,37 @@ from .models import ProvostAppointment
 from django.forms import inlineformset_factory
 
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Field, Div, HTML
-from crispy_forms.bootstrap import Accordion, AccordionGroup
+from crispy_forms.layout import Layout, Field
+from crispy_forms.bootstrap import Accordion, AccordionGroup, TabHolder, Tab
 
-# First, create a helper class for the formset
+# First define the formset form
+class SoldierImprisonmentForm(forms.ModelForm):
+    class Meta:
+        model = SoldierImprisonment
+        fields = ['pow_camp', 'pow_number', 'date_from', 'date_to', 'notes']
+        widgets = {
+            'date_from': forms.DateInput(
+                attrs={
+                    'type': 'date',
+                    'class': 'form-control'
+                }
+            ),
+            'date_to': forms.DateInput(
+                attrs={
+                    'type': 'date',
+                    'class': 'form-control'
+                }
+            )
+        }
+
 class SoldierImprisonmentFormSetHelper(FormHelper):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.form_tag = False
         
-        # Check if there's any data in the formset
+        # Default to collapsed
         has_data = False
-        if hasattr(self, 'formset'):
-            has_data = any(not form.empty_permitted or form.initial for form in self.formset)
-        
-        # Set title based on whether there's data
-        title = 'Prisoner of War Details' if has_data else 'Prisoner of War Details (None Recorded)'
+        title = 'Prisoner of War Details (None Recorded)'
         
         self.layout = Layout(
             Accordion(
@@ -45,24 +60,37 @@ class SoldierImprisonmentFormSetHelper(FormHelper):
                     'date_from',
                     'date_to',
                     'notes',
-                    active=has_data,  # Only active if there's data
-                    css_class='bg-light'
+                    active=has_data,  # Collapsed by default
+                    css_class='bg-info bg-opacity-25 border rounded p-3'
                 ),
                 css_id="imprisonment-details-accordion"
             )
         )
 
-# Then create the formset with the helper
+    def update_title(self):
+        """Update the title based on formset data"""
+        if hasattr(self, 'formset') and self.formset.initial_forms:
+            has_data = any(form.initial for form in self.formset.initial_forms)
+            title = 'Prisoner of War Details' if has_data else 'Prisoner of War Details (None Recorded)'
+            self.layout[0][0].name = title
+            self.layout[0][0].active = has_data
+
+# Create the formset
 SoldierImprisonmentInlineFormSet = inlineformset_factory(
     Soldier,
     SoldierImprisonment,
-    fields=['pow_camp', 'pow_number', 'date_from', 'date_to', 'notes'],
+    form=SoldierImprisonmentForm,
     extra=1,
     can_delete=True
 )
 
 # Add the helper to the formset
-SoldierImprisonmentInlineFormSet.helper = SoldierImprisonmentFormSetHelper()
+class SoldierImprisonmentFormSetWithHelper(SoldierImprisonmentInlineFormSet):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = SoldierImprisonmentFormSetHelper()
+        self.helper.formset = self
+        self.helper.update_title()
 
 
 class CustomUserCreationForm(UserCreationForm):
@@ -217,33 +245,23 @@ class editSoldierDeathForm(forms.ModelForm):
     class Meta:
         model = SoldierDeath
         fields = ['date', 'company', 'cemetery', 'cwgc_id', 'image']
+        widgets = {
+            'date': forms.DateInput(
+                attrs={
+                    'type': 'date',
+                    'class': 'form-control'
+                }
+            )
+        }
+        labels = {
+            'image': 'Grave Photograph'  # Updated label
+        }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.helper = FormHelper()
-        
-        # Determine header class and active state based on whether form has data
-        header_class = 'bg-light' if self.instance and self.instance.pk else 'bg-light-blue'
-        is_active = bool(self.instance and self.instance.pk)
-        
-        # Set title based on whether there's data
-        title = 'Death Details' if self.instance and self.instance.pk else 'Death Details (None Recorded)'
-        
-        self.helper.layout = Layout(
-            Accordion(
-                AccordionGroup(
-                    title,
-                    'date',
-                    'company',
-                    'cemetery',
-                    'cwgc_id',
-                    'image',
-                    active=is_active,
-                    button_class=header_class
-                ),
-                css_id="death-details-accordion"
-            )
-        )
+        self.helper = SoldierDeathFormHelper()
+        self.helper.form = self
+        self.helper.update_title()
 
 
 class editSoldierForm(forms.ModelForm):
@@ -251,6 +269,7 @@ class editSoldierForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.label_class = 'form-label'  
+        self.fields['provost_officer'].disabled = True
 
         # Determine header class and active state based on whether form has data
         header_class = 'bg-light' if self.instance and self.instance.pk else 'bg-light-blue'
@@ -342,6 +361,7 @@ class SoldierForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
+
         
         # Determine header class and active state based on whether form has data
         header_class = 'bg-light' if self.instance and self.instance.pk else 'bg-light-blue'
@@ -352,7 +372,7 @@ class SoldierForm(forms.ModelForm):
             Field('initials'),
             Field('army_number'),
             Field('rank'),
-            Field('provost_officer'),
+            #Field('provost_officer'),
             Field('notes'),
             Accordion(
                 AccordionGroup(
@@ -375,18 +395,27 @@ class SoldierForm(forms.ModelForm):
         fields = ['surname', 'initials', 'army_number', 'rank', 'provost_officer', 'notes']
 
 
+class SoldierDecorationForm(forms.ModelForm):
+    class Meta:
+        model = SoldierDecoration
+        fields = ['decoration', 'gazette_issue', 'gazette_page', 'gazette_date', 'theatre', 'country', 'citation', 'notes']
+        widgets = {
+            'gazette_date': forms.DateInput(
+                attrs={
+                    'type': 'date',
+                    'class': 'form-control'
+                }
+            )
+        }
+
 class SoldierDecorationFormSetHelper(FormHelper):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.form_tag = False
         
-        # Check if there's any data in the formset
+        # Default to collapsed
         has_data = False
-        if hasattr(self, 'formset'):
-            has_data = any(not form.empty_permitted or form.initial for form in self.formset)
-        
-        # Set title based on whether there's data
-        title = 'Decoration Details' if has_data else 'Decoration Details (None Recorded)'
+        title = 'Decoration Details (None Recorded)'
         
         self.layout = Layout(
             Accordion(
@@ -400,23 +429,61 @@ class SoldierDecorationFormSetHelper(FormHelper):
                     'country',
                     'citation',
                     'notes',
-                    active=has_data,  # Only active if there's data
-                    css_class='bg-light'
+                    active=has_data,
+                    css_class='bg-info bg-opacity-25 border rounded p-3'
                 ),
                 css_id="decoration-details-accordion"
             )
         )
 
-# Create the formset with the helper
+    def update_title(self):
+        if hasattr(self, 'formset') and self.formset.initial_forms:
+            has_data = any(form.initial for form in self.formset.initial_forms)
+            title = 'Decoration Details' if has_data else 'Decoration Details (None Recorded)'
+            self.layout[0][0].name = title
+            self.layout[0][0].active = has_data
+
+# Create the formset
 SoldierDecorationInlineFormSet = inlineformset_factory(
     Soldier,
     SoldierDecoration,
-    fields=['decoration', 'gazette_issue', 'gazette_page', 'gazette_date', 'theatre', 'country', 'citation', 'notes'],
+    form=SoldierDecorationForm,
     extra=1,
     can_delete=True
 )
 
-# Add the helper to the formset
-SoldierDecorationInlineFormSet.helper = SoldierDecorationFormSetHelper()
+
+class SoldierDeathFormHelper(FormHelper):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.form_tag = False
+        
+        # Default to collapsed
+        has_data = False
+        title = 'Death Details (None Recorded)'
+        
+        self.layout = Layout(
+            Accordion(
+                AccordionGroup(
+                    title,
+                    'date',
+                    'company',
+                    'cemetery',
+                    'cwgc_id',
+                    'image',
+                    active=has_data,  # Collapsed by default
+                    css_class='bg-info bg-opacity-25 border rounded p-3'
+                ),
+                css_id="death-details-accordion"
+            )
+        )
+
+    def update_title(self):
+        """Update the title based on form data"""
+        if hasattr(self, 'form') and self.form.initial:
+            has_data = any(self.form.initial.values())
+            title = 'Death Details' if has_data else 'Death Details (None Recorded)'
+            self.layout[0][0].name = title
+            self.layout[0][0].active = has_data
 
 

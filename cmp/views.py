@@ -38,9 +38,14 @@ from django.shortcuts import render, redirect
 
 from .models import SoldierImprisonment
 
-from .forms import editSoldierForm, editSoldierDeathForm, SoldierImprisonmentInlineFormSet
+from .forms import (
+    editSoldierForm, editSoldierDeathForm,
+    SoldierImprisonmentFormSetWithHelper,
+    SoldierDecorationInlineFormSet,
+)
 from .forms import SoldierDecorationInlineFormSet
 from .forms import ProvostOfficerForm, ProvostAppointmentForm
+from .forms import SoldierImprisonmentFormSetHelper, SoldierDecorationFormSetHelper
 
 
 
@@ -441,28 +446,93 @@ def soldier_detail(request, soldier_id):
     return render(request, 'cmp/soldier.html', {'soldier': soldier})
 
 
-def edit_soldier(request, id):
-    soldier = get_object_or_404(Soldier, pk=id)
+def edit_soldier(request, id=None):
+    print("\n=== Starting View ===")
+    print(f"Method: {request.method}")
+    print(f"ID: {id}")
+    
+    if id:
+        soldier = get_object_or_404(Soldier, pk=id)
+        print(f"Editing existing soldier: {soldier}")
+    else:
+        soldier = None
+        print("Creating new soldier")
+
     if request.method == 'POST':
-        form = editSoldierForm(request.POST, instance=soldier)
-        death_form = editSoldierDeathForm(request.POST, request.FILES, instance=getattr(soldier, 'soldierdeath', None))
-        imprisonment_formset = SoldierImprisonmentInlineFormSet(request.POST, instance=soldier, prefix='imprisonment')
-        decoration_formset = SoldierDecorationInlineFormSet(request.POST, instance=soldier, prefix='decoration')
+        print("\n=== Processing POST ===")
+        print(f"POST data: {request.POST}")
+        print(f"FILES data: {request.FILES}")
         
-        if form.is_valid() and death_form.is_valid() and imprisonment_formset.is_valid() and decoration_formset.is_valid():
-            form.save()
-            if death_form.has_changed():
-                death_form.save()
-            imprisonment_formset.save()
-            decoration_formset.save()
-            messages.success(request, f'Soldier "{soldier.surname}, {soldier.initials}" successfully updated!')
-            return redirect('search-soldiers')
+        try:
+            form = editSoldierForm(request.POST, instance=soldier)
+            death_form = editSoldierDeathForm(request.POST, request.FILES, instance=getattr(soldier, 'soldierdeath', None))
+            imprisonment_formset = SoldierImprisonmentFormSetWithHelper(request.POST, instance=soldier, prefix='imprisonment')
+            decoration_formset = SoldierDecorationInlineFormSet(request.POST, instance=soldier, prefix='decoration')
+            
+            print("=== Form Validation ===")
+            print(f"Main form bound: {form.is_bound}")
+            print(f"Death form bound: {death_form.is_bound}")
+            print(f"Imprisonment formset bound: {imprisonment_formset.is_bound}")
+            print(f"Decoration formset bound: {decoration_formset.is_bound}")
+            
+            form_valid = form.is_valid()
+            death_form_valid = death_form.is_valid()
+            imprisonment_formset_valid = imprisonment_formset.is_valid()
+            decoration_formset_valid = decoration_formset.is_valid()
+            
+            print(f"Main form valid: {form_valid}")
+            print(f"Death form valid: {death_form_valid}")
+            print(f"Imprisonment formset valid: {imprisonment_formset_valid}")
+            print(f"Decoration formset valid: {decoration_formset_valid}")
+            
+            if all([form_valid, death_form_valid, imprisonment_formset_valid, decoration_formset_valid]):
+                print("=== Saving Forms ===")
+                soldier = form.save()
+                print(f"Main form saved: {soldier}")
+                
+                if death_form.has_changed():
+                    print("Death form has changes:", death_form.changed_data)
+                    death_instance = death_form.save(commit=False)
+                    death_instance.soldier = soldier
+                    death_instance.save()
+                    print("Death form saved")
+                
+                # Check if any form in the formset has changes
+                if any(form.has_changed() for form in imprisonment_formset):
+                    print("Imprisonment formset has changes")
+                    imprisonment_formset.instance = soldier
+                    imprisonment_formset.save()
+                    print("Imprisonment formset saved")
+                
+                if any(form.has_changed() for form in decoration_formset):
+                    print("Decoration formset has changes")
+                    decoration_formset.instance = soldier
+                    decoration_formset.save()
+                    print("Decoration formset saved")
+                
+                messages.success(request, f'Soldier "{soldier.surname}, {soldier.initials}" successfully {"updated" if id else "created"}!')
+                return redirect('search-soldiers')
+            else:
+                if not form_valid:
+                    print(f"Main form errors: {form.errors}")
+                if not death_form_valid:
+                    print(f"Death form errors: {death_form.errors}")
+                if not imprisonment_formset_valid:
+                    print(f"Imprisonment formset errors: {imprisonment_formset.errors}")
+                if not decoration_formset_valid:
+                    print(f"Decoration formset errors: {decoration_formset.errors}")
+                messages.error(request, 'Please correct the errors below.')
+        except Exception as e:
+            print(f"Exception occurred: {str(e)}")
+            messages.error(request, f'Error: {str(e)}')
     else:
         form = editSoldierForm(instance=soldier)
         death_form = editSoldierDeathForm(instance=getattr(soldier, 'soldierdeath', None))
-        imprisonment_formset = SoldierImprisonmentInlineFormSet(instance=soldier, prefix='imprisonment')
+        imprisonment_formset = SoldierImprisonmentFormSetWithHelper(instance=soldier, prefix='imprisonment')
+        imprisonment_formset.helper = SoldierImprisonmentFormSetHelper()
         decoration_formset = SoldierDecorationInlineFormSet(instance=soldier, prefix='decoration')
-    
+        decoration_formset.helper = SoldierDecorationFormSetHelper()
+
     return render(request, 'cmp/edit-soldiers.html', {
         'form': form,
         'death_form': death_form,
