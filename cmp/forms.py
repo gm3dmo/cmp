@@ -266,8 +266,7 @@ class editRankForm(forms.ModelForm):
 
 class editSoldierDeathForm(forms.ModelForm):
     company = forms.ModelChoiceField(
-        queryset=Company.objects.all(),
-        initial=Company.objects.filter(name='UNKNOWN').first()
+        queryset=Company.objects.all()
     )
 
     class Meta:
@@ -427,7 +426,6 @@ class SoldierForm(forms.ModelForm):
 class SoldierDecorationForm(forms.ModelForm):
     country = forms.ModelChoiceField(
         queryset=Country.objects.all(),
-        initial=Country.objects.filter(name='UNITED KINGDOM').first()
     )
 
     class Meta:
