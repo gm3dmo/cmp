@@ -22,18 +22,35 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Field
 from crispy_forms.bootstrap import Accordion, AccordionGroup, TabHolder, Tab
 
-# First define the formset form
+
 class SoldierImprisonmentForm(forms.ModelForm):
+    date_from = forms.DateField(
+        initial='1940-01-01',
+        widget=forms.DateInput(
+            attrs={
+                'type': 'date',
+                'class': 'form-control',
+                'style': 'width: 20%;'
+            }
+        ),
+        required=False
+    )
+    date_to = forms.DateField(
+        initial='1940-01-01',
+        widget=forms.DateInput(
+            attrs={
+                'type': 'date',
+                'class': 'form-control',
+                'style': 'width: 20%;'
+            }
+        ),
+        required=False
+    )
+
     class Meta:
         model = SoldierImprisonment
         fields = ['pow_camp', 'pow_number', 'date_from', 'date_to', 'notes']
         widgets = {
-            'date_from': forms.DateInput(
-                attrs={
-                    'type': 'date',
-                    'class': 'form-control'
-                }
-            ),
             'date_to': forms.DateInput(
                 attrs={
                     'type': 'date',
@@ -41,6 +58,13 @@ class SoldierImprisonmentForm(forms.ModelForm):
                 }
             )
         }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['pow_camp'].required = False
+        self.fields['pow_number'].required = False
+        self.fields['date_to'].required = False
+        self.fields['notes'].required = False
 
 class SoldierImprisonmentFormSetHelper(FormHelper):
     def __init__(self, *args, **kwargs):
@@ -84,7 +108,6 @@ SoldierImprisonmentInlineFormSet = inlineformset_factory(
     can_delete=True
 )
 
-# Add the helper to the formset
 class SoldierImprisonmentFormSetWithHelper(SoldierImprisonmentInlineFormSet):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -242,6 +265,10 @@ class editRankForm(forms.ModelForm):
 
 
 class editSoldierDeathForm(forms.ModelForm):
+    company = forms.ModelChoiceField(
+        queryset=Company.objects.all()
+    )
+
     class Meta:
         model = SoldierDeath
         fields = ['date', 'company', 'cemetery', 'cwgc_id', 'image']
@@ -249,12 +276,13 @@ class editSoldierDeathForm(forms.ModelForm):
             'date': forms.DateInput(
                 attrs={
                     'type': 'date',
-                    'class': 'form-control'
+                    'class': 'form-control',
+                    'style': 'width: 20%;'
                 }
             )
         }
         labels = {
-            'image': 'Grave Photograph'  # Updated label
+            'image': 'Grave Photograph'
         }
 
     def __init__(self, *args, **kwargs):
@@ -396,6 +424,10 @@ class SoldierForm(forms.ModelForm):
 
 
 class SoldierDecorationForm(forms.ModelForm):
+    country = forms.ModelChoiceField(
+        queryset=Country.objects.all(),
+    )
+
     class Meta:
         model = SoldierDecoration
         fields = ['decoration', 'gazette_issue', 'gazette_page', 'gazette_date', 'theatre', 'country', 'citation', 'notes']
@@ -403,7 +435,8 @@ class SoldierDecorationForm(forms.ModelForm):
             'gazette_date': forms.DateInput(
                 attrs={
                     'type': 'date',
-                    'class': 'form-control'
+                    'class': 'form-control',
+                    'style': 'width: 20%;'
                 }
             )
         }
@@ -451,6 +484,14 @@ SoldierDecorationInlineFormSet = inlineformset_factory(
     extra=1,
     can_delete=True
 )
+
+# Add the helper to the formset
+class SoldierDecorationFormSetWithHelper(SoldierDecorationInlineFormSet):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = SoldierDecorationFormSetHelper()
+        self.helper.formset = self
+        self.helper.update_title()
 
 
 class SoldierDeathFormHelper(FormHelper):
