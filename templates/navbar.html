@@ -4,8 +4,8 @@
             <li class="page-collection {% if request.path == '/' %}active{% endif %}">
                 <a href="/" class="nav-link">Home</a>
             </li>
-            <li class="page-collection">
-                <a href="{% url 'army-number-search' %}" class="nav-link">Army Number Tool</a>
+            <li class="page-collection {% if '/tools/army-number-search' in request.path %}active{% endif %}">
+                <a href="{% url 'army-number-search' %}" class="nav-link">Army Number Search</a>
             </li>
             <li class="folder-collection folder">
                 <a aria-haspopup="true" href="#" onclick="return false;" class="nav-link">War Diaries</a>
@@ -20,11 +20,11 @@
                     </ul>
                 </div>
             </li>
-            <li class="page-collection {% if '/acknowledgements/' in request.path %}active{% endif %}">
-                <a href="{% url 'acknowledgements' %}" class="nav-link">Acknowledgements</a>
-            </li>
             <li class="page-collection {% if '/about/' in request.path %}active{% endif %}">
                 <a href="{% url 'about' %}" class="nav-link">About</a>
+            </li>
+            <li class="page-collection {% if '/acknowledgements/' in request.path %}active{% endif %}">
+                <a href="{% url 'acknowledgements' %}" class="nav-link">Acknowledgements</a>
             </li>
         </ul>
     </nav>
