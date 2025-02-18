@@ -330,3 +330,13 @@
     white-space: nowrap;
     text-decoration: none;
 }
+
+.page-collection.active {
+    background-color: #e0e0e0 !important;  /* slightly darker gray color */
+    border-radius: 4px;
+    padding: 4px 8px;
+}
+
+.page-collection.active a {
+    color: #8B0000;  /* Keeping your maroon color scheme */
+}

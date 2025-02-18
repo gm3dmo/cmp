@@ -1,6 +1,9 @@
 <div id="navBlock" role="navigation">
     <nav class="main-nav">
         <ul style="list-style: none; display: flex; gap: 20px;">
+            <li class="page-collection {% if request.path == '/' %}active{% endif %}">
+                <a href="/" class="nav-link">Home</a>
+            </li>
             <li class="page-collection">
                 <a href="{% url 'army-number-search' %}" class="nav-link">Army Number Tool</a>
             </li>
@@ -17,10 +20,10 @@
                     </ul>
                 </div>
             </li>
-            <li class="page-collection">
+            <li class="page-collection {% if '/acknowledgements/' in request.path %}active{% endif %}">
                 <a href="{% url 'acknowledgements' %}" class="nav-link">Acknowledgements</a>
             </li>
-            <li class="page-collection">
+            <li class="page-collection {% if '/about/' in request.path %}active{% endif %}">
                 <a href="{% url 'about' %}" class="nav-link">About</a>
             </li>
         </ul>
