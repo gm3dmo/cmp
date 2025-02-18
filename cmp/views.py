@@ -979,3 +979,6 @@ def soldier_edit(request, pk):
         'imprisonment_formset': imprisonment_formset,
         'soldier': soldier
     })
+
+def about(request):
+    return render(request, 'cmp/about.html')

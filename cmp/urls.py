@@ -92,6 +92,8 @@ urlpatterns = [
     path("mgmt/soldiers/delete/<int:id>/", views.delete_soldier, name='delete-soldier'),
     path("mgmt/soldiers/<int:id>/", views.detail_soldiers, name='soldier-detail'),
 
+    path('about/', views.about, name='about'),
+
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
