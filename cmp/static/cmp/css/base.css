@@ -270,3 +270,16 @@
 .bg-light-blue .accordion-button:not(.collapsed) {
   background-color: #b8daff;
 }
+
+/* Navigation Styles */
+#navBlock {
+    color: #8B0000;
+}
+
+#navBlock a {
+    color: #8B0000;
+}
+
+#navBlock .subnav a {
+    color: #8B0000;
+}
