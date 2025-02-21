@@ -270,3 +270,73 @@
 .bg-light-blue .accordion-button:not(.collapsed) {
   background-color: #b8daff;
 }
+
+/* Navigation Styles */
+#navBlock {
+    color: #8B0000;
+    display: flex;
+    justify-content: center;
+}
+
+#navBlock a {
+    color: #8B0000;
+}
+
+#navBlock .subnav a {
+    color: #8B0000;
+}
+
+#navBlock.hidden {
+    display: none;
+}
+
+.main-nav ul {
+    list-style: none;
+    display: flex;
+    gap: 20px;
+}
+
+/* Navigation Styles */
+.folder-collection {
+    position: relative;
+}
+
+.subnav {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background-color: white;
+    border: 1px solid #8B0000;
+    border-radius: 4px;
+    padding: 8px;
+    min-width: 150px;
+}
+
+.folder-collection:hover .subnav {
+    display: block;
+}
+
+.subnav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.subnav a {
+    white-space: nowrap;
+    text-decoration: none;
+}
+
+.page-collection.active {
+    background-color: #e0e0e0 !important;  /* slightly darker gray color */
+    border-radius: 4px;
+    padding: 4px 8px;
+}
+
+.page-collection.active a {
+    color: #8B0000;  /* Keeping your maroon color scheme */
+}

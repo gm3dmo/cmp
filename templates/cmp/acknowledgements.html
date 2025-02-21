@@ -3,9 +3,15 @@
 {% block title %}Acknowledgements{% endblock %}
 {% block content %}
 
-<div class="center-content">
-<h1>Acknowledgements</h1>
 
+<div class="center-content">
+  <img src="{% static 'cmp/cmp-masthead.svg' %}" style="width:350px; height:auto;" alt="The badge of the Royal Military Police">
+  <h2> Acknowledgements</h2>
+</div>
+
+{% include 'navbar.html' %}
+
+<div class="center-content">
 <table>
     <thead>
       <tr>
@@ -29,3 +35,4 @@
   </table>
 {% endblock %}
 <div>
+</div>
