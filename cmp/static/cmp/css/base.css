@@ -391,3 +391,14 @@
     border-radius: 4px;
     border: none !important;
 }
+
+/* Handle the folder-collection active state */
+.folder-collection.active > a {
+    background-color: #8B0000 !important;
+    color: white !important;
+    border-radius: 4px;
+}
+
+.folder-collection.active {
+    background: none !important;
+}
