@@ -331,12 +331,63 @@
     text-decoration: none;
 }
 
+/* Handle the page-collection active state */
 .page-collection.active {
-    background-color: #e0e0e0 !important;  /* slightly darker gray color */
+    background-color: #8B0000 !important;
     border-radius: 4px;
-    padding: 4px 8px;
 }
 
 .page-collection.active a {
-    color: #8B0000;  /* Keeping your maroon color scheme */
+    color: white !important;
+}
+
+/* Main navbar hover and active effects */
+.main-nav ul li a {
+    color: #8B0000 !important;
+    padding: 8px 15px;
+    display: block;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    border: none !important;
+    outline: none !important;
+    background: none !important;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+}
+
+.main-nav ul li a:hover,
+.main-nav ul li a:focus,
+.main-nav ul li a:active {
+    background-color: #8B0000 !important;
+    color: white !important;
+    border-radius: 4px;
+    border: none !important;
+}
+
+/* Subnav styles */
+.subnav ul li a {
+    color: #8B0000 !important;
+    padding: 8px 15px;
+    display: block;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    border: none !important;
+    outline: none !important;
+    background: none !important;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+}
+
+.subnav ul li a:hover {
+    background-color: #8B0000 !important;
+    color: white !important;
+    border-radius: 4px;
+    border: none !important;
+}
+
+.subnav ul li.active a {
+    background-color: #8B0000 !important;
+    color: white !important;
+    border-radius: 4px;
+    border: none !important;
 }
