@@ -1,30 +1,30 @@
 <div id="navBlock" role="navigation">
     <nav class="main-nav">
         <ul style="list-style: none; display: flex; gap: 20px;">
-            <li class="page-collection {% if request.path == '/' %}active{% endif %}">
+            <li class="page-collection {% if request.path == '/' and not '/war-diaries' in request.path and not '/ww1-diaries' in request.path and not '/ww2-diaries' in request.path %}active{% endif %}">
                 <a href="/" class="nav-link">Home</a>
             </li>
-            <li class="page-collection {% if '/tools/army-number-search' in request.path %}active{% endif %}">
-                <a href="{% url 'army-number-search' %}" class="nav-link">Army Number Search</a>
-            </li>
-            <li class="folder-collection folder">
+            <li class="folder-collection folder {% if '/war-diaries' in request.path or '/ww1-diaries' in request.path or '/ww2-diaries' in request.path %}active{% endif %}">
                 <a aria-haspopup="true" href="#" onclick="return false;" class="nav-link">War Diaries</a>
                 <div class="subnav">
                     <ul>
-                        <li class="page-collection">
-                            <a href="#" class="nav-link">World War I</a>
+                        <li class="page-collection {% if '/ww1-diaries' in request.path %}active{% endif %}">
+                            <a href="{% url 'ww1-diaries' %}" class="nav-link">World War I</a>
                         </li>
-                        <li class="page-collection">
-                            <a href="#" class="nav-link">World War II</a>
+                        <li class="page-collection {% if '/ww2-diaries' in request.path %}active{% endif %}">
+                            <a href="{% url 'ww2-diaries' %}" class="nav-link">World War II</a>
                         </li>
                     </ul>
                 </div>
             </li>
-            <li class="page-collection {% if '/about/' in request.path %}active{% endif %}">
-                <a href="{% url 'about' %}" class="nav-link">About</a>
+            <li class="page-collection {% if '/tools/army-number-search' in request.path %}active{% endif %}">
+                <a href="{% url 'army-number-search' %}" class="nav-link">Army Number Search</a>
             </li>
             <li class="page-collection {% if '/acknowledgements/' in request.path %}active{% endif %}">
                 <a href="{% url 'acknowledgements' %}" class="nav-link">Acknowledgements</a>
+            </li>
+            <li class="page-collection {% if '/about/' in request.path %}active{% endif %}">
+                <a href="{% url 'about' %}" class="nav-link">About</a>
             </li>
         </ul>
     </nav>

@@ -982,3 +982,12 @@ def soldier_edit(request, pk):
 
 def about(request):
     return render(request, 'cmp/about.html')
+
+def war_diaries(request):
+    return render(request, 'cmp/war-diaries.html')
+
+def ww1_diaries(request):
+    return render(request, 'cmp/ww1-diaries.html')
+
+def ww2_diaries(request):
+    return render(request, 'cmp/ww2-diaries.html')

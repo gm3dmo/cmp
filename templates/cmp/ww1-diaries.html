@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}World War I Diaries{% endblock %}
+
+{% block content %}
+<div class="center-content">
+    <img src="{% static 'cmp/cmp-masthead.svg' %}" style="width:350px; height:auto;" alt="The badge of the Royal Military Police">
+    <h2>Corps of Military Police</h2>
+{% include 'navbar.html' %}
+</div>
+
+
+<div class="center-content">
+    <h3>World War I Diaries</h3>
+    <p>This section contains World War I military diaries and records.</p>
+    <!-- Add your WW1 specific content here -->
+</div>
+{% endblock %} 
