@@ -94,6 +94,11 @@ urlpatterns = [
 
     path('about/', views.about, name='about'),
 
+    # War Diaries
+    path('war-diaries/', views.war_diaries, name='war-diaries'),
+    path('war-diaries/ww1/', views.ww1_diaries, name='ww1-diaries'),
+    path('war-diaries/ww2/', views.ww2_diaries, name='ww2-diaries'),
+
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
