@@ -307,16 +307,16 @@ def edit_cemeteries(request, id=None):
     if id:
         cemetery = get_object_or_404(Cemetery, id=id)
         if request.method == 'POST':
-            form = CemeteryForm(request.POST, instance=cemetery)
+            form = editCemeteryForm(request.POST, instance=cemetery)
         else:
-            form = CemeteryForm(instance=cemetery)
+            form = editCemeteryForm(instance=cemetery)
     else:
         cemetery = None
-        form = CemeteryForm(request.POST or None)
+        form = editCemeteryForm(request.POST or None)
 
     if request.method == 'POST' and form.is_valid():
         cemetery = form.save()
-        messages.success(request, f'Cemetery successfully {"updated" if id else "added"}!')
+        messages.success(request, f'Cemetery "{cemetery.name}" successfully {"updated" if id else "added"}!')
         return redirect('search-cemeteries')
 
     return render(request, 'cmp/edit-cemeteries.html', {
@@ -447,99 +447,90 @@ def soldier_detail(request, soldier_id):
 
 
 def edit_soldier(request, id=None):
-    print("\n=== Starting View ===")
     print(f"Method: {request.method}")
-    print(f"ID: {id}")
-    
+    if request.method == 'POST':
+        print("POST Data:", request.POST)
+
     if id:
-        soldier = get_object_or_404(Soldier, pk=id)
-        print(f"Editing existing soldier: {soldier}")
+        soldier = get_object_or_404(Soldier, id=id)
+        if request.method == 'POST':
+            print("POST request received for existing soldier")
+            form = editSoldierForm(request.POST, instance=soldier)
+            death_form = editSoldierDeathForm(request.POST, instance=getattr(soldier, 'soldierdeath', None))
+            imprisonment_formset = SoldierImprisonmentFormSetWithHelper(request.POST, instance=soldier)
+            decoration_formset = SoldierDecorationInlineFormSet(request.POST, instance=soldier)
+        else:
+            form = editSoldierForm(instance=soldier)
+            death_form = editSoldierDeathForm(instance=getattr(soldier, 'soldierdeath', None))
+            imprisonment_formset = SoldierImprisonmentFormSetWithHelper(instance=soldier)
+            decoration_formset = SoldierDecorationInlineFormSet(instance=soldier)
     else:
-        soldier = None
         print("Creating new soldier")
+        soldier = None
+        if request.method == 'POST':
+            form = editSoldierForm(request.POST)
+            death_form = editSoldierDeathForm(request.POST)
+            imprisonment_formset = SoldierImprisonmentFormSetWithHelper(request.POST)
+            decoration_formset = SoldierDecorationInlineFormSet(request.POST)
+        else:
+            form = editSoldierForm()
+            death_form = editSoldierDeathForm()
+            imprisonment_formset = SoldierImprisonmentFormSetWithHelper()
+            decoration_formset = SoldierDecorationInlineFormSet()
 
     if request.method == 'POST':
-        print("\n=== Processing POST ===")
-        print(f"POST data: {request.POST}")
-        print(f"FILES data: {request.FILES}")
-        
-        try:
-            form = editSoldierForm(request.POST, instance=soldier)
-            death_form = editSoldierDeathForm(request.POST, request.FILES, instance=getattr(soldier, 'soldierdeath', None))
-            imprisonment_formset = SoldierImprisonmentFormSetWithHelper(request.POST, instance=soldier, prefix='imprisonment')
-            decoration_formset = SoldierDecorationInlineFormSet(request.POST, instance=soldier, prefix='decoration')
+        print("Processing POST request")
+        # Only check main form validity first
+        if form.is_valid():
+            print("Main form valid, saving...")
+            soldier = form.save()
             
-            print("=== Form Validation ===")
-            print(f"Main form bound: {form.is_bound}")
-            print(f"Death form bound: {death_form.is_bound}")
-            print(f"Imprisonment formset bound: {imprisonment_formset.is_bound}")
-            print(f"Decoration formset bound: {decoration_formset.is_bound}")
+            # Handle death form only if it has data
+            if death_form.has_changed() and any(death_form.cleaned_data.values()):
+                if death_form.is_valid():
+                    death = death_form.save(commit=False)
+                    death.soldier = soldier
+                    death.save()
             
-            form_valid = form.is_valid()
-            death_form_valid = death_form.is_valid()
-            imprisonment_formset_valid = imprisonment_formset.is_valid()
-            decoration_formset_valid = decoration_formset.is_valid()
+            # Handle imprisonment formset only if it has data
+            if imprisonment_formset.is_valid():
+                for form in imprisonment_formset:
+                    if form.has_changed() and not form.empty_permitted:
+                        # Check if the form has any data before saving
+                        if any(form.cleaned_data.values()):
+                            imprisonment = form.save(commit=False)
+                            imprisonment.soldier = soldier
+                            imprisonment.save()
             
-            print(f"Main form valid: {form_valid}")
-            print(f"Death form valid: {death_form_valid}")
-            print(f"Imprisonment formset valid: {imprisonment_formset_valid}")
-            print(f"Decoration formset valid: {decoration_formset_valid}")
+            # Handle decoration formset only if it has data
+            if decoration_formset.is_valid():
+                for form in decoration_formset:
+                    if form.has_changed() and not form.empty_permitted:
+                        # Check if the form has any data before saving
+                        if any(form.cleaned_data.values()):
+                            decoration = form.save(commit=False)
+                            decoration.soldier = soldier
+                            decoration.save()
             
-            if all([form_valid, death_form_valid, imprisonment_formset_valid, decoration_formset_valid]):
-                print("=== Saving Forms ===")
-                soldier = form.save()
-                print(f"Main form saved: {soldier}")
-                
-                if death_form.has_changed():
-                    print("Death form has changes:", death_form.changed_data)
-                    death_instance = death_form.save(commit=False)
-                    death_instance.soldier = soldier
-                    death_instance.save()
-                    print("Death form saved")
-                
-                # Check if any form in the formset has changes
-                if any(form.has_changed() for form in imprisonment_formset):
-                    print("Imprisonment formset has changes")
-                    imprisonment_formset.instance = soldier
-                    imprisonment_formset.save()
-                    print("Imprisonment formset saved")
-                
-                if any(form.has_changed() for form in decoration_formset):
-                    print("Decoration formset has changes")
-                    decoration_formset.instance = soldier
-                    decoration_formset.save()
-                    print("Decoration formset saved")
-                
-                messages.success(request, f'Soldier "{soldier.surname}, {soldier.initials}" successfully {"updated" if id else "created"}!')
-                return redirect('search-soldiers')
-            else:
-                if not form_valid:
-                    print(f"Main form errors: {form.errors}")
-                if not death_form_valid:
-                    print(f"Death form errors: {death_form.errors}")
-                if not imprisonment_formset_valid:
-                    print(f"Imprisonment formset errors: {imprisonment_formset.errors}")
-                if not decoration_formset_valid:
-                    print(f"Decoration formset errors: {decoration_formset.errors}")
-                messages.error(request, 'Please correct the errors below.')
-        except Exception as e:
-            print(f"Exception occurred: {str(e)}")
-            messages.error(request, f'Error: {str(e)}')
-    else:
-        form = editSoldierForm(instance=soldier)
-        death_form = editSoldierDeathForm(instance=getattr(soldier, 'soldierdeath', None))
-        imprisonment_formset = SoldierImprisonmentFormSetWithHelper(instance=soldier, prefix='imprisonment')
-        imprisonment_formset.helper = SoldierImprisonmentFormSetHelper()
-        decoration_formset = SoldierDecorationInlineFormSet(instance=soldier, prefix='decoration')
-        decoration_formset.helper = SoldierDecorationFormSetHelper()
+            messages.success(request, f'Soldier "{soldier.surname}, {soldier.initials}" successfully {"updated" if id else "added"}!')
+            print("Redirecting to search-soldiers")
+            return redirect('search-soldiers')
+        else:
+            print("Main form invalid")
+            print("Form errors:", form.errors)
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, f"{field}: {error}")
 
-    return render(request, 'cmp/edit-soldiers.html', {
+    context = {
         'form': form,
         'death_form': death_form,
         'imprisonment_formset': imprisonment_formset,
         'decoration_formset': decoration_formset,
-        'soldier': soldier,
-    })
+        'soldier': soldier
+    }
+    print("Rendering template with context")
+    return render(request, 'cmp/edit-soldiers.html', context)
 
 
 def search_acknowledgement(request):
@@ -745,16 +736,16 @@ def edit_cemeteries(request, id=None):
     if id:
         cemetery = get_object_or_404(Cemetery, id=id)
         if request.method == 'POST':
-            form = editCemeteryForm(request.POST, instance=cemetery)  # Using editCemeteryForm
+            form = editCemeteryForm(request.POST, instance=cemetery)
         else:
-            form = editCemeteryForm(instance=cemetery)  # Using editCemeteryForm
+            form = editCemeteryForm(instance=cemetery)
     else:
         cemetery = None
-        form = editCemeteryForm(request.POST or None)  # Using editCemeteryForm
+        form = editCemeteryForm(request.POST or None)
 
     if request.method == 'POST' and form.is_valid():
         cemetery = form.save()
-        messages.success(request, f'Cemetery successfully {"updated" if id else "added"}!')
+        messages.success(request, f'Cemetery "{cemetery.name}" successfully {"updated" if id else "added"}!')
         return redirect('search-cemeteries')
 
     return render(request, 'cmp/edit-cemeteries.html', {

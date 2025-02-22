@@ -3,15 +3,18 @@
 {% block title %}Acknowledgements Management{% endblock %}
 {% block content %}
 
-<div class="messages mt-3">
+<div class="center-content">
+  {% if messages %}
+<div class="messages">
     {% for message in messages %}
     <div class="alert alert-{{ message.tags }}">
         {{ message }}
     </div>
     {% endfor %}
 </div>
+{% endif %}
 
-<div class="center-content">
+
 <h3>Search/Edit/Add/Delete Acknowlegements</h3>
 
   <div class="center-content">
