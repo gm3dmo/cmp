@@ -2,6 +2,15 @@
 {% load static crispy_forms_tags %}
 {% block title %}Admin Page{% endblock %}
 {% block content %}
+    {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+                <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
 
 <div class="center-content">
 <h3>Management Index</h3>
