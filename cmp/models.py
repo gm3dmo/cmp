@@ -154,9 +154,16 @@ class ProvostAppointment(models.Model):
 
 
 def get_upload_to(instance, filename):
-    print("=== get_upload_to called ===")
+    print("\n=== get_upload_to called ===")
     print(f"filename: {filename}")
     print(f"soldier_id: {instance.soldier_id}")
+    print(f"MEDIA_ROOT: {settings.MEDIA_ROOT}")
+    
+    # Create the directory if it doesn't exist
+    upload_dir = os.path.join(settings.MEDIA_ROOT, str(instance.soldier_id), 'memorial')
+    os.makedirs(upload_dir, exist_ok=True)
+    print(f"Created directory: {upload_dir}")
+    
     return f'{instance.soldier_id}/memorial/{instance.soldier_id}.jpg'
 
 
@@ -169,10 +176,11 @@ class SoldierDeath(models.Model):
     image = models.ImageField(upload_to=get_upload_to, null=True, blank=True)
 
     def save(self, *args, **kwargs):
-        print("=== SoldierDeath save called ===")
+        print("\n=== SoldierDeath save called ===")
         if self.image:
-            print(f"Image present: {self.image}")
-            print(f"Image path: {self.image.path if self.image else 'No path'}")
+            print(f"Image field: {self.image}")
+            print(f"Image name: {self.image.name}")
+            print(f"Image path: {self.image.path if hasattr(self.image, 'path') else 'No path'}")
         super().save(*args, **kwargs)
         if self.image:
             print(f"Processing image at: {self.image.path}")

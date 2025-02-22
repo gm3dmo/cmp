@@ -452,12 +452,12 @@ def edit_soldier(request, id=None):
         if request.method == 'POST':
             print("\n=== Processing POST request ===")
             print("Files in request:", request.FILES)
-            print("POST data:", request.POST)
             form = editSoldierForm(request.POST, request.FILES, instance=soldier)
             death_form = editSoldierDeathForm(request.POST, request.FILES, instance=getattr(soldier, 'soldierdeath', None))
             print("Death form is valid:", death_form.is_valid())
             if death_form.is_valid():
                 print("Death form cleaned data:", death_form.cleaned_data)
+                print("Death form files:", death_form.files)
             imprisonment_formset = SoldierImprisonmentFormSetWithHelper(request.POST, instance=soldier)
             decoration_formset = SoldierDecorationInlineFormSet(request.POST, instance=soldier)
         else:
@@ -480,39 +480,16 @@ def edit_soldier(request, id=None):
             decoration_formset = SoldierDecorationInlineFormSet()
 
     if request.method == 'POST':
-        print("Processing POST request")
-        # Only check main form validity first
-        if form.is_valid():
-            print("Main form valid, saving...")
+        if form.is_valid() and death_form.is_valid():
+            print("Both forms valid")
             soldier = form.save()
-            
-            # Handle death form only if it has data
-            if death_form.is_valid() and death_form.has_changed():
-                if any(value for value in death_form.cleaned_data.values() if value is not None):
-                    death = death_form.save(commit=False)
-                    death.soldier = soldier
-                    death.save()
-            
-            # Handle imprisonment formset only if it has data
-            if imprisonment_formset.is_valid():
-                for form in imprisonment_formset:
-                    if form.has_changed() and not form.empty_permitted:
-                        # Check if the form has any data before saving
-                        if any(value for value in form.cleaned_data.values() if value is not None):
-                            imprisonment = form.save(commit=False)
-                            imprisonment.soldier = soldier
-                            imprisonment.save()
-            
-            # Handle decoration formset only if it has data
-            if decoration_formset.is_valid():
-                for form in decoration_formset:
-                    if form.has_changed() and not form.empty_permitted:
-                        # Check if the form has any data before saving
-                        if any(value for value in form.cleaned_data.values() if value is not None):
-                            decoration = form.save(commit=False)
-                            decoration.soldier = soldier
-                            decoration.save()
-            
+            death = death_form.save(commit=False)
+            death.soldier = soldier
+            if 'image' in request.FILES:
+                print("Found image in request.FILES")
+                death.image = request.FILES['image']
+            death.save()
+            print("Death instance after save:", death.image if hasattr(death, 'image') else "No image")
             messages.success(request, f'Soldier "{soldier.surname}, {soldier.initials}" successfully {"updated" if id else "added"}!')
             print("Redirecting to search-soldiers")
             return redirect('search-soldiers')
