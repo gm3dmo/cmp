@@ -486,8 +486,8 @@ def edit_soldier(request, id=None):
             soldier = form.save()
             
             # Handle death form only if it has data
-            if death_form.has_changed() and any(death_form.cleaned_data.values()):
-                if death_form.is_valid():
+            if death_form.is_valid() and death_form.has_changed():
+                if any(value for value in death_form.cleaned_data.values() if value is not None):
                     death = death_form.save(commit=False)
                     death.soldier = soldier
                     death.save()
@@ -497,7 +497,7 @@ def edit_soldier(request, id=None):
                 for form in imprisonment_formset:
                     if form.has_changed() and not form.empty_permitted:
                         # Check if the form has any data before saving
-                        if any(form.cleaned_data.values()):
+                        if any(value for value in form.cleaned_data.values() if value is not None):
                             imprisonment = form.save(commit=False)
                             imprisonment.soldier = soldier
                             imprisonment.save()
@@ -507,7 +507,7 @@ def edit_soldier(request, id=None):
                 for form in decoration_formset:
                     if form.has_changed() and not form.empty_permitted:
                         # Check if the form has any data before saving
-                        if any(form.cleaned_data.values()):
+                        if any(value for value in form.cleaned_data.values() if value is not None):
                             decoration = form.save(commit=False)
                             decoration.soldier = soldier
                             decoration.save()
