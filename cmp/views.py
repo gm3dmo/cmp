@@ -850,7 +850,8 @@ def create_provost_officer(request):
                 appointment = appointment_form.save(commit=False)
                 appointment.soldier = soldier
                 appointment.save()
-                return redirect('success_url')  # Replace with your success URL
+                messages.success(request, f'Provost Officer {soldier.surname}, {soldier.initials} successfully added')
+                return redirect('mgmt-index')
             else:
                 # If appointment form is invalid, delete the created soldier to maintain consistency
                 soldier.delete()
