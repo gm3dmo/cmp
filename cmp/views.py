@@ -447,16 +447,17 @@ def soldier_detail(request, soldier_id):
 
 
 def edit_soldier(request, id=None):
-    print(f"Method: {request.method}")
-    if request.method == 'POST':
-        print("POST Data:", request.POST)
-
     if id:
         soldier = get_object_or_404(Soldier, id=id)
         if request.method == 'POST':
-            print("POST request received for existing soldier")
-            form = editSoldierForm(request.POST, instance=soldier)
-            death_form = editSoldierDeathForm(request.POST, instance=getattr(soldier, 'soldierdeath', None))
+            print("\n=== Processing POST request ===")
+            print("Files in request:", request.FILES)
+            print("POST data:", request.POST)
+            form = editSoldierForm(request.POST, request.FILES, instance=soldier)
+            death_form = editSoldierDeathForm(request.POST, request.FILES, instance=getattr(soldier, 'soldierdeath', None))
+            print("Death form is valid:", death_form.is_valid())
+            if death_form.is_valid():
+                print("Death form cleaned data:", death_form.cleaned_data)
             imprisonment_formset = SoldierImprisonmentFormSetWithHelper(request.POST, instance=soldier)
             decoration_formset = SoldierDecorationInlineFormSet(request.POST, instance=soldier)
         else:
@@ -470,8 +471,8 @@ def edit_soldier(request, id=None):
         if request.method == 'POST':
             form = editSoldierForm(request.POST)
             death_form = editSoldierDeathForm(request.POST)
-            imprisonment_formset = SoldierImprisonmentFormSetWithHelper(request.POST)
-            decoration_formset = SoldierDecorationInlineFormSet(request.POST)
+            imprisonment_formset = SoldierImprisonmentFormSetWithHelper()
+            decoration_formset = SoldierDecorationInlineFormSet()
         else:
             form = editSoldierForm()
             death_form = editSoldierDeathForm()

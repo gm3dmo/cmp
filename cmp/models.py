@@ -154,54 +154,31 @@ class ProvostAppointment(models.Model):
 
 
 def get_upload_to(instance, filename):
-    # Django puts a random string into the filename with:
-    #return f"""static/media/{instance.soldier_id}/memorial/{instance.soldier_id}.jpg""" 
-    #extension = filename.split('.')[-1]
-    print(filename)
-    print(instance.soldier_id)
-    #print(instance)
-    extension = "jpg"
-    return f"""static/media/{instance.soldier_id}/memorial/{instance.soldier_id}.jpg""" 
- 
- # http://localhost:8000/media/3774/memorial/3774.jpg
- # http://localhost:8000/static/media/3774/memorial/3774.jpg
+    print("=== get_upload_to called ===")
+    print(f"filename: {filename}")
+    print(f"soldier_id: {instance.soldier_id}")
+    return f'{instance.soldier_id}/memorial/{instance.soldier_id}.jpg'
 
 
 class SoldierDeath(models.Model):
-    soldier = models.OneToOneField(
-        Soldier, on_delete=models.CASCADE, related_name="soldierdeath"
-    )
+    soldier = models.OneToOneField(Soldier, on_delete=models.CASCADE)
     date = models.DateField(null=True, blank=True)
+    cwgc_id = models.IntegerField(null=True, blank=True)
+    cemetery = models.ForeignKey(Cemetery, on_delete=models.CASCADE, null=True, blank=True)
+    company = models.ForeignKey(Company, on_delete=models.CASCADE, null=True, blank=True)
     image = models.ImageField(upload_to=get_upload_to, null=True, blank=True)
+
     def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)  # Call the "real" save() method.
-        if self.image:  # if an image exists for this model
-            img = Image.open(self.image.path)  # Open the image file
-            # Resize the image and save it. 
+        print("=== SoldierDeath save called ===")
+        if self.image:
+            print(f"Image present: {self.image}")
+            print(f"Image path: {self.image.path if self.image else 'No path'}")
+        super().save(*args, **kwargs)
+        if self.image:
+            print(f"Processing image at: {self.image.path}")
+            img = Image.open(self.image.path)
             img.thumbnail((300, 400), Image.LANCZOS)
-            print(f"settings.STATIC_ROOT: {settings.STATIC_ROOT}")
-            new_filename = os.path.join(settings.STATIC_ROOT, 'media', str(self.soldier_id), 'memorial', f'{self.soldier_id}.jpg')
-            print(f"new_filename: {new_filename}")
-            img.save(new_filename)
-    company = models.ForeignKey(
-        Company,
-        blank=True,
-        null=True,
-        #default="UNKNOWN",
-        on_delete=models.CASCADE,
-        related_name="companies",
-    )
-    cemetery = models.ForeignKey(
-        Cemetery,
-        blank=True,
-        null=True,
-        default=110,
-        on_delete=models.CASCADE,
-        related_name="cemeteries",
-    )
-    cwgc_id = models.IntegerField(
-        blank=True, null=True, unique=False, verbose_name="War Graves ID"
-    )
+            img.save(self.image.path)
 
     def __str__(self):
         return "%s %s %s" % (self.soldier, self.date, self.cemetery)
