@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+
+
+<div class="center-content">
+    <img src="{% static 'cmp/cmp-masthead.svg' %}" style="width:350px; height:auto;" alt="The badge of the Royal Military Police">
+    <h2> Corps of Military Police</h2>
+    {% include "navbar.html" %}
+    <h3>Top 20 Years by Military Police Deaths</h3>
+</div>
+
+<div class="container mt-4">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Rank</th>
+                <th>Year</th>
+                <th>Number of Deaths</th>
+                <th>Percentage of Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for year in years %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ year.death_year }}</td>
+                <td>{{ year.death_count }}</td>
+                <td>{{ year.percentage|floatformat:1 }}%</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock content %} 

@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+
+<div class="center-content">
+    <img src="{% static 'cmp/cmp-masthead.svg' %}" style="width:350px; height:auto;" alt="The badge of the Royal Military Police">
+    <h2> Corps of Military Police</h2>
+    {% include "navbar.html" %}
+</div>
+
+<div class="container mt-4">
+    <h3>Top 10 Countries by Military Police Casualties</h3>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Rank</th>
+                <th>Country</th>
+                <th>Number of Deaths</th>
+                <th>Percentage of Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for country in countries %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ country.cemetery__country__name }}</td>
+                <td>{{ country.death_count }}</td>
+                <td>{{ country.percentage|floatformat:1 }}%</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock content %} 

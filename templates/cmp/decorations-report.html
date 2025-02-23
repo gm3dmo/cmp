@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% load static %}
+{% load static crispy_forms_tags %}
+{% block title %}Top 10 Soldiers with Most Decorations {% endblock %}
+{% block content %}
+
+
+<div class="center-content">
+    <img src="{% static 'cmp/cmp-masthead.svg' %}" style="width:350px; height:auto;" alt="The badge of the Royal Military Police">
+    <h3> Corps of Military Police</h3>
+    {% include "navbar.html" %}
+    <h3>Top 10 Most Decorated Soldiers</h3>
+
+<div class="container mt-4">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th style="width: 10%">Rank</th>
+                <th style="width: 15%">Name</th>
+                <th style="width: 12%">Number of Decorations</th>
+                <th style="width: 68%">Decorations</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for soldier in soldiers %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td><a href="{% url 'soldier' soldier.id %}">{{ soldier.surname }}, {{ soldier.initials }}</a></td>
+                <td>{{ soldier.decoration_count }}</td>
+                <td>
+                    {% for decoration in soldier.soldierdecoration_set.all %}
+                        {{ decoration.decoration.name }}{% if not forloop.last %}, {% endif %}
+                    {% endfor %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+</div>
+
+{% endblock content %}
+

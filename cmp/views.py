@@ -2,7 +2,9 @@ from django.conf import settings
 from django.core.paginator import Paginator
 from django.shortcuts import get_object_or_404, render, HttpResponse
 
-from django.db.models import Q
+from django.db.models import Q, Count, F
+from django.db.models.functions import Cast, ExtractYear
+from django.db.models import FloatField
 
 from django.contrib.auth.decorators import login_required
 
@@ -983,3 +985,70 @@ def ww1_diaries(request):
 
 def ww2_diaries(request):
     return render(request, 'cmp/ww2-diaries.html')
+
+def decorations_report(request):
+    # Get top 10 soldiers with most decorations
+    soldiers_with_decorations = Soldier.objects.annotate(
+        decoration_count=Count('soldierdecoration')
+    ).filter(
+        decoration_count__gt=0
+    ).order_by('-decoration_count')[:10]
+
+    context = {
+        'soldiers': soldiers_with_decorations
+    }
+    return render(request, 'cmp/decorations-report.html', context)
+
+def countries_report(request):
+    # Get total deaths count
+    total_deaths = SoldierDeath.objects.count()
+    
+    # Get top 10 countries by death count
+    countries_with_deaths = SoldierDeath.objects.values(
+        'cemetery__country__name'
+    ).annotate(
+        death_count=Count('id')
+    ).annotate(
+        percentage=Cast('death_count', FloatField()) * 100.0 / total_deaths
+    ).filter(
+        cemetery__country__name__isnull=False
+    ).order_by('-death_count')[:10]
+
+    context = {
+        'countries': countries_with_deaths,
+        'total_deaths': total_deaths
+    }
+    return render(request, 'cmp/countries-report.html', context)
+
+def year_report(request):
+    # Get total deaths count
+    total_deaths = SoldierDeath.objects.count()
+    
+    # Get top 20 years by death count (changed from 10 to 20)
+    years_with_deaths = SoldierDeath.objects.annotate(
+        death_year=ExtractYear('date')
+    ).values(
+        'death_year'
+    ).annotate(
+        death_count=Count('id')
+    ).annotate(
+        percentage=Cast('death_count', FloatField()) * 100.0 / total_deaths
+    ).filter(
+        death_year__isnull=False
+    ).order_by('-death_count')[:20]  # Changed from 10 to 20
+
+    context = {
+        'years': years_with_deaths,
+        'total_deaths': total_deaths
+    }
+    return render(request, 'cmp/year-report.html', context)
+
+def decorations_common(request):
+    decorations = (
+        Decoration.objects
+        .annotate(count=Count('soldierdecoration'))
+        .order_by('-count')[:20]
+    )
+    return render(request, 'cmp/decorations-common.html', {
+        'decorations': decorations
+    })

@@ -99,6 +99,8 @@ urlpatterns = [
     path('war-diaries/ww1/', views.ww1_diaries, name='ww1-diaries'),
     path('war-diaries/ww2/', views.ww2_diaries, name='ww2-diaries'),
 
+    path('reports/decorations/common', views.decorations_common, name='decorations-common'),
+
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
