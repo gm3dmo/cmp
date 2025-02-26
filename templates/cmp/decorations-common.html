@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% load static crispy_forms_tags %}
+{% block title %}Most Common Decorations{% endblock %}
+{% block content %}
+
+
+<div class="center-content">
+<img src="{% static 'cmp/cmp-masthead.svg' %}" style="width:350px; height:auto;" alt="The badge of the Royal Military Police">
+<h2> Corps of Military Police</h2>
+{% include "navbar.html" %}
+</div>
+
+
+<div class="container mt-4">
+    <h3>Top 20 Most Commonly Awarded Decorations</h3>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th style="width: 10%">Rank</th>
+                <th style="width: 50%">Decoration</th>
+                <th style="width: 40%">Times Awarded</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for decoration in decorations %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ decoration.name }}</td>
+                <td>{{ decoration.count }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock content %} 

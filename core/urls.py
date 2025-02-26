@@ -16,10 +16,14 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import include, path
+from cmp import views
 
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("__debug__/", include("debug_toolbar.urls")),
+    path('reports/decorations/', views.decorations_report, name='decorations-report'),
+    path('reports/countries/', views.countries_report, name='countries-report'),
+    path('reports/years/', views.year_report, name='year-report'),
 ]
 
 urlpatterns += [path("", include("cmp.urls"))]

@@ -20,6 +20,25 @@
             <li class="page-collection {% if '/tools/army-number-search' in request.path %}active{% endif %}">
                 <a href="{% url 'army-number-search' %}" class="nav-link">Army Number Search</a>
             </li>
+            <li class="folder-collection folder {% if '/reports/' in request.path %}active{% endif %}">
+                <a aria-haspopup="true" href="#" onclick="return false;" class="nav-link">Reports</a>
+                <div class="subnav">
+                    <ul>
+                        <li class="page-collection {% if '/reports/decorations' in request.path %}active{% endif %}">
+                            <a href="{% url 'decorations-report' %}" class="nav-link">Top Decorated Soldiers</a>
+                        </li>
+                        <li class="page-collection {% if '/reports/decorations/common' in request.path %}active{% endif %}">
+                            <a href="{% url 'decorations-common' %}" class="nav-link">Common Decorations</a>
+                        </li>
+                        <li class="page-collection {% if '/reports/countries' in request.path %}active{% endif %}">
+                            <a href="{% url 'countries-report' %}" class="nav-link">Deaths by Country</a>
+                        </li>
+                        <li class="page-collection {% if '/reports/year' in request.path %}active{% endif %}">
+                            <a href="{% url 'year-report' %}" class="nav-link">Deaths by Year</a>
+                        </li>
+                    </ul>
+                </div>
+            </li>
             <li class="page-collection {% if '/acknowledgements/' in request.path %}active{% endif %}">
                 <a href="{% url 'acknowledgements' %}" class="nav-link">Acknowledgements</a>
             </li>
