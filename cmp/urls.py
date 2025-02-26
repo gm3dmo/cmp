@@ -2,6 +2,7 @@ from django.urls import path, include
 from django.conf.urls.static import static
 from django.conf import settings
 from . import views
+from django.views.generic.base import RedirectView
 
 
 from .views import soldier_detail
@@ -17,6 +18,8 @@ urlpatterns = [
 
     path("tools/army-number-search", views.army_number_search, name="army-number-search" ),
     path("tools/army-number-search/<int:army_number>"  , views.original_unit, name="army-number-search" ),
+    path('tools/army-number-search/', views.army_number_search, name='army-number-search'),
+    path('tools/armynumber/', RedirectView.as_view(pattern_name='army-number-search', permanent=True), name='tools-armynumber'),
 
     # Segment URLs
     path('countries/', views.countries, name='countries'),
