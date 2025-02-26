@@ -2,6 +2,7 @@ from django.urls import path, include
 from django.conf.urls.static import static
 from django.conf import settings
 from . import views
+from django.views.generic.base import RedirectView
 
 
 from .views import soldier_detail
@@ -17,6 +18,8 @@ urlpatterns = [
 
     path("tools/army-number-search", views.army_number_search, name="army-number-search" ),
     path("tools/army-number-search/<int:army_number>"  , views.original_unit, name="army-number-search" ),
+    path('tools/army-number-search/', views.army_number_search, name='army-number-search'),
+    path('tools/armynumber/', RedirectView.as_view(pattern_name='army-number-search', permanent=True), name='tools-armynumber'),
 
     # Segment URLs
     path('countries/', views.countries, name='countries'),
@@ -80,7 +83,10 @@ urlpatterns = [
 
 
     # Provost Officers
-    path('mgmt/create-provost-officer/', views.create_provost_officer, name='create-provost-officer'),
+    path('mgmt/provost-officers/search/', views.provost_officer_search, name='provost-officer-search'),
+    path('mgmt/provost-officers/create/', views.create_provost_officer, name='create-provost-officer'),
+    path('mgmt/provost-officers/edit/<int:id>/', views.provost_officer_edit, name='edit-provost-officer'),
+    path('mgmt/provost-officers/delete/<int:id>/', views.provost_officer_delete, name='delete-provost-officer'),
 
     # Soldiers
     path('soldiers/', views.soldiers, name='soldiers'),
