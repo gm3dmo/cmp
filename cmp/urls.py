@@ -80,7 +80,11 @@ urlpatterns = [
 
 
     # Provost Officers
-    path('mgmt/create-provost-officer/', views.create_provost_officer, name='create-provost-officer'),
+    path('mgmt/provost-officers/search/', views.provost_officer_search, name='provost_officer_search'),
+    path('mgmt/provost-officers/list/', views.provost_officer_list, name='provost_officer_list'),
+    path('mgmt/provost-officers/add/', views.provost_officer_edit, name='provost_officer_add'),
+    path('mgmt/provost-officers/edit/<int:id>/', views.provost_officer_edit, name='provost_officer_edit'),
+    path('mgmt/provost-officers/delete/<int:id>/', views.provost_officer_delete, name='provost_officer_delete'),
 
     # Soldiers
     path('soldiers/', views.soldiers, name='soldiers'),
