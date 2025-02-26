@@ -41,7 +41,7 @@
          <tr><td>Company:</td><td>{{ soldier.soldierdeath.company }}</td></tr>
          <tr><td>CWGC Link:</td><td><span style="font-size: 1.5em;"><a href="{{ soldier.soldierdeath.cwgc_url }}">{{ soldier.soldierdeath.cwgc_id }}</span></a></td></tr>
          <tr><td>Cemetery:</td><td>{{ soldier.soldierdeath.cemetery }}, {{ soldier.soldierdeath.cemetery.country }} <span style="font-size: 1.3em;">{{ soldier.soldierdeath.cemetery.country.flag }}</span>
-         <tr><td colspan="2" style="text-align: center;"><img src="/static/media/{{ soldier.id }}/memorial/{{ soldier.id }}.jpg"</td></tr>
+         <tr><td colspan="2" style="text-align: center;"><img src="/media/{{ soldier.id }}/memorial/{{ soldier.id }}.jpg"</td></tr>
          <tr><td colspan="2" style="text-align: center;">
             <div style="width: 60%; height: auto; margin: auto;">
              {{ cemetery_map | safe }} </td></tr>
