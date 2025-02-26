@@ -47,7 +47,7 @@ from .forms import SoldierDecorationInlineFormSet
 from .forms import ProvostOfficerForm, ProvostAppointmentForm
 from .forms import SoldierImprisonmentFormSetHelper, SoldierDecorationFormSetHelper
 
-
+from .models import ProvostAppointment
 
 import folium
 from django.views.generic import TemplateView
@@ -834,31 +834,23 @@ def create_provost_officer(request):
         officer_form = ProvostOfficerForm(request.POST)
         appointment_form = ProvostAppointmentForm(request.POST)
         
-        if officer_form.is_valid():
+        if officer_form.is_valid() and appointment_form.is_valid():
             # Save the soldier first
             soldier = officer_form.save(commit=False)
             soldier.provost_officer = True
             soldier.save()
             
-            # Now create a new appointment form instance with the saved soldier
-            appointment_form = ProvostAppointmentForm(
-                request.POST,
-                initial={'soldier': soldier}
-            )
+            # Save the appointment with the soldier reference
+            appointment = appointment_form.save(commit=False)
+            appointment.soldier = soldier
+            appointment.save()
             
-            if appointment_form.is_valid():
-                appointment = appointment_form.save(commit=False)
-                appointment.soldier = soldier
-                appointment.save()
-                messages.success(request, f'Provost Officer {soldier.surname}, {soldier.initials} successfully added')
-                return redirect('mgmt-index')
-            else:
-                # If appointment form is invalid, delete the created soldier to maintain consistency
-                soldier.delete()
-        
-        # Print form errors to the console for debugging
-        print(officer_form.errors)
-        print(appointment_form.errors)
+            messages.success(request, f'Provost Officer {soldier.surname}, {soldier.initials} successfully added')
+            return redirect('provost-officer-search')
+            
+        # If forms are invalid, print errors for debugging
+        print("Officer form errors:", officer_form.errors)
+        print("Appointment form errors:", appointment_form.errors)
     else:
         officer_form = ProvostOfficerForm()
         appointment_form = ProvostAppointmentForm()
@@ -987,17 +979,29 @@ def ww2_diaries(request):
 def provost_officer_search(request):
     query = request.GET.get('q')
     page_number = request.GET.get('page')
+    
+    # Base queryset - only get provost officers
+    officers = Soldier.objects.filter(provost_officer=True)
+    
+    # Apply search if query exists
     if query:
-        officers = Soldier.objects.filter(
+        officers = officers.filter(
             Q(surname__icontains=query) |
-            Q(army_number__icontains=query),
-            provost_officer=True
-        ).order_by('surname', 'initials')
-    else:
-        officers = Soldier.objects.filter(provost_officer=True).order_by('surname', 'initials')
+            Q(army_number__icontains=query) |
+            Q(initials__icontains=query)
+        )
+    
+    # Order results
+    officers = officers.order_by('surname', 'initials')
+    
+    # Paginate results
     paginator = Paginator(officers, settings.PAGE_SIZE)
     page_obj = paginator.get_page(page_number)
-    return render(request, 'cmp/search-provost-officers.html', {'page_obj': page_obj})
+    
+    return render(request, 'cmp/search-provost-officers.html', {
+        'page_obj': page_obj,
+        'query': query
+    })
 
 def provost_officer_list(request):
     officers = Soldier.objects.filter(provost_officer=True).order_by('surname', 'initials')
@@ -1006,33 +1010,34 @@ def provost_officer_list(request):
     page_obj = paginator.get_page(page_number)
     return render(request, 'cmp/list-provost-officers.html', {'page_obj': page_obj})
 
-def provost_officer_edit(request, id=None):
-    if id:
-        officer = get_object_or_404(Soldier, id=id, provost_officer=True)
-        if request.method == 'POST':
-            officer_form = ProvostOfficerForm(request.POST, instance=officer)
-            appointment_form = ProvostAppointmentForm(request.POST, instance=officer.provostappointment)
-        else:
-            officer_form = ProvostOfficerForm(instance=officer)
-            appointment_form = ProvostAppointmentForm(instance=officer.provostappointment)
+def provost_officer_edit(request, id):
+    officer = get_object_or_404(Soldier, id=id, provost_officer=True)
+    
+    if request.method == 'POST':
+        officer_form = ProvostOfficerForm(request.POST, instance=officer)
+        # Get or create related ProvostAppointment
+        appointment, created = ProvostAppointment.objects.get_or_create(soldier=officer)
+        appointment_form = ProvostAppointmentForm(request.POST, instance=appointment)
+        
+        if officer_form.is_valid() and appointment_form.is_valid():
+            officer = officer_form.save()
+            appointment = appointment_form.save(commit=False)
+            appointment.soldier = officer
+            appointment.save()
+            
+            messages.success(request, f'Provost Officer {officer.surname}, {officer.initials} successfully updated')
+            return redirect('provost-officer-search')
+            
+        # Print form errors for debugging
+        print("Officer form errors:", officer_form.errors)
+        print("Appointment form errors:", appointment_form.errors)
     else:
-        officer = None
-        officer_form = ProvostOfficerForm(request.POST or None)
-        appointment_form = ProvostAppointmentForm(request.POST or None)
+        officer_form = ProvostOfficerForm(instance=officer)
+        # Get or create related ProvostAppointment
+        appointment, created = ProvostAppointment.objects.get_or_create(soldier=officer)
+        appointment_form = ProvostAppointmentForm(instance=appointment)
 
-    if request.method == 'POST' and officer_form.is_valid() and appointment_form.is_valid():
-        officer = officer_form.save(commit=False)
-        officer.provost_officer = True
-        officer.save()
-        
-        appointment = appointment_form.save(commit=False)
-        appointment.soldier = officer
-        appointment.save()
-        
-        messages.success(request, f'Provost Officer "{officer.surname}, {officer.initials}" successfully {"updated" if id else "added"}!')
-        return redirect('provost_officer_search')
-
-    return render(request, 'cmp/edit-provost-officers.html', {
+    return render(request, 'cmp/edit-provost-officer.html', {
         'officer_form': officer_form,
         'appointment_form': appointment_form,
         'officer': officer
@@ -1040,7 +1045,12 @@ def provost_officer_edit(request, id=None):
 
 def provost_officer_delete(request, id):
     officer = get_object_or_404(Soldier, id=id, provost_officer=True)
-    name = f"{officer.surname}, {officer.initials}"  # Store the name before deletion
-    officer.delete()
-    messages.success(request, f'Provost Officer "{name}" successfully deleted!')
-    return redirect('provost_officer_search')
+    name = f"{officer.surname}, {officer.initials}"
+    
+    try:
+        officer.delete()
+        messages.success(request, f'Provost Officer "{name}" successfully deleted')
+    except Exception as e:
+        messages.error(request, f'Error deleting Provost Officer "{name}": {str(e)}')
+        
+    return redirect('provost-officer-search')

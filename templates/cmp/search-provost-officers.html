@@ -15,7 +15,7 @@
     <h3>Search/Edit/Add/Delete Provost Officers</h3>
 
     <div class="center-content">
-        <a href="{% url 'provost_officer_add' %}" class="glossy-button add-button">Add New Provost Officer</a>
+        <a href="{% url 'create-provost-officer' %}" class="glossy-button add-button">Add New Provost Officer</a>
     </div>
 
     <div name="search-input" class="search-input">
@@ -40,12 +40,12 @@
             </thead>
             {% for officer in page_obj %}
             <tr>
-                <td><button class="glossy-button edit-button" onclick="location.href='{% url 'provost_officer_edit' id=officer.id %}'" type="button">EDIT</button></td>
+                <td><button class="glossy-button edit-button" onclick="location.href='{% url 'edit-provost-officer' id=officer.id %}'" type="button">EDIT</button></td>
                 <td><span class="soldier-info">{{ officer.surname }}</span></td>
                 <td><span class="soldier-info">{{ officer.initials }}</span></td>
                 <td><span class="soldier-info">{{ officer.army_number }}</span></td>
                 <td><span class="soldier-info">{{ officer.rank }}</span></td>
-                <td><button class="glossy-button delete-button" onclick="if(confirm('Are you sure you want to delete this provost officer?')) { location.href='{% url 'provost_officer_delete' officer.id %}'; }" type="button">DELETE</button></td>
+                <td><button class="glossy-button delete-button" onclick="if(confirm('Are you sure you want to delete this provost officer?')) { location.href='{% url 'delete-provost-officer' officer.id %}'; }" type="button">DELETE</button></td>
             </tr>
             {% endfor %}
         </table>
