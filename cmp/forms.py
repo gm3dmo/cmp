@@ -221,7 +221,7 @@ class editCountryForm(forms.ModelForm):
         model = Country
         fields = "__all__"
 
-class editAcknowledgementForm(forms.ModelForm):
+class AcknowledgementForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
@@ -339,59 +339,34 @@ class editSoldierForm(forms.ModelForm):
         exclude = ['created_at']  # Exclude the created_at field
 
 
+class ProvostOfficerSearchForm(forms.Form):
+    q = forms.CharField(
+        required=False,
+        label='Search',
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Search by surname or army number...'
+        })
+    )
+
 class ProvostOfficerForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
-        self.helper.label_class = 'form-label'  
-        super().__init__(*args, **kwargs)
+        self.helper.label_class = 'form-label'
+        
+        # Filter rank choices to only show officer ranks
         self.fields['rank'].queryset = Rank.objects.filter(rank_class="OF").order_by('name')
-    provost_officer = forms.BooleanField(
-        initial=True,
-        disabled=True,
-        required=True,
-        help_text="All officers created through this form are automatically marked as Provost Officers"
-    )
-    class Meta:
-        model = Soldier
-        fields = ['surname', 'initials', 'army_number', 'rank', 'provost_officer', 'notes']
-        widgets = {
-            'notes': forms.Textarea(attrs={'rows': 3}),
-        }
-    def save(self, commit=True):
-        soldier = super().save(commit=False)
-        soldier.provost_officer = True  # Set provost_officer to True
-        print(soldier)
-        if commit:
-            soldier.save()
-        return soldier
-
-
-class ProvostAppointmentForm(forms.ModelForm):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.helper = FormHelper()
-        self.helper.label_class = 'form-label'  
         
-    class Meta:
-        model = ProvostAppointment
-        fields = ['rank', 'date', 'notes']
-        widgets = {
-            'notes': forms.Textarea(attrs={'rows': 3}),
-        }
-
-class AcknowledgementForm(forms.ModelForm):
-    class Meta:
-        model = Acknowledgement
-        fields = ['surname', 'name', 'notes']
-
-class SoldierForm(forms.ModelForm):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.helper = FormHelper()
-
+        # Set provost_officer field
+        self.fields['provost_officer'] = forms.BooleanField(
+            initial=True,
+            disabled=True,
+            required=False,
+            help_text="All officers created through this form are automatically marked as Provost Officers"
+        )
         
-        # Determine header class and active state based on whether form has data
+        # Determine header class and active state
         header_class = 'bg-light' if self.instance and self.instance.pk else 'bg-light-blue'
         is_active = bool(self.instance and self.instance.pk)
         
@@ -400,27 +375,111 @@ class SoldierForm(forms.ModelForm):
             Field('initials'),
             Field('army_number'),
             Field('rank'),
-            #Field('provost_officer'),
-            Field('notes'),
+            Field('provost_officer'),
             Accordion(
                 AccordionGroup(
-                    'Prisoner of War Details',
-                    'imprisonment_formset',
+                    'Appointment Details',
+                    'appointment_formset',
                     active=is_active,
                     button_class=header_class
                 ),
-                css_id="imprisonment-details-accordion"
-            )
-        )
-        # Initialize the formset
-        self.imprisonment_formset = SoldierImprisonmentInlineFormSet(
-            instance=self.instance,
-            prefix='imprisonment'
+                css_id="appointment-details-accordion"
+            ),
+            Field('notes')
         )
 
     class Meta:
         model = Soldier
-        fields = ['surname', 'initials', 'army_number', 'rank', 'provost_officer', 'notes']
+        fields = ['surname', 'initials', 'army_number', 'rank', 'notes']
+        widgets = {
+            'notes': forms.Textarea(attrs={'rows': 3}),
+        }
+
+    def save(self, commit=True):
+        soldier = super().save(commit=False)
+        soldier.provost_officer = True
+        if commit:
+            soldier.save()
+        return soldier
+
+class ProvostAppointmentForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.label_class = 'form-label'
+        
+        # Filter rank choices to only show officer ranks
+        self.fields['rank'].queryset = Rank.objects.filter(rank_class="OF").order_by('name')
+        
+        self.helper.layout = Layout(
+            Field('rank'),
+            Field('date'),
+            Field('notes')
+        )
+
+    date = forms.DateField(
+        widget=forms.DateInput(
+            attrs={
+                'type': 'date',
+                'class': 'form-control',
+                'style': 'width: 20%;'
+            }
+        ),
+        required=False
+    )
+
+    class Meta:
+        model = ProvostAppointment
+        fields = ['rank', 'date', 'notes']
+        widgets = {
+            'notes': forms.Textarea(attrs={'rows': 3}),
+        }
+
+# Create the formset
+ProvostAppointmentInlineFormSet = inlineformset_factory(
+    Soldier,
+    ProvostAppointment,
+    form=ProvostAppointmentForm,
+    extra=1,
+    can_delete=True
+)
+
+class ProvostAppointmentFormSetHelper(FormHelper):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.form_tag = False
+        
+        # Default to collapsed
+        has_data = False
+        title = 'Appointment Details (None Recorded)'
+        
+        self.layout = Layout(
+            Accordion(
+                AccordionGroup(
+                    title,
+                    'rank',
+                    'date',
+                    'notes',
+                    active=has_data,
+                    css_class='bg-info bg-opacity-25 border rounded p-3'
+                ),
+                css_id="appointment-details-accordion"
+            )
+        )
+
+    def update_title(self):
+        if hasattr(self, 'formset') and self.formset.initial_forms:
+            has_data = any(form.initial for form in self.formset.initial_forms)
+            title = 'Appointment Details' if has_data else 'Appointment Details (None Recorded)'
+            self.layout[0][0].name = title
+            self.layout[0][0].active = has_data
+
+class ProvostAppointmentFormSetWithHelper(ProvostAppointmentInlineFormSet):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = ProvostAppointmentFormSetHelper()
+        self.helper.formset = self
+        self.helper.update_title()
 
 
 class SoldierDecorationForm(forms.ModelForm):

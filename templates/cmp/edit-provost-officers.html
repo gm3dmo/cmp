@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% load static crispy_forms_tags %}
+{% block title %}{% if form.instance.id %}Edit{% else %}Add{% endif %} Provost Officer{% endblock %}
+{% block content %}
+
+<div class="center-content">
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <h3>{% if form.instance.id %}Edit{% else %}Add{% endif %} Provost Officer</h3>
+
+    <form method="post">
+        {% csrf_token %}
+        {{ form|crispy }}
+        <div class="button-container">
+            <button type="submit" class="glossy-button save-button">Save</button>
+            <a href="{% url 'provost_officer_list' %}" class="glossy-button cancel-button">Cancel</a>
+        </div>
+    </form>
+</div>
+
+{% endblock %} 
