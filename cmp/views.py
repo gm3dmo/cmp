@@ -475,7 +475,12 @@ def edit_soldier(request, id=None):
                 death_instance = death_form.save(commit=False)
                 death_instance.soldier = soldier
                 death_instance.save()
-            return redirect('detail-soldiers', id=soldier.id)
+            messages.success(request, 
+                f'Soldier "{soldier.surname}, {soldier.initials}" successfully {"updated" if id else "added"}! '
+                f'<a href="/soldier/{soldier.id}/">View soldier</a>',
+                extra_tags='safe'
+            )
+            return redirect('search-soldiers')
     else:
         form = editSoldierForm(instance=soldier)
         death_form = editSoldierDeathForm(instance=soldier_death)
@@ -719,28 +724,25 @@ def soldier(request, soldier_id):
     cemetery_map = None
     try:
         soldierdeath = SoldierDeath.objects.get(soldier=soldier)
-        coordinates = [ soldierdeath.cemetery.latitude, soldierdeath.cemetery.longitude ]
+        if soldierdeath and soldierdeath.cemetery:  # Add this check
+            coordinates = [soldierdeath.cemetery.latitude, soldierdeath.cemetery.longitude]
+            m = folium.Map(coordinates, zoom_start=15)
+            test = folium.Html('<b>Hello world</b>', script=True)
+            popup = folium.Popup(test, max_width=2650)
+            marker = folium.Marker(
+                location=coordinates,
+                icon=folium.Icon(color='red', icon='info-sign')
+            )
+            marker.add_to(m)
+            cemetery_map = m._repr_html_()
     except SoldierDeath.DoesNotExist:
         soldierdeath = None
 
-    if soldierdeath:
-        coordinates = [ soldierdeath.cemetery.latitude, soldierdeath.cemetery.longitude ]
-        m = folium.Map(coordinates, zoom_start=15)
-        test = folium.Html('<b>Hello world</b>', script=True)
-        popup = folium.Popup(test, max_width=2650)
-        marker = folium.Marker(
-            location=coordinates,
-            icon=folium.Icon(color='red', icon='info-sign')
-        )
-        marker.add_to(m)
-
-        m_html = m._repr_html_()
-        cemetery_map = m_html
-
-    context = { "soldier": soldier, 
-               "soldierdecorations":  soldierdecorations,
-               "soldierdeath":  soldierdeath,
-               "cemetery_map":  cemetery_map  
+    context = {
+        "soldier": soldier, 
+        "soldierdecorations": soldierdecorations,
+        "soldierdeath": soldierdeath,
+        "cemetery_map": cemetery_map
     }
     return render(request, "cmp/soldier.html", context)
 
@@ -991,11 +993,8 @@ def decorations_common(request):
     decorations = (
         Decoration.objects
         .annotate(count=Count('soldierdecoration'))
-        .order_by('-count')[:20]
-    )
-    return render(request, 'cmp/decorations-common.html', {
-        'decorations': decorations
-    })
+        .order_by('-count')[:20] )
+    return render(request, 'cmp/decorations-common.html', { 'decorations': decorations })
 
 def provost_officer_search(request):
     query = request.GET.get('q')

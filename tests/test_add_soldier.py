@@ -3,7 +3,7 @@ import random
 import os
 
 def generate_random_name():
-    surnames = ["Smith", "Jones", "Williams", "Brown", "Taylor", "Davies", "Wilson", "Evans", "Thomas", "Johnson"]
+    surnames = ["Zod", "Durell", "mook", "Banner", "Zeke", "Tiddles", "zook", "zandor", "zydor", "yask"]
     initials = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
     return {
         'surname': random.choice(surnames),
@@ -49,7 +49,7 @@ def test_add_soldier():
         page.keyboard.press("Enter")
         
         # Select Bayeux cemetery
-        page.type("select[name='cemetery']", "Bayeux")
+        page.type("select[name='cemetery']", "SCHOONSELHOF CEMETERY ANTWERPEN")
         page.keyboard.press("Enter")
 
         # Set CWGC ID
