@@ -1,0 +1,33 @@
+<div id="navBlock" role="navigation">
+    <nav class="main-nav">
+        <ul style="list-style: none; display: flex; gap: 20px;">
+            <li class="page-collection {% if '/mgmt/soldiers/search' in request.path %}active{% endif %}">
+                <a href="/mgmt/soldiers/search/" class="nav-link">Soldiers</a>
+            </li>
+            <li class="page-collection {% if '/mgmt/cemeteries/search' in request.path %}active{% endif %}">
+                <a href="/mgmt/cemeteries/search/" class="nav-link">Cemeteries</a>
+            </li>
+            <li class="page-collection {% if '/mgmt/countries/search' in request.path %}active{% endif %}">
+                <a href="/mgmt/countries/search/" class="nav-link">Countries</a>
+            </li>
+            <li class="page-collection {% if '/mgmt/companies/search' in request.path %}active{% endif %}">
+                <a href="/mgmt/companies/search/" class="nav-link">Companies</a>
+            </li>
+            <li class="page-collection {% if '/mgmt/decorations/search' in request.path %}active{% endif %}">
+                <a href="/mgmt/decorations/search/" class="nav-link">Decorations</a>
+            </li>
+            <li class="page-collection {% if '/mgmt/ranks/search' in request.path %}active{% endif %}">
+                <a href="/mgmt/ranks/search/" class="nav-link">Ranks</a>
+            </li>
+            <li class="page-collection {% if '/mgmt/pow-camps/search' in request.path %}active{% endif %}">
+                <a href="/mgmt/pow-camps/search/" class="nav-link">POW Camps</a>
+            </li>
+            <li class="page-collection {% if '/mgmt/acknowledgement/search' in request.path %}active{% endif %}">
+                <a href="/mgmt/acknowledgement/search/" class="nav-link">Acknowledgements</a>
+            </li>
+            <li class="page-collection {% if '/mgmt/provost-officers/search' in request.path %}active{% endif %}">
+                <a href="/mgmt/provost-officers/search/" class="nav-link">Provost Officers</a>
+            </li>
+        </ul>
+    </nav>
+</div>
