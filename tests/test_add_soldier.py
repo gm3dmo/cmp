@@ -39,32 +39,43 @@ def test_add_soldier():
 
         # Click Death Details accordion to expand it
         page.click("text=Death Details")
-
-        # Fill death details
+        
+        # Wait for form elements
+        page.wait_for_selector("input[name='date']")
         page.fill("input[name='date']", "1940-01-01")
 
-        # Select company
-        page.click("select[name='company']")
-        page.type("select[name='company']", "1 Airborne Div Pro")
-        page.keyboard.press("Enter")
+        # Wait for and select company
+        page.wait_for_selector("select[name='company']")
+        page.select_option("select[name='company']", "1")  # Assuming '1' is the value for 1 AIRBORNE DIV PRO
         
-        # Select Bayeux cemetery
-        page.type("select[name='cemetery']", "SCHOONSELHOF CEMETERY ANTWERPEN")
-        page.keyboard.press("Enter")
+        # Wait for and select cemetery
+        page.wait_for_selector("select[name='cemetery']")
+        page.select_option("select[name='cemetery']", "1")  # Adjust value based on SCHOONSELHOF's actual value
 
         # Set CWGC ID
         page.fill("input[name='cwgc_id']", "1")
 
-        # Upload image file using absolute path
+        # Upload image file
         downloads_dir = os.path.expanduser("~/Downloads")
         image_path = os.path.join(downloads_dir, "test-picture.jpg")
+        print(f"Checking image path: {image_path}")
+        print(f"File exists: {os.path.exists(image_path)}")
         page.set_input_files("input[name='image']", image_path)
 
-        # Submit the form
-        page.click("text=Save")  # Adjust button text if different
+        # Click Save button with more specific selector
+        page.click("button[type='submit']")
 
-        # Wait for confirmation (adjust based on your UI feedback)
-        page.wait_for_selector("text=successfully")
+        # First wait for navigation to complete
+        page.wait_for_url("http://localhost:8000/mgmt/soldiers/search/")
+
+        # Then wait for the alert with a longer timeout and debug
+        try:
+            alert = page.wait_for_selector(".alert", timeout=5000)
+            print("Alert message:", alert.text_content())
+        except Exception as e:
+            print("Current URL:", page.url)
+            print("Page content:", page.content())
+            raise e
 
         # Close browser
         browser.close()

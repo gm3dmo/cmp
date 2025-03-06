@@ -454,6 +454,7 @@ def soldier_detail(request, soldier_id):
 def edit_soldier(request, id=None):
     print("\n=== View called ===")
     print(f"Files in request: {request.FILES}")
+    print(f"POST data: {request.POST}")
     
     if id:
         soldier = get_object_or_404(Soldier, pk=id)
@@ -466,7 +467,7 @@ def edit_soldier(request, id=None):
         soldier_death = None
 
     if request.method == 'POST':
-        form = editSoldierForm(request.POST, instance=soldier)
+        form = editSoldierForm(request.POST, request.FILES, instance=soldier)
         death_form = editSoldierDeathForm(request.POST, request.FILES, instance=soldier_death)
         
         if form.is_valid() and death_form.is_valid():
