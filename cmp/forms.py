@@ -19,7 +19,7 @@ from .models import ProvostAppointment
 from django.forms import inlineformset_factory
 
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Field
+from crispy_forms.layout import Layout, Field, Submit
 from crispy_forms.bootstrap import Accordion, AccordionGroup, TabHolder, Tab
 
 
@@ -265,10 +265,6 @@ class editRankForm(forms.ModelForm):
 
 
 class editSoldierDeathForm(forms.ModelForm):
-    company = forms.ModelChoiceField(
-        queryset=Company.objects.all()
-    )
-
     class Meta:
         model = SoldierDeath
         fields = ['date', 'company', 'cemetery', 'cwgc_id', 'image']
@@ -277,19 +273,40 @@ class editSoldierDeathForm(forms.ModelForm):
                 attrs={
                     'type': 'date',
                     'class': 'form-control',
-                    'style': 'width: 20%;'
+                }
+            ),
+            'image': forms.FileInput(
+                attrs={
+                    'class': 'form-control',
+                    'accept': 'image/*'
                 }
             )
-        }
-        labels = {
-            'image': 'Grave Photograph'
         }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.helper = SoldierDeathFormHelper()
-        self.helper.form = self
-        self.helper.update_title()
+        self.helper = FormHelper()
+        self.helper.form_tag = False
+        
+        # Determine header class and active state based on whether form has data
+        header_class = 'bg-light' if self.instance and self.instance.pk else 'bg-light-blue'
+        is_active = bool(self.instance and self.instance.pk)
+        
+        self.helper.layout = Layout(
+            Accordion(
+                AccordionGroup(
+                    'Death Details',
+                    'date',
+                    'company',
+                    'cemetery',
+                    'cwgc_id',
+                    'image',
+                    active=is_active,
+                    css_id="death-details-accordion",
+                    button_class=header_class
+                )
+            )
+        )
 
 
 class editSoldierForm(forms.ModelForm):
@@ -336,6 +353,7 @@ class editSoldierForm(forms.ModelForm):
 
     class Meta:
         model = Soldier
+        fields = ['surname', 'initials', 'army_number', 'rank', 'notes', 'provost_officer']
         exclude = ['created_at']  # Exclude the created_at field
 
 

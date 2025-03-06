@@ -8,7 +8,7 @@
     <div class="messages">
         {% for message in messages %}
         <div class="alert alert-{{ message.tags }}" role="alert">
-            {{ message }}
+            {{ message|safe }}
         </div>
         {% endfor %}
     </div>
@@ -24,7 +24,7 @@
         {% endif %}
     </div>
 
-    <form method="POST" action="" novalidate>
+    <form method="POST" action="" enctype="multipart/form-data" novalidate>
         {% csrf_token %}
         
         <!-- Add basic form fields first -->
@@ -52,14 +52,4 @@
     </form>
 </div>
 
-<!-- Add some JavaScript debugging -->
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const form = document.querySelector('form');
-    form.addEventListener('submit', function(e) {
-        console.log('Form submitted');
-        // Don't prevent default
-    });
-});
-</script>
 {% endblock %}

@@ -62,6 +62,12 @@ from .forms import AcknowledgementForm
 
 from django.contrib import messages
 
+from .models import ProvostAppointment
+
+from django.utils.html import format_html
+from django.urls import reverse
+
+logger = logging.getLogger(__name__)
 
 def mgmt_index(request):
     return render(request, 'cmp/mgmt-index.html')
@@ -449,90 +455,47 @@ def soldier_detail(request, soldier_id):
 
 
 def edit_soldier(request, id=None):
-    print(f"Method: {request.method}")
-    if request.method == 'POST':
-        print("POST Data:", request.POST)
-
+    print("\n=== View called ===")
+    print(f"Files in request: {request.FILES}")
+    print(f"POST data: {request.POST}")
+    
     if id:
-        soldier = get_object_or_404(Soldier, id=id)
-        if request.method == 'POST':
-            print("POST request received for existing soldier")
-            form = editSoldierForm(request.POST, instance=soldier)
-            death_form = editSoldierDeathForm(request.POST, instance=getattr(soldier, 'soldierdeath', None))
-            imprisonment_formset = SoldierImprisonmentFormSetWithHelper(request.POST, instance=soldier)
-            decoration_formset = SoldierDecorationInlineFormSet(request.POST, instance=soldier)
-        else:
-            form = editSoldierForm(instance=soldier)
-            death_form = editSoldierDeathForm(instance=getattr(soldier, 'soldierdeath', None))
-            imprisonment_formset = SoldierImprisonmentFormSetWithHelper(instance=soldier)
-            decoration_formset = SoldierDecorationInlineFormSet(instance=soldier)
+        soldier = get_object_or_404(Soldier, pk=id)
+        try:
+            soldier_death = SoldierDeath.objects.get(soldier=soldier)
+        except SoldierDeath.DoesNotExist:
+            soldier_death = None
     else:
-        print("Creating new soldier")
         soldier = None
-        if request.method == 'POST':
-            form = editSoldierForm(request.POST)
-            death_form = editSoldierDeathForm(request.POST)
-            imprisonment_formset = SoldierImprisonmentFormSetWithHelper(request.POST)
-            decoration_formset = SoldierDecorationInlineFormSet(request.POST)
-        else:
-            form = editSoldierForm()
-            death_form = editSoldierDeathForm()
-            imprisonment_formset = SoldierImprisonmentFormSetWithHelper()
-            decoration_formset = SoldierDecorationInlineFormSet()
+        soldier_death = None
 
     if request.method == 'POST':
-        print("Processing POST request")
-        # Only check main form validity first
-        if form.is_valid():
-            print("Main form valid, saving...")
+        form = editSoldierForm(request.POST, request.FILES, instance=soldier)
+        death_form = editSoldierDeathForm(request.POST, request.FILES, instance=soldier_death)
+        
+        if form.is_valid() and death_form.is_valid():
             soldier = form.save()
-            
-            # Handle death form only if it has data
-            if death_form.is_valid() and death_form.has_changed():
-                if any(value for value in death_form.cleaned_data.values() if value is not None):
-                    death = death_form.save(commit=False)
-                    death.soldier = soldier
-                    death.save()
-            
-            # Handle imprisonment formset only if it has data
-            if imprisonment_formset.is_valid():
-                for form in imprisonment_formset:
-                    if form.has_changed() and not form.empty_permitted:
-                        # Check if the form has any data before saving
-                        if any(value for value in form.cleaned_data.values() if value is not None):
-                            imprisonment = form.save(commit=False)
-                            imprisonment.soldier = soldier
-                            imprisonment.save()
-            
-            # Handle decoration formset only if it has data
-            if decoration_formset.is_valid():
-                for form in decoration_formset:
-                    if form.has_changed() and not form.empty_permitted:
-                        # Check if the form has any data before saving
-                        if any(value for value in form.cleaned_data.values() if value is not None):
-                            decoration = form.save(commit=False)
-                            decoration.soldier = soldier
-                            decoration.save()
-            
-            messages.success(request, f'Soldier "{soldier.surname}, {soldier.initials}" successfully {"updated" if id else "added"}!')
-            print("Redirecting to search-soldiers")
+            if death_form.has_changed():
+                death_instance = death_form.save(commit=False)
+                death_instance.soldier = soldier
+                death_instance.save()
+            success_message = format_html(
+                'Soldier "{}, {}" successfully added! <a href="/mgmt/soldiers/{}/edit/">View soldier</a>',
+                soldier.surname,
+                soldier.initials,
+                soldier.id
+            )
+            messages.success(request, success_message)
             return redirect('search-soldiers')
-        else:
-            print("Main form invalid")
-            print("Form errors:", form.errors)
-            for field, errors in form.errors.items():
-                for error in errors:
-                    messages.error(request, f"{field}: {error}")
+    else:
+        form = editSoldierForm(instance=soldier)
+        death_form = editSoldierDeathForm(instance=soldier_death)
 
-    context = {
+    return render(request, 'cmp/edit-soldiers.html', {
         'form': form,
         'death_form': death_form,
-        'imprisonment_formset': imprisonment_formset,
-        'decoration_formset': decoration_formset,
         'soldier': soldier
-    }
-    print("Rendering template with context")
-    return render(request, 'cmp/edit-soldiers.html', context)
+    })
 
 
 def search_acknowledgement(request):
@@ -676,9 +639,9 @@ def detail_decorations(request, decoration_id):
     return render(request, "cmp/detail-decorations.html", {"decoration": decoration})
 
 
-def detail_soldiers(request, soldier_id):
+def detail_soldiers(request, id):
     # get or return a 404
-    soldier = get_object_or_404(Soldier, pk=soldier_id)
+    soldier = get_object_or_404(Soldier, pk=id)
     return render(request, "cmp/detail-soldiers.html", {"soldier": soldier})
 
 
@@ -767,28 +730,25 @@ def soldier(request, soldier_id):
     cemetery_map = None
     try:
         soldierdeath = SoldierDeath.objects.get(soldier=soldier)
-        coordinates = [ soldierdeath.cemetery.latitude, soldierdeath.cemetery.longitude ]
+        if soldierdeath and soldierdeath.cemetery:  # Add this check
+            coordinates = [soldierdeath.cemetery.latitude, soldierdeath.cemetery.longitude]
+            m = folium.Map(coordinates, zoom_start=15)
+            test = folium.Html('<b>Hello world</b>', script=True)
+            popup = folium.Popup(test, max_width=2650)
+            marker = folium.Marker(
+                location=coordinates,
+                icon=folium.Icon(color='red', icon='info-sign')
+            )
+            marker.add_to(m)
+            cemetery_map = m._repr_html_()
     except SoldierDeath.DoesNotExist:
         soldierdeath = None
 
-    if soldierdeath:
-        coordinates = [ soldierdeath.cemetery.latitude, soldierdeath.cemetery.longitude ]
-        m = folium.Map(coordinates, zoom_start=15)
-        test = folium.Html('<b>Hello world</b>', script=True)
-        popup = folium.Popup(test, max_width=2650)
-        marker = folium.Marker(
-            location=coordinates,
-            icon=folium.Icon(color='red', icon='info-sign')
-        )
-        marker.add_to(m)
-
-        m_html = m._repr_html_()
-        cemetery_map = m_html
-
-    context = { "soldier": soldier, 
-               "soldierdecorations":  soldierdecorations,
-               "soldierdeath":  soldierdeath,
-               "cemetery_map":  cemetery_map  
+    context = {
+        "soldier": soldier, 
+        "soldierdecorations": soldierdecorations,
+        "soldierdeath": soldierdeath,
+        "cemetery_map": cemetery_map
     }
     return render(request, "cmp/soldier.html", context)
 
@@ -1039,11 +999,8 @@ def decorations_common(request):
     decorations = (
         Decoration.objects
         .annotate(count=Count('soldierdecoration'))
-        .order_by('-count')[:20]
-    )
-    return render(request, 'cmp/decorations-common.html', {
-        'decorations': decorations
-    })
+        .order_by('-count')[:20] )
+    return render(request, 'cmp/decorations-common.html', { 'decorations': decorations })
 
 def provost_officer_search(request):
     query = request.GET.get('q')
@@ -1109,7 +1066,8 @@ def provost_officer_edit(request, id):
     return render(request, 'cmp/edit-provost-officer.html', {
         'officer_form': officer_form,
         'appointment_form': appointment_form,
-        'officer': officer
+        'officer': officer,
+        'appointment': appointment  # Make sure appointment is explicitly passed to template
     })
 
 def provost_officer_delete(request, id):
@@ -1123,3 +1081,21 @@ def provost_officer_delete(request, id):
         messages.error(request, f'Error deleting Provost Officer "{name}": {str(e)}')
         
     return redirect('provost-officer-search')
+
+def delete_provost_appointment(request, pk):
+    appointment = get_object_or_404(ProvostAppointment, pk=pk)
+    soldier_id = appointment.soldier.id  # Changed from officer to soldier
+    appointment.delete()
+    messages.success(request, 'Provost appointment deleted successfully.')
+    return redirect('edit-provost-officer', id=soldier_id)  # Redirect back to the edit page
+
+def safe_delete(request, model, pk, redirect_url):
+    try:
+        obj = get_object_or_404(model, pk=pk)
+        name = str(obj)
+        obj.delete()
+        messages.success(request, f'{model.__name__} "{name}" successfully deleted!')
+    except Exception as e:
+        logger.error(f'Error deleting {model.__name__} {pk}: {str(e)}')
+        messages.error(request, f'Error deleting {model.__name__}')
+    return redirect(redirect_url)

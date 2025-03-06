@@ -3,6 +3,7 @@ from django.conf.urls.static import static
 from django.conf import settings
 from . import views
 from django.views.generic.base import RedirectView
+import os
 
 
 from .views import soldier_detail
@@ -96,7 +97,8 @@ urlpatterns = [
     path("mgmt/soldiers/edit/<int:id>/", views.edit_soldier, name='edit-soldier'),
     path("mgmt/soldiers/edit/", views.edit_soldier, name='create-soldier'),
     path("mgmt/soldiers/delete/<int:id>/", views.delete_soldier, name='delete-soldier'),
-    path("mgmt/soldiers/<int:id>/", views.detail_soldiers, name='soldier-detail'),
+    path("mgmt/soldiers/<int:id>/", views.detail_soldiers, name='detail-soldiers'),
+    path('mgmt/soldiers/<int:id>/edit/', views.edit_soldier, name='edit-soldier'),
 
     path('about/', views.about, name='about'),
 
