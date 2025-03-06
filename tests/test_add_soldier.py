@@ -1,6 +1,8 @@
+import os
 from playwright.sync_api import sync_playwright
 import random
-import os
+
+BASE_URL = "http://localhost:8000"
 
 def generate_random_name():
     surnames = ["Zod", "Durell", "mook", "Banner", "Zeke", "Tiddles", "zook", "zandor", "zydor", "yask"]
@@ -11,21 +13,16 @@ def generate_random_name():
     }
 
 def test_add_soldier():
-    with sync_playwright() as p:
-        # Launch browser
-        browser = p.chromium.launch(headless=False)  # Set headless=True for production
-        context = browser.new_context()
-        page = context.new_page()
-
-        # Go to management page
-        page.goto("http://localhost:8000/mgmt/")
-
-        # Click on Soldiers link
-        page.click("text=Soldiers")
-
-        # Click Add New button (adjust selector based on your actual HTML)
-        page.click("text=Add New")
-
+    with sync_playwright() as playwright:
+        browser = playwright.chromium.launch(headless=False)
+        page = browser.new_page()
+        
+        # Go to search page
+        page.goto(f"{BASE_URL}/mgmt/soldiers/search/")
+        
+        # Click the correct button text
+        page.click("text=Add New Soldier")
+        
         # Generate random name
         name = generate_random_name()
 
@@ -66,7 +63,7 @@ def test_add_soldier():
         page.click("button[type='submit']")
 
         # Wait for navigation to search page
-        page.wait_for_url("http://localhost:8000/mgmt/soldiers/search/")
+        page.wait_for_url(f"{BASE_URL}/mgmt/soldiers/search/")
 
         # Wait for and verify success message
         page.wait_for_selector(".alert")
