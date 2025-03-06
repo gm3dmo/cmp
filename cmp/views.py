@@ -64,6 +64,9 @@ from django.contrib import messages
 
 from .models import ProvostAppointment
 
+from django.utils.html import format_html
+from django.urls import reverse
+
 logger = logging.getLogger(__name__)
 
 def mgmt_index(request):
@@ -476,11 +479,13 @@ def edit_soldier(request, id=None):
                 death_instance = death_form.save(commit=False)
                 death_instance.soldier = soldier
                 death_instance.save()
-            messages.success(request, 
-                f'Soldier "{soldier.surname}, {soldier.initials}" successfully {"updated" if id else "added"}! '
-                f'<a href="/soldier/{soldier.id}/">View soldier</a>',
-                extra_tags='safe'
+            success_message = format_html(
+                'Soldier "{}, {}" successfully added! <a href="/mgmt/soldiers/{}/edit/">View soldier</a>',
+                soldier.surname,
+                soldier.initials,
+                soldier.id
             )
+            messages.success(request, success_message)
             return redirect('search-soldiers')
     else:
         form = editSoldierForm(instance=soldier)

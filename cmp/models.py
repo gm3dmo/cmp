@@ -155,16 +155,22 @@ class ProvostAppointment(models.Model):
 
 def get_upload_to(instance, filename):
     print("\n=== get_upload_to called ===")
-    print(f"filename: {filename}")
-    print(f"soldier_id: {instance.soldier.id}")
-    print(f"MEDIA_ROOT: {settings.MEDIA_ROOT}")
+    print(f"Original filename: {filename}")
+    print(f"Soldier ID: {instance.soldier.id}")
     
-    # Create the directory if it doesn't exist
-    upload_dir = os.path.join(settings.MEDIA_ROOT, str(instance.soldier.id), 'memorial')
-    os.makedirs(upload_dir, exist_ok=True)
-    print(f"Created directory: {upload_dir}")
+    # Create the media directory structure
+    upload_path = os.path.join(settings.MEDIA_ROOT, str(instance.soldier.id), 'memorial')
+    os.makedirs(upload_path, exist_ok=True)
+    print(f"Created directory: {upload_path}")
     
-    return f'{instance.soldier.id}/memorial/{instance.soldier.id}.jpg'
+    # Get file extension from original file
+    ext = os.path.splitext(filename)[1]
+    
+    # Return relative path for Django to use
+    relative_path = f'{instance.soldier.id}/memorial/{instance.soldier.id}{ext}'
+    print(f"Returning path: {relative_path}")
+    
+    return relative_path
 
 
 class SoldierDeath(models.Model):

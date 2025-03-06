@@ -62,20 +62,18 @@ def test_add_soldier():
         print(f"File exists: {os.path.exists(image_path)}")
         page.set_input_files("input[name='image']", image_path)
 
-        # Click Save button with more specific selector
+        # Click Save button
         page.click("button[type='submit']")
 
-        # First wait for navigation to complete
+        # Wait for navigation to search page
         page.wait_for_url("http://localhost:8000/mgmt/soldiers/search/")
 
-        # Then wait for the alert with a longer timeout and debug
-        try:
-            alert = page.wait_for_selector(".alert", timeout=5000)
-            print("Alert message:", alert.text_content())
-        except Exception as e:
-            print("Current URL:", page.url)
-            print("Page content:", page.content())
-            raise e
+        # Wait for and verify success message
+        page.wait_for_selector(".alert")
+        
+        # Optional: Print what we find to debug
+        alert = page.locator(".alert").text_content()
+        print(f"Alert message: {alert}")
 
         # Close browser
         browser.close()
