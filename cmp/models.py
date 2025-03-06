@@ -154,81 +154,40 @@ class ProvostAppointment(models.Model):
 
 
 def get_upload_to(instance, filename):
-    # Django puts a random string into the filename with:
-    #return f"""static/media/{instance.soldier_id}/memorial/{instance.soldier_id}.jpg""" 
-    #extension = filename.split('.')[-1]
-    print(filename)
-    print(instance.soldier_id)
-    #print(instance)
-    extension = "jpg"
-    return f"""static/media/{instance.soldier_id}/memorial/{instance.soldier_id}.jpg""" 
- 
- # http://localhost:8000/media/3774/memorial/3774.jpg
- # http://localhost:8000/static/media/3774/memorial/3774.jpg
+    print("\n=== get_upload_to called ===")
+    print(f"filename: {filename}")
+    print(f"soldier_id: {instance.soldier.id}")
+    print(f"MEDIA_ROOT: {settings.MEDIA_ROOT}")
+    
+    # Create the directory if it doesn't exist
+    upload_dir = os.path.join(settings.MEDIA_ROOT, str(instance.soldier.id), 'memorial')
+    os.makedirs(upload_dir, exist_ok=True)
+    print(f"Created directory: {upload_dir}")
+    
+    return f'{instance.soldier.id}/memorial/{instance.soldier.id}.jpg'
 
 
 class SoldierDeath(models.Model):
-    soldier = models.OneToOneField(
-        Soldier, on_delete=models.CASCADE, related_name="soldierdeath"
-    )
+    soldier = models.OneToOneField(Soldier, on_delete=models.CASCADE)
     date = models.DateField(null=True, blank=True)
+    company = models.ForeignKey(Company, on_delete=models.SET_NULL, null=True, blank=True)
+    cemetery = models.ForeignKey(Cemetery, on_delete=models.SET_NULL, null=True, blank=True)
+    cwgc_id = models.CharField(max_length=50, null=True, blank=True)
     image = models.ImageField(upload_to=get_upload_to, null=True, blank=True)
+
     def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)  # Call the "real" save() method.
-        if self.image:  # if an image exists for this model
-            img = Image.open(self.image.path)  # Open the image file
-            # Resize the image and save it. 
-            img.thumbnail((300, 400), Image.LANCZOS)
-            print(f"settings.STATIC_ROOT: {settings.STATIC_ROOT}")
-            new_filename = os.path.join(settings.STATIC_ROOT, 'media', str(self.soldier_id), 'memorial', f'{self.soldier_id}.jpg')
-            print(f"new_filename: {new_filename}")
-            img.save(new_filename)
-    company = models.ForeignKey(
-        Company,
-        blank=True,
-        null=True,
-        #default="UNKNOWN",
-        on_delete=models.CASCADE,
-        related_name="companies",
-    )
-    cemetery = models.ForeignKey(
-        Cemetery,
-        blank=True,
-        null=True,
-        default=110,
-        on_delete=models.CASCADE,
-        related_name="cemeteries",
-    )
-    cwgc_id = models.IntegerField(
-        blank=True, null=True, unique=False, verbose_name="War Graves ID"
-    )
+        print("\n=== SoldierDeath save called ===")
+        if self.image:
+            print(f"Image name: {self.image.name}")
+            print(f"Image path: {self.image.path if hasattr(self.image, 'path') else 'No path yet'}")
+            print(f"Image URL: {self.image.url if hasattr(self.image, 'url') else 'No URL yet'}")
+        super().save(*args, **kwargs)
+        if self.image:
+            print(f"After save - Image path: {self.image.path}")
+            print(f"File exists: {os.path.exists(self.image.path)}")
 
     def __str__(self):
-        return "%s %s %s" % (self.soldier, self.date, self.cemetery)
-
-    def cwgc_url(self):
-        """Build a URL for a link to CWGC site."""
-        if not self.date:  # Check if date is None
-            return None  # or return a default URL
-        wg_site = "http://www.cwgc.org"
-        if self.cwgc_id:
-            wg_string = "find-war-dead/casualty/%s/" % (self.cwgc_id)
-            wg_url = "%s/%s" % (wg_site, wg_string)
-            return wg_url
-        else:
-            dk = self.date
-            wg_string = (
-                'search/SearchResults.aspx?surname=%s&initials=%s&war=0&yearfrom=%s&yearto=%s&force=%s&nationality=&send.x=26&send.y=19"'
-                % (
-                    self.soldier.surname,
-                    self.soldier.first_initial(),
-                    dk.year,
-                    dk.year,
-                    "Army",
-                )
-            )
-        wg_url = "%s/%s" % (wg_site, wg_string)
-        return wg_url
+        return f"{self.soldier} - {self.date}"
 
 
 class SoldierImprisonment(models.Model):
