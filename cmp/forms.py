@@ -104,7 +104,7 @@ SoldierImprisonmentInlineFormSet = inlineformset_factory(
     Soldier,
     SoldierImprisonment,
     form=SoldierImprisonmentForm,
-    extra=1,
+    extra=0,
     can_delete=True
 )
 
@@ -474,7 +474,7 @@ ProvostAppointmentInlineFormSet = inlineformset_factory(
     Soldier,
     ProvostAppointment,
     form=ProvostAppointmentForm,
-    extra=1,
+    extra=0,
     can_delete=True
 )
 
@@ -573,7 +573,7 @@ SoldierDecorationInlineFormSet = inlineformset_factory(
     Soldier,
     SoldierDecoration,
     form=SoldierDecorationForm,
-    extra=1,
+    extra=0,
     can_delete=True
 )
 
