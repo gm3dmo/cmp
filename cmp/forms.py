@@ -316,21 +316,32 @@ class editSoldierForm(forms.ModelForm):
         self.helper.label_class = 'form-label'  
         self.fields['provost_officer'].disabled = True
 
-        # Initialize the formset with helper
+        # Initialize both formsets with helpers
         self.imprisonment_formset = SoldierImprisonmentFormSetWithHelper(
             instance=self.instance,
             prefix='imprisonment'
         )
-
-        # Rest of your __init__ method stays the same
-        header_class = 'bg-light' if self.instance and self.instance.pk else 'bg-light-blue'
-        is_active = bool(self.instance and self.instance.pk)
         
+        self.decoration_formset = SoldierDecorationFormSetWithHelper(
+            instance=self.instance,
+            prefix='decoration'
+        )
+
+        # Determine header classes and active states
+        header_class = 'bg-light' if self.instance and self.instance.pk else 'bg-light-blue'
+        
+        # Check for existing imprisonments
         has_imprisonment = False
         if self.instance and self.instance.pk:
             has_imprisonment = SoldierImprisonment.objects.filter(soldier=self.instance).exists()
         
-        title = 'Prisoner of War Details' if has_imprisonment else 'Prisoner of War Details (None Recorded)'
+        # Check for existing decorations
+        has_decorations = False
+        if self.instance and self.instance.pk:
+            has_decorations = SoldierDecoration.objects.filter(soldier=self.instance).exists()
+        
+        imprisonment_title = 'Prisoner of War Details' if has_imprisonment else 'Prisoner of War Details (None Recorded)'
+        decoration_title = 'Decoration Details' if has_decorations else 'Decoration Details (None Recorded)'
         
         self.helper.layout = Layout(
             Field('surname'),
@@ -341,19 +352,25 @@ class editSoldierForm(forms.ModelForm):
             Field('notes'),
             Accordion(
                 AccordionGroup(
-                    title,
+                    imprisonment_title,
                     'imprisonment_formset',
                     active=has_imprisonment,
                     button_class=header_class
                 ),
-                css_id="imprisonment-details-accordion"
+                AccordionGroup(
+                    decoration_title,
+                    'decoration_formset',
+                    active=has_decorations,
+                    button_class=header_class
+                ),
+                css_id="soldier-details-accordion"
             )
         )
 
     class Meta:
         model = Soldier
         fields = ['surname', 'initials', 'army_number', 'rank', 'notes', 'provost_officer']
-        exclude = ['created_at']  # Exclude the created_at field
+        exclude = ['created_at']
 
 
 class ProvostOfficerSearchForm(forms.Form):
@@ -506,7 +523,7 @@ class SoldierDecorationForm(forms.ModelForm):
 
     class Meta:
         model = SoldierDecoration
-        fields = ['decoration', 'gazette_issue', 'gazette_page', 'gazette_date', 'theatre', 'country', 'citation', 'notes']
+        fields = ['decoration', 'gazette_issue', 'gazette_page', 'gazette_date', 'country', 'citation', 'notes']
         widgets = {
             'gazette_date': forms.DateInput(
                 attrs={
@@ -534,7 +551,6 @@ class SoldierDecorationFormSetHelper(FormHelper):
                     'gazette_issue',
                     'gazette_page',
                     'gazette_date',
-                    'theatre',
                     'country',
                     'citation',
                     'notes',

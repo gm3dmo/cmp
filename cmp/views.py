@@ -456,9 +456,9 @@ def soldier_detail(request, soldier_id):
     return render(request, 'cmp/soldier.html', {'soldier': soldier})
 
 
-def edit_soldier(request, pk=None):
-    if pk:
-        soldier = get_object_or_404(Soldier, pk=pk)
+def edit_soldier(request, id=None):
+    if id:
+        soldier = get_object_or_404(Soldier, id=id)
         try:
             soldier_death = SoldierDeath.objects.get(soldier=soldier)
         except SoldierDeath.DoesNotExist:
@@ -473,6 +473,8 @@ def edit_soldier(request, pk=None):
         death_form.helper = SoldierDeathFormHelper()
         death_form.helper.form = death_form
         death_form.helper.update_title()
+        
+        # Initialize formsets with POST data
         decoration_formset = SoldierDecorationFormSetWithHelper(
             request.POST,
             request.FILES,
@@ -486,16 +488,31 @@ def edit_soldier(request, pk=None):
                 death_instance = death_form.save(commit=False)
                 death_instance.soldier = soldier
                 death_instance.save()
-            decoration_formset.instance = soldier
-            decoration_formset.save()
+            
+            # Save the decoration formset
+            if decoration_formset.is_valid():
+                decoration_formset.instance = soldier
+                decoration_formset.save()
+            
+            # Save the imprisonment formset
+            if form.imprisonment_formset.is_valid():
+                form.imprisonment_formset.instance = soldier
+                form.imprisonment_formset.save()
+                
             success_message = format_html(
-                'Soldier "{}, {}" successfully added! <a href="/mgmt/soldiers/{}/edit/">View soldier</a>',
+                'Soldier "{}, {}" successfully saved! <a href="/mgmt/soldiers/{}/edit/">View soldier</a>',
                 soldier.surname,
                 soldier.initials,
                 soldier.id
             )
             messages.success(request, success_message)
             return redirect('search-soldiers')
+        else:
+            # Print form errors for debugging
+            print("Form errors:", form.errors)
+            print("Death form errors:", death_form.errors)
+            print("Decoration formset errors:", decoration_formset.errors)
+            print("Imprisonment formset errors:", form.imprisonment_formset.errors)
     else:
         form = editSoldierForm(instance=soldier)
         death_form = editSoldierDeathForm(instance=soldier_death)
