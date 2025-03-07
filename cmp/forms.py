@@ -61,26 +61,17 @@ class SoldierImprisonmentForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['pow_camp'].required = True
+        self.fields['pow_camp'].required = False
         self.fields['pow_number'].required = False
         self.fields['date_to'].required = False
         self.fields['notes'].required = False
-
-    def clean(self):
-        cleaned_data = super().clean()
-        if not any(cleaned_data.values()):
-            return cleaned_data
-        if not cleaned_data.get('pow_camp'):
-            self.add_error('pow_camp', 'POW Camp is required when adding imprisonment details')
-        return cleaned_data
 
 class SoldierImprisonmentFormSetHelper(FormHelper):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.form_tag = False
         
-        # Default to collapsed
-        has_data = False
+        # Always start collapsed
         title = 'Prisoner of War Details (None Recorded)'
         
         self.layout = Layout(
@@ -92,7 +83,7 @@ class SoldierImprisonmentFormSetHelper(FormHelper):
                     'date_from',
                     'date_to',
                     'notes',
-                    active=has_data,  # Collapsed by default
+                    active=False,  # Set to False to ensure it's collapsed
                     css_class='bg-info bg-opacity-25 border rounded p-3'
                 ),
                 css_id="imprisonment-details-accordion"
@@ -105,14 +96,14 @@ class SoldierImprisonmentFormSetHelper(FormHelper):
             has_data = any(form.initial for form in self.formset.initial_forms)
             title = 'Prisoner of War Details' if has_data else 'Prisoner of War Details (None Recorded)'
             self.layout[0][0].name = title
-            self.layout[0][0].active = has_data
+            self.layout[0][0].active = False  # Always keep collapsed
 
 # Create the formset
 SoldierImprisonmentInlineFormSet = inlineformset_factory(
     Soldier,
     SoldierImprisonment,
     form=SoldierImprisonmentForm,
-    extra=1,
+    extra=0,
     can_delete=True
 )
 
@@ -297,7 +288,7 @@ class editSoldierDeathForm(forms.ModelForm):
         self.helper.form_tag = False
         
         # Determine header class and active state based on whether form has data
-        header_class = 'bg-primary text-white'
+        header_class = 'bg-light' if self.instance and self.instance.pk else 'bg-light-blue'
         is_active = bool(self.instance and self.instance.pk)
         
         self.helper.layout = Layout(
@@ -324,32 +315,17 @@ class editSoldierForm(forms.ModelForm):
         self.helper.label_class = 'form-label'  
         self.fields['provost_officer'].disabled = True
 
-        # Initialize both formsets with helpers
-        self.imprisonment_formset = SoldierImprisonmentFormSetWithHelper(
-            instance=self.instance,
-            prefix='imprisonment'
-        )
-        
-        self.decoration_formset = SoldierDecorationFormSetWithHelper(
-            instance=self.instance,
-            prefix='decoration'
-        )
-
-        # Determine header classes and active states
+        # Determine header class and active state based on whether form has data
         header_class = 'bg-light' if self.instance and self.instance.pk else 'bg-light-blue'
+        is_active = bool(self.instance and self.instance.pk)
         
-        # Check for existing imprisonments
+        # Check if there are any imprisonment records
         has_imprisonment = False
         if self.instance and self.instance.pk:
             has_imprisonment = SoldierImprisonment.objects.filter(soldier=self.instance).exists()
         
-        # Check for existing decorations
-        has_decorations = False
-        if self.instance and self.instance.pk:
-            has_decorations = SoldierDecoration.objects.filter(soldier=self.instance).exists()
-        
-        imprisonment_title = 'Prisoner of War Details' if has_imprisonment else 'Prisoner of War Details (None Recorded)'
-        decoration_title = 'Decoration Details' if has_decorations else 'Decoration Details (None Recorded)'
+        # Set title based on whether there's data
+        title = 'Prisoner of War Details' if has_imprisonment else 'Prisoner of War Details (None Recorded)'
         
         self.helper.layout = Layout(
             Field('surname'),
@@ -360,25 +336,24 @@ class editSoldierForm(forms.ModelForm):
             Field('notes'),
             Accordion(
                 AccordionGroup(
-                    imprisonment_title,
+                    title,
                     'imprisonment_formset',
                     active=has_imprisonment,
                     button_class=header_class
                 ),
-                AccordionGroup(
-                    decoration_title,
-                    'decoration_formset',
-                    active=has_decorations,
-                    button_class=header_class
-                ),
-                css_id="soldier-details-accordion"
+                css_id="imprisonment-details-accordion"
             )
+        )
+        # Initialize the formset
+        self.imprisonment_formset = SoldierImprisonmentInlineFormSet(
+            instance=self.instance,
+            prefix='imprisonment'
         )
 
     class Meta:
         model = Soldier
         fields = ['surname', 'initials', 'army_number', 'rank', 'notes', 'provost_officer']
-        exclude = ['created_at']
+        exclude = ['created_at']  # Exclude the created_at field
 
 
 class ProvostOfficerSearchForm(forms.Form):
@@ -482,7 +457,7 @@ ProvostAppointmentInlineFormSet = inlineformset_factory(
     Soldier,
     ProvostAppointment,
     form=ProvostAppointmentForm,
-    extra=1,
+    extra=0,
     can_delete=True
 )
 
@@ -531,7 +506,7 @@ class SoldierDecorationForm(forms.ModelForm):
 
     class Meta:
         model = SoldierDecoration
-        fields = ['decoration', 'gazette_issue', 'gazette_page', 'gazette_date', 'country', 'citation', 'notes']
+        fields = ['decoration', 'gazette_issue', 'gazette_page', 'gazette_date', 'theatre', 'country', 'citation', 'notes']
         widgets = {
             'gazette_date': forms.DateInput(
                 attrs={
@@ -547,8 +522,7 @@ class SoldierDecorationFormSetHelper(FormHelper):
         super().__init__(*args, **kwargs)
         self.form_tag = False
         
-        # Default to collapsed
-        has_data = False
+        # Always start collapsed
         title = 'Decoration Details (None Recorded)'
         
         self.layout = Layout(
@@ -562,7 +536,7 @@ class SoldierDecorationFormSetHelper(FormHelper):
                     'country',
                     'citation',
                     'notes',
-                    active=has_data,
+                    active=False,  # Set to False to ensure it's collapsed
                     css_class='bg-info bg-opacity-25 border rounded p-3'
                 ),
                 css_id="decoration-details-accordion"
@@ -574,14 +548,14 @@ class SoldierDecorationFormSetHelper(FormHelper):
             has_data = any(form.initial for form in self.formset.initial_forms)
             title = 'Decoration Details' if has_data else 'Decoration Details (None Recorded)'
             self.layout[0][0].name = title
-            self.layout[0][0].active = has_data
+            self.layout[0][0].active = False  # Always keep collapsed
 
 # Create the formset
 SoldierDecorationInlineFormSet = inlineformset_factory(
     Soldier,
     SoldierDecoration,
     form=SoldierDecorationForm,
-    extra=1,
+    extra=0,
     can_delete=True
 )
 
@@ -599,8 +573,7 @@ class SoldierDeathFormHelper(FormHelper):
         super().__init__(*args, **kwargs)
         self.form_tag = False
         
-        # Default to collapsed
-        has_data = False
+        # Always start collapsed
         title = 'Death Details (None Recorded)'
         
         self.layout = Layout(
@@ -612,7 +585,7 @@ class SoldierDeathFormHelper(FormHelper):
                     'cemetery',
                     'cwgc_id',
                     'image',
-                    active=has_data,  # Collapsed by default
+                    active=False,  # Set to False to ensure it's collapsed
                     css_class='bg-info bg-opacity-25 border rounded p-3'
                 ),
                 css_id="death-details-accordion"
@@ -625,6 +598,6 @@ class SoldierDeathFormHelper(FormHelper):
             has_data = any(self.form.initial.values())
             title = 'Death Details' if has_data else 'Death Details (None Recorded)'
             self.layout[0][0].name = title
-            self.layout[0][0].active = has_data
+            self.layout[0][0].active = False  # Always keep collapsed
 
 
