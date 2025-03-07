@@ -46,8 +46,10 @@ jobs:
         run: |
             python manage.py test
       - name: Run test with coverage report
-        run: |
-            pytest  --cov-report lcov:cov.info
+        run: | 
+            pytest --cov-report lcov:cov.info --ignore=tests/
+      - name: Coveralls Coverage Report
+
       - name: Coveralls Coverage Report
         uses: coverallsapp/github-action@v2.3.0    
         with:
