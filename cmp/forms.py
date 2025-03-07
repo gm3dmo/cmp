@@ -289,7 +289,7 @@ class editSoldierDeathForm(forms.ModelForm):
         self.helper.form_tag = False
         
         # Determine header class and active state based on whether form has data
-        header_class = 'bg-light' if self.instance and self.instance.pk else 'bg-light-blue'
+        header_class = 'bg-primary text-white'
         is_active = bool(self.instance and self.instance.pk)
         
         self.helper.layout = Layout(
@@ -316,16 +316,20 @@ class editSoldierForm(forms.ModelForm):
         self.helper.label_class = 'form-label'  
         self.fields['provost_officer'].disabled = True
 
-        # Determine header class and active state based on whether form has data
+        # Initialize the formset with helper
+        self.imprisonment_formset = SoldierImprisonmentFormSetWithHelper(
+            instance=self.instance,
+            prefix='imprisonment'
+        )
+
+        # Rest of your __init__ method stays the same
         header_class = 'bg-light' if self.instance and self.instance.pk else 'bg-light-blue'
         is_active = bool(self.instance and self.instance.pk)
         
-        # Check if there are any imprisonment records
         has_imprisonment = False
         if self.instance and self.instance.pk:
             has_imprisonment = SoldierImprisonment.objects.filter(soldier=self.instance).exists()
         
-        # Set title based on whether there's data
         title = 'Prisoner of War Details' if has_imprisonment else 'Prisoner of War Details (None Recorded)'
         
         self.helper.layout = Layout(
@@ -344,11 +348,6 @@ class editSoldierForm(forms.ModelForm):
                 ),
                 css_id="imprisonment-details-accordion"
             )
-        )
-        # Initialize the formset
-        self.imprisonment_formset = SoldierImprisonmentInlineFormSet(
-            instance=self.instance,
-            prefix='imprisonment'
         )
 
     class Meta:
