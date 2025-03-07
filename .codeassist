@@ -1,0 +1,11 @@
+# Configuration for AI code assistance
+preserve:
+  - templates/cmp/edit-soldiers.html:
+      - form enctype attribute
+      - csrf_token
+  - templates/cmp/edit-provost-officer.html:
+      - form enctype attribute
+  - other_file.py:
+      - specific function or section
+
+# Add any other configuration rules 
