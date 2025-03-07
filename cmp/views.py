@@ -474,7 +474,6 @@ def edit_soldier(request, id=None):
         death_form.helper.form = death_form
         death_form.helper.update_title()
         
-        # Initialize decoration formset with POST data
         decoration_formset = SoldierDecorationFormSetWithHelper(
             request.POST,
             request.FILES,
@@ -482,7 +481,6 @@ def edit_soldier(request, id=None):
             prefix='decoration'
         )
         
-        # Initialize imprisonment formset with POST data
         imprisonment_formset = SoldierImprisonmentFormSetWithHelper(
             request.POST,
             request.FILES,
@@ -491,13 +489,18 @@ def edit_soldier(request, id=None):
         )
         
         if form.is_valid() and death_form.is_valid() and decoration_formset.is_valid() and imprisonment_formset.is_valid():
+            # First save the soldier
             soldier = form.save()
+            
+            # Then save death form if changed
             if death_form.has_changed():
                 death_instance = death_form.save(commit=False)
                 death_instance.soldier = soldier
                 death_instance.save()
             
-            # Save both formsets
+            # Now save formsets with the saved soldier instance
+            decoration_formset.instance = soldier
+            imprisonment_formset.instance = soldier
             decoration_formset.save()
             imprisonment_formset.save()
                 
@@ -510,7 +513,6 @@ def edit_soldier(request, id=None):
             messages.success(request, success_message)
             return redirect('search-soldiers')
         else:
-            # Print form errors for debugging
             print("Form errors:", form.errors)
             print("Death form errors:", death_form.errors)
             print("Decoration formset errors:", decoration_formset.errors)
