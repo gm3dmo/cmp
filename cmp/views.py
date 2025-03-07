@@ -44,6 +44,8 @@ from .forms import (
     editSoldierForm, editSoldierDeathForm,
     SoldierImprisonmentFormSetWithHelper,
     SoldierDecorationInlineFormSet,
+    SoldierDecorationFormSetWithHelper,
+    SoldierDeathFormHelper
 )
 from .forms import SoldierDecorationInlineFormSet
 from .forms import ProvostOfficerForm, ProvostAppointmentForm
@@ -454,13 +456,9 @@ def soldier_detail(request, soldier_id):
     return render(request, 'cmp/soldier.html', {'soldier': soldier})
 
 
-def edit_soldier(request, id=None):
-    print("\n=== View called ===")
-    print(f"Files in request: {request.FILES}")
-    print(f"POST data: {request.POST}")
-    
-    if id:
-        soldier = get_object_or_404(Soldier, pk=id)
+def edit_soldier(request, pk=None):
+    if pk:
+        soldier = get_object_or_404(Soldier, pk=pk)
         try:
             soldier_death = SoldierDeath.objects.get(soldier=soldier)
         except SoldierDeath.DoesNotExist:
@@ -472,13 +470,22 @@ def edit_soldier(request, id=None):
     if request.method == 'POST':
         form = editSoldierForm(request.POST, request.FILES, instance=soldier)
         death_form = editSoldierDeathForm(request.POST, request.FILES, instance=soldier_death)
+        death_form.helper = SoldierDeathFormHelper()
+        death_form.helper.form = death_form
+        death_form.helper.update_title()
+        decoration_formset = SoldierDecorationFormSetWithHelper(
+            instance=soldier,
+            prefix='decoration'
+        )
         
-        if form.is_valid() and death_form.is_valid():
+        if form.is_valid() and death_form.is_valid() and decoration_formset.is_valid():
             soldier = form.save()
             if death_form.has_changed():
                 death_instance = death_form.save(commit=False)
                 death_instance.soldier = soldier
                 death_instance.save()
+            decoration_formset.instance = soldier
+            decoration_formset.save()
             success_message = format_html(
                 'Soldier "{}, {}" successfully added! <a href="/mgmt/soldiers/{}/edit/">View soldier</a>',
                 soldier.surname,
@@ -490,12 +497,22 @@ def edit_soldier(request, id=None):
     else:
         form = editSoldierForm(instance=soldier)
         death_form = editSoldierDeathForm(instance=soldier_death)
+        death_form.helper = SoldierDeathFormHelper()
+        death_form.helper.form = death_form
+        death_form.helper.update_title()
+        decoration_formset = SoldierDecorationFormSetWithHelper(
+            instance=soldier,
+            prefix='decoration'
+        )
 
-    return render(request, 'cmp/edit-soldiers.html', {
+    context = {
         'form': form,
         'death_form': death_form,
+        'decoration_formset': decoration_formset,
+        'imprisonment_formset': form.imprisonment_formset,
         'soldier': soldier
-    })
+    }
+    return render(request, 'cmp/edit-soldiers.html', context)
 
 
 def search_acknowledgement(request):
