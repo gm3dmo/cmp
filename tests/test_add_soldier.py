@@ -59,8 +59,14 @@ def test_add_soldier():
         print(f"File exists: {os.path.exists(image_path)}")
         page.set_input_files("input[name='image']", image_path)
 
+        # Debug: Print all buttons on the page
+        buttons = page.locator("button").all()
+        print("Available buttons:")
+        for button in buttons:
+            print(f"Button text: {button.text_content()}")
+
         # Click Save button
-        page.click("button[type='submit']")
+        page.click("button:has-text('Save')")
 
         # Wait for navigation to search page
         page.wait_for_url(f"{BASE_URL}/mgmt/soldiers/search/")

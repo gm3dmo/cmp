@@ -474,6 +474,8 @@ def edit_soldier(request, pk=None):
         death_form.helper.form = death_form
         death_form.helper.update_title()
         decoration_formset = SoldierDecorationFormSetWithHelper(
+            request.POST,
+            request.FILES,
             instance=soldier,
             prefix='decoration'
         )
