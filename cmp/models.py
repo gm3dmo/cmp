@@ -144,13 +144,13 @@ class Soldier(models.Model):
 
 
 class ProvostAppointment(models.Model):
-    soldier = models.ForeignKey( Soldier, null=False, blank=False, on_delete=models.CASCADE)
+    soldier = models.ForeignKey(Soldier, null=False, blank=False, on_delete=models.CASCADE)
     rank = models.ForeignKey("Rank", on_delete=models.CASCADE, related_name="provostappointments")
     date = models.DateField(null=True, blank=True)
     notes = models.TextField(unique=False, default="")
 
     def __str__(self):
-        return self.rank
+        return self.rank.name  # Return the name string directly
 
 
 def get_upload_to(instance, filename):
