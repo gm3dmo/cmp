@@ -61,10 +61,18 @@ class SoldierImprisonmentForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['pow_camp'].required = False
+        self.fields['pow_camp'].required = True
         self.fields['pow_number'].required = False
         self.fields['date_to'].required = False
         self.fields['notes'].required = False
+
+    def clean(self):
+        cleaned_data = super().clean()
+        if not any(cleaned_data.values()):
+            return cleaned_data
+        if not cleaned_data.get('pow_camp'):
+            self.add_error('pow_camp', 'POW Camp is required when adding imprisonment details')
+        return cleaned_data
 
 class SoldierImprisonmentFormSetHelper(FormHelper):
     def __init__(self, *args, **kwargs):

@@ -474,7 +474,7 @@ def edit_soldier(request, id=None):
         death_form.helper.form = death_form
         death_form.helper.update_title()
         
-        # Initialize formsets with POST data
+        # Initialize both formsets with POST data
         decoration_formset = SoldierDecorationFormSetWithHelper(
             request.POST,
             request.FILES,
@@ -482,22 +482,29 @@ def edit_soldier(request, id=None):
             prefix='decoration'
         )
         
-        if form.is_valid() and death_form.is_valid() and decoration_formset.is_valid():
+        imprisonment_formset = SoldierImprisonmentFormSetWithHelper(
+            request.POST,
+            request.FILES,
+            instance=soldier,
+            prefix='imprisonment'
+        )
+        
+        if (form.is_valid() and death_form.is_valid() and 
+            decoration_formset.is_valid() and imprisonment_formset.is_valid()):
+            
             soldier = form.save()
+            
             if death_form.has_changed():
                 death_instance = death_form.save(commit=False)
                 death_instance.soldier = soldier
                 death_instance.save()
             
-            # Save the decoration formset
-            if decoration_formset.is_valid():
-                decoration_formset.instance = soldier
-                decoration_formset.save()
+            # Save both formsets
+            decoration_formset.instance = soldier
+            decoration_formset.save()
             
-            # Save the imprisonment formset
-            if form.imprisonment_formset.is_valid():
-                form.imprisonment_formset.instance = soldier
-                form.imprisonment_formset.save()
+            imprisonment_formset.instance = soldier
+            imprisonment_formset.save()
                 
             success_message = format_html(
                 'Soldier "{}, {}" successfully saved! <a href="/mgmt/soldiers/{}/edit/">View soldier</a>',
@@ -512,7 +519,7 @@ def edit_soldier(request, id=None):
             print("Form errors:", form.errors)
             print("Death form errors:", death_form.errors)
             print("Decoration formset errors:", decoration_formset.errors)
-            print("Imprisonment formset errors:", form.imprisonment_formset.errors)
+            print("Imprisonment formset errors:", imprisonment_formset.errors)
     else:
         form = editSoldierForm(instance=soldier)
         death_form = editSoldierDeathForm(instance=soldier_death)
@@ -523,12 +530,16 @@ def edit_soldier(request, id=None):
             instance=soldier,
             prefix='decoration'
         )
+        imprisonment_formset = SoldierImprisonmentFormSetWithHelper(
+            instance=soldier,
+            prefix='imprisonment'
+        )
 
     context = {
         'form': form,
         'death_form': death_form,
         'decoration_formset': decoration_formset,
-        'imprisonment_formset': form.imprisonment_formset,
+        'imprisonment_formset': imprisonment_formset,
         'soldier': soldier
     }
     return render(request, 'cmp/edit-soldiers.html', context)
