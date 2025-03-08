@@ -511,7 +511,8 @@ def edit_soldier(request, id=None):
                         imprisonment.save()
             
             success_message = format_html(
-                'Soldier "{}, {}" successfully saved! <a href="/mgmt/soldiers/{}/edit/">View soldier</a>',
+                'Soldier "<a href="/soldier/{}">{} {}</a>" saved. <a href="/mgmt/soldiers/{}/edit/">View/Edit admin record</a>',
+                soldier.id,
                 soldier.surname,
                 soldier.initials,
                 soldier.id
