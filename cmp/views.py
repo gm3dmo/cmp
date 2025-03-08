@@ -1087,14 +1087,19 @@ def provost_officer_edit(request, id):
     
     if request.method == 'POST':
         officer_form = ProvostOfficerForm(request.POST, instance=officer)
-        # Get or create related ProvostAppointment
-        appointment, created = ProvostAppointment.objects.get_or_create(soldier=officer)
+        # Get or create related ProvostAppointment with the officer's current rank
+        appointment, created = ProvostAppointment.objects.get_or_create(
+            soldier=officer,
+            defaults={'rank': officer.rank}  # Set default rank when creating new appointment
+        )
         appointment_form = ProvostAppointmentForm(request.POST, instance=appointment)
         
         if officer_form.is_valid() and appointment_form.is_valid():
             officer = officer_form.save()
             appointment = appointment_form.save(commit=False)
             appointment.soldier = officer
+            if not appointment.rank:  # Ensure rank is set
+                appointment.rank = officer.rank
             appointment.save()
             
             messages.success(request, f'Provost Officer {officer.surname}, {officer.initials} successfully updated')
@@ -1105,15 +1110,18 @@ def provost_officer_edit(request, id):
         print("Appointment form errors:", appointment_form.errors)
     else:
         officer_form = ProvostOfficerForm(instance=officer)
-        # Get or create related ProvostAppointment
-        appointment, created = ProvostAppointment.objects.get_or_create(soldier=officer)
+        # Get or create related ProvostAppointment with the officer's current rank
+        appointment, created = ProvostAppointment.objects.get_or_create(
+            soldier=officer,
+            defaults={'rank': officer.rank}  # Set default rank when creating new appointment
+        )
         appointment_form = ProvostAppointmentForm(instance=appointment)
 
     return render(request, 'cmp/edit-provost-officer.html', {
         'officer_form': officer_form,
         'appointment_form': appointment_form,
         'officer': officer,
-        'appointment': appointment  # Make sure appointment is explicitly passed to template
+        'appointment': appointment
     })
 
 def provost_officer_delete(request, id):
