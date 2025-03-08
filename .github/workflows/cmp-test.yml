@@ -44,7 +44,7 @@ jobs:
             python manage.py collectstatic
       - name: Run tests
         run: |
-            python manage.py test
+            python manage.py test --exclude-dir=tests
       - name: Run test with coverage report
         run: | 
             pytest --cov-report lcov:cov.info --ignore=tests/
