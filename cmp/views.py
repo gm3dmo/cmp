@@ -500,10 +500,16 @@ def edit_soldier(request, id=None):
             
             # Now save formsets with the saved soldier instance
             decoration_formset.instance = soldier
-            imprisonment_formset.instance = soldier
             decoration_formset.save()
-            imprisonment_formset.save()
-                
+            
+            # Only save imprisonment forms that have data
+            for imprisonment_form in imprisonment_formset:
+                if imprisonment_form.has_changed() and not imprisonment_form.empty_permitted:
+                    if imprisonment_form.cleaned_data.get('pow_camp'):  # Only save if pow_camp is provided
+                        imprisonment = imprisonment_form.save(commit=False)
+                        imprisonment.soldier = soldier
+                        imprisonment.save()
+            
             success_message = format_html(
                 'Soldier "{}, {}" successfully saved! <a href="/mgmt/soldiers/{}/edit/">View soldier</a>',
                 soldier.surname,
