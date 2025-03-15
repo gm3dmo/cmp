@@ -145,3 +145,4 @@ media-prep
 db.sqlite3-shm
 db.sqlite3-wal
 *.sql
+*.png
