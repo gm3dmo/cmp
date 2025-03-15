@@ -69,6 +69,8 @@ from .models import ProvostAppointment
 from django.utils.html import format_html
 from django.urls import reverse
 
+import os
+
 logger = logging.getLogger(__name__)
 
 def mgmt_index(request):
@@ -461,16 +463,34 @@ def edit_soldier(request, id=None):
         soldier = get_object_or_404(Soldier, id=id)
         try:
             soldier_death = SoldierDeath.objects.get(soldier=soldier)
+            # Check for image file in the expected location
+            expected_image_path = os.path.join(settings.MEDIA_ROOT, str(soldier.id), 'memorial')
+            # Check for common image extensions
+            for ext in ['.jpg', '.jpeg', '.png']:
+                potential_file = os.path.join(expected_image_path, f"{soldier.id}{ext}")
+                if os.path.exists(potential_file):
+                    # Convert to relative URL for template
+                    relative_path = os.path.relpath(potential_file, settings.MEDIA_ROOT)
+                    image_url = f"{settings.MEDIA_URL}{relative_path}"
+                    has_image = True
+                    break
+            else:  # No image found
+                has_image = False
+                image_url = None
         except SoldierDeath.DoesNotExist:
             soldier_death = None
+            has_image = False
+            image_url = None
     else:
         soldier = None
         soldier_death = None
+        has_image = False
+        image_url = None
 
     if request.method == 'POST':
         form = editSoldierForm(request.POST, request.FILES, instance=soldier)
         death_form = editSoldierDeathForm(request.POST, request.FILES, instance=soldier_death)
-        death_form.helper = SoldierDeathFormHelper()
+        death_form.helper = SoldierDeathFormHelper(has_image=has_image, image_url=image_url)
         death_form.helper.form = death_form
         death_form.helper.update_title()
         
@@ -527,7 +547,7 @@ def edit_soldier(request, id=None):
     else:
         form = editSoldierForm(instance=soldier)
         death_form = editSoldierDeathForm(instance=soldier_death)
-        death_form.helper = SoldierDeathFormHelper()
+        death_form.helper = SoldierDeathFormHelper(has_image=has_image, image_url=image_url)
         death_form.helper.form = death_form
         death_form.helper.update_title()
         
@@ -546,7 +566,9 @@ def edit_soldier(request, id=None):
         'death_form': death_form,
         'decoration_formset': decoration_formset,
         'imprisonment_formset': imprisonment_formset,
-        'soldier': soldier
+        'soldier': soldier,
+        'has_image': has_image,
+        'image_url': image_url
     }
     return render(request, 'cmp/edit-soldiers.html', context)
 
