@@ -119,13 +119,13 @@ class SoldierImprisonmentFormSetWithHelper(SoldierImprisonmentInlineFormSet):
 class CustomUserCreationForm(UserCreationForm):
     class Meta:
         model = CustomUser
-        fields = ("email",)
+        fields = ("username",)
 
 
 class CustomUserChangeForm(UserChangeForm):
     class Meta:
         model = CustomUser
-        fields = ("email",)
+        fields = ("username",)
 
 
 class editPowCampForm(forms.ModelForm):
