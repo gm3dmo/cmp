@@ -4,10 +4,29 @@ from django.conf import settings
 from . import views
 from django.views.generic.base import RedirectView
 import os
+from django.contrib.auth.decorators import login_required
 
 
 from .views import soldier_detail
 
+
+# Move management patterns to their own list but keep them exactly as is
+mgmt_patterns = [
+    # Soldier management
+    path("mgmt/soldiers/search/", views.search_soldiers, name='search-soldiers'),
+    path("mgmt/soldiers/edit/<int:id>/", views.edit_soldier, name='edit-soldier'),
+    path("mgmt/soldiers/edit/", views.edit_soldier, name='create-soldier'),
+    path("mgmt/soldiers/delete/<int:id>/", views.delete_soldier, name='delete-soldier'),
+    path("mgmt/soldiers/<int:id>/", views.detail_soldiers, name='detail-soldiers'),
+    path('mgmt/soldiers/<int:id>/edit/', views.edit_soldier, name='edit-soldier'),
+
+    # Companies
+    path("mgmt/companies", views.edit_companies, name="edit-companies"),
+    path("mgmt/companies/<int:id>/", views.detail_companies, name="companies"),
+    path("mgmt/companies/edit/<int:id>/", views.edit_companies, name='edit-companies'),
+    path("mgmt/companies/search/", views.search_companies, name='search-companies'),
+    path('mgmt/companies/delete/<int:id>/', views.delete_company, name='delete-company'),
+]
 
 urlpatterns = [
     # ... your other URL patterns ...
@@ -38,13 +57,6 @@ urlpatterns = [
     path("mgmt/countries/<int:country_id>/", views.detail_countries, name="countries"),
     path("mgmt/countries/edit/<int:country_id>", views.edit_countries, name="edit-countries"),
     path("mgmt/countries/search/", views.search_countries, name='search-countries'),
-
-    # Companies
-    path("mgmt/companies", views.edit_companies, name="edit-companies"),
-    path("mgmt/companies/<int:id>/", views.detail_companies, name="companies"),
-    path("mgmt/companies/edit/<int:id>/", views.edit_companies, name='edit-companies'),
-    path("mgmt/companies/search/", views.search_companies, name='search-companies'),
-    path('mgmt/companies/delete/<int:id>/', views.delete_company, name='delete-company'),
 
     # Decorations
     path("mgmt/decorations", views.edit_decorations, name="edit-decorations"),
@@ -92,16 +104,6 @@ urlpatterns = [
     # Soldiers
     path('soldiers/', views.soldiers, name='soldiers'),
 
-    # Soldier management
-    path("mgmt/soldiers/search/", views.search_soldiers, name='search-soldiers'),
-    path("mgmt/soldiers/edit/<int:id>/", views.edit_soldier, name='edit-soldier'),
-    path("mgmt/soldiers/edit/", views.edit_soldier, name='create-soldier'),
-    path("mgmt/soldiers/delete/<int:id>/", views.delete_soldier, name='delete-soldier'),
-    path("mgmt/soldiers/<int:id>/", views.detail_soldiers, name='detail-soldiers'),
-    path('mgmt/soldiers/<int:id>/edit/', views.edit_soldier, name='edit-soldier'),
-
-    path('about/', views.about, name='about'),
-
     # War Diaries
     path('war-diaries/', views.war_diaries, name='war-diaries'),
     path('war-diaries/ww1/', views.ww1_diaries, name='ww1-diaries'),
@@ -109,6 +111,9 @@ urlpatterns = [
 
     path('reports/decorations/common', views.decorations_common, name='decorations-common'),
 
+    path('accounts/', include('allauth.urls')),
+    # Include management patterns with login requirement
+    path('', include((mgmt_patterns, 'mgmt'), namespace='mgmt')),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
