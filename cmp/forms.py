@@ -287,6 +287,8 @@ class editSoldierDeathForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         # Don't create the helper here - it will be set by the view
         self.helper = None  # We'll set this in the view
+        # Order cemeteries alphabetically by name
+        self.fields['cemetery'].queryset = Cemetery.objects.order_by('name')
 
 
 class editSoldierForm(forms.ModelForm):
