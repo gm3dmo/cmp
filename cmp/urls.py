@@ -10,46 +10,16 @@ from django.contrib.auth.decorators import login_required
 from .views import soldier_detail
 
 
-# Move management patterns to their own list but keep them exactly as is
+def protect_patterns(patterns):
+    protected = []
+    for pattern in patterns:
+        callback = pattern.callback
+        pattern.callback = login_required(callback)
+        protected.append(pattern)
+    return protected
+
 mgmt_patterns = [
-    # Soldier management
-    path("mgmt/soldiers/search/", views.search_soldiers, name='search-soldiers'),
-    path("mgmt/soldiers/edit/<int:id>/", views.edit_soldier, name='edit-soldier'),
-    path("mgmt/soldiers/edit/", views.edit_soldier, name='create-soldier'),
-    path("mgmt/soldiers/delete/<int:id>/", views.delete_soldier, name='delete-soldier'),
-    path("mgmt/soldiers/<int:id>/", views.detail_soldiers, name='detail-soldiers'),
-    path('mgmt/soldiers/<int:id>/edit/', views.edit_soldier, name='edit-soldier'),
-
-    # Companies
-    path("mgmt/companies", views.edit_companies, name="edit-companies"),
-    path("mgmt/companies/<int:id>/", views.detail_companies, name="companies"),
-    path("mgmt/companies/edit/<int:id>/", views.edit_companies, name='edit-companies'),
-    path("mgmt/companies/search/", views.search_companies, name='search-companies'),
-    path('mgmt/companies/delete/<int:id>/', views.delete_company, name='delete-company'),
-]
-
-urlpatterns = [
-    # ... your other URL patterns ...
-
-    path("", views.index, name="index"), 
-    path('soldier/<int:soldier_id>/', views.soldier, name='soldier'),
-
-    path("sentry-debug/", views.trigger_error ),
-
-    path("tools/army-number-search", views.army_number_search, name="army-number-search" ),
-    path("tools/army-number-search/<int:army_number>"  , views.original_unit, name="army-number-search" ),
-    path('tools/army-number-search/', views.army_number_search, name='army-number-search'),
-    path('tools/armynumber/', RedirectView.as_view(pattern_name='army-number-search', permanent=True), name='tools-armynumber'),
-
-    # Segment URLs
-    path('countries/', views.countries, name='countries'),
-    path('cemeteries/', views.cemeteries, name='cemeteries'),
-    path('pow-camps/', views.powcamps, name='powcamps'),
-    path('ranks/', views.ranks, name='ranks'),
-    path('acknowledgements/', views.acknowledgements, name='acknowledgements'),
-
-    # Mangagement URLs
-    # create an index page for mgmt urls to link to /mgmt/countries
+    # Management index
     path('mgmt/', views.mgmt_index, name='mgmt-index'),
 
     # Countries
@@ -87,13 +57,12 @@ urlpatterns = [
     path("mgmt/ranks/delete/<int:id>/", views.delete_rank, name='delete-rank'),
     path("mgmt/ranks/<int:id>/", views.detail_ranks, name="ranks"),
 
-    #  Acknowledgements
+    # Acknowledgements
     path("mgmt/acknowledgement/<int:acknowledgement_id>/", views.detail_acknowledgement, name="acknowledgement"),
     path('mgmt/acknowledgement/delete/<int:pk>/', views.delete_acknowledgement, name='delete-acknowledgement'),
     path('mgmt/acknowledgement/search/', views.search_acknowledgement, name='search-acknowledgement'),
     path('mgmt/acknowledgement/edit/', views.edit_acknowledgement, name='edit-acknowledgement'),
     path('mgmt/acknowledgement/edit/<int:id>/', views.edit_acknowledgement, name='edit-acknowledgement'),
-
 
     # Provost Officers
     path('mgmt/provost-officers/search/', views.provost_officer_search, name='provost-officer-search'),
@@ -102,18 +71,55 @@ urlpatterns = [
     path('mgmt/provost-officers/delete/<int:id>/', views.provost_officer_delete, name='delete-provost-officer'),
 
     # Soldiers
-    path('soldiers/', views.soldiers, name='soldiers'),
+    path("mgmt/soldiers/search/", views.search_soldiers, name='search-soldiers'),
+    path("mgmt/soldiers/edit/<int:id>/", views.edit_soldier, name='edit-soldier'),
+    path("mgmt/soldiers/edit/", views.edit_soldier, name='create-soldier'),
+    path("mgmt/soldiers/delete/<int:id>/", views.delete_soldier, name='delete-soldier'),
+    path("mgmt/soldiers/<int:id>/", views.detail_soldiers, name='detail-soldiers'),
+    path('mgmt/soldiers/<int:id>/edit/', views.edit_soldier, name='edit-soldier'),
 
-    # War Diaries
-    path('war-diaries/', views.war_diaries, name='war-diaries'),
-    path('war-diaries/ww1/', views.ww1_diaries, name='ww1-diaries'),
-    path('war-diaries/ww2/', views.ww2_diaries, name='ww2-diaries'),
+    # Companies
+    path("mgmt/companies", views.edit_companies, name="edit-companies"),
+    path("mgmt/companies/<int:id>/", views.detail_companies, name="companies"),
+    path("mgmt/companies/edit/<int:id>/", views.edit_companies, name='edit-companies'),
+    path("mgmt/companies/search/", views.search_companies, name='search-companies'),
+    path('mgmt/companies/delete/<int:id>/', views.delete_company, name='delete-company'),
+]
 
-    path('reports/decorations/common', views.decorations_common, name='decorations-common'),
+urlpatterns = [
+    # ... your other URL patterns ...
+
+    path("", views.index, name="index"), 
+    path('soldier/<int:soldier_id>/', views.soldier, name='soldier'),
+
+    path("sentry-debug/", views.trigger_error ),
+
+    path("tools/army-number-search", views.army_number_search, name="army-number-search" ),
+    path("tools/army-number-search/<int:army_number>"  , views.original_unit, name="army-number-search" ),
+    path('tools/army-number-search/', views.army_number_search, name='army-number-search'),
+    path('tools/armynumber/', RedirectView.as_view(pattern_name='army-number-search', permanent=True), name='tools-armynumber'),
+
+    # Segment URLs
+    path('countries/', views.countries, name='countries'),
+    path('cemeteries/', views.cemeteries, name='cemeteries'),
+    path('pow-camps/', views.powcamps, name='powcamps'),
+    path('ranks/', views.ranks, name='ranks'),
+    path('acknowledgements/', views.acknowledgements, name='acknowledgements'),
+
+    path('ww1-diaries/', views.ww1_diaries, name='ww1-diaries'),
+    path('ww2-diaries/', views.ww2_diaries, name='ww2-diaries'),
 
     path('accounts/', include('allauth.urls')),
-    # Include management patterns with login requirement
-    path('', include((mgmt_patterns, 'mgmt'), namespace='mgmt')),
+    path('', include(protect_patterns(mgmt_patterns))),
+
+    # Reports
+    path('reports/decorations/', views.decorations_report, name='decorations-report'),
+    path('reports/decorations/common/', views.decorations_common, name='decorations-common'),
+    path('reports/countries/', views.countries_report, name='countries-report'),
+    path('reports/year/', views.year_report, name='year-report'),
+
+    # About
+    path('about/', views.about, name='about'),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
