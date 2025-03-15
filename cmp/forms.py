@@ -19,7 +19,7 @@ from .models import ProvostAppointment
 from django.forms import inlineformset_factory
 
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Field, Submit
+from crispy_forms.layout import Layout, Field, Submit, HTML
 from crispy_forms.bootstrap import Accordion, AccordionGroup, TabHolder, Tab
 
 
@@ -285,28 +285,8 @@ class editSoldierDeathForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.helper = FormHelper()
-        self.helper.form_tag = False
-        
-        # Determine header class and active state based on whether form has data
-        header_class = 'bg-primary text-white'
-        is_active = bool(self.instance and self.instance.pk)
-        
-        self.helper.layout = Layout(
-            Accordion(
-                AccordionGroup(
-                    'Death Details',
-                    'date',
-                    'company',
-                    'cemetery',
-                    'cwgc_id',
-                    'image',
-                    active=is_active,
-                    css_id="death-details-accordion",
-                    button_class=header_class
-                )
-            )
-        )
+        # Don't create the helper here - it will be set by the view
+        self.helper = None  # We'll set this in the view
 
 
 class editSoldierForm(forms.ModelForm):
@@ -587,7 +567,7 @@ class SoldierDecorationFormSetWithHelper(SoldierDecorationInlineFormSet):
 
 
 class SoldierDeathFormHelper(FormHelper):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, has_image=False, image_url=None, **kwargs):
         super().__init__(*args, **kwargs)
         self.form_tag = False
         
@@ -604,12 +584,25 @@ class SoldierDeathFormHelper(FormHelper):
                     'cemetery',
                     'cwgc_id',
                     'image',
-                    active=has_data,  # Collapsed by default
+                    HTML("""
+                        {% if has_image %}
+                            <div class="row">
+                                <div class="col-lg-2 form-label">Current Image</div>
+                                <div class="col-lg-8">
+                                    <img src="{{ image_url }}" alt="Grave image" style="max-width: 200px; height: auto;" class="img-thumbnail mt-2">
+                                </div>
+                            </div>
+                        {% endif %}
+                    """),
+                    active=has_data,
                     css_class='bg-info bg-opacity-25 border rounded p-3'
                 ),
                 css_id="death-details-accordion"
             )
         )
+        # Store the image info
+        self.has_image = has_image
+        self.image_url = image_url
 
     def update_title(self):
         """Update the title based on form data"""
