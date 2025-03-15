@@ -47,6 +47,15 @@ class SoldierImprisonmentForm(forms.ModelForm):
         required=False
     )
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['pow_camp'].required = False
+        self.fields['pow_number'].required = False
+        self.fields['date_to'].required = False
+        self.fields['notes'].required = False
+        # Order POW camps alphabetically by name
+        self.fields['pow_camp'].queryset = PowCamp.objects.order_by('name')
+
     class Meta:
         model = SoldierImprisonment
         fields = ['pow_camp', 'pow_number', 'date_from', 'date_to', 'notes']
@@ -58,13 +67,6 @@ class SoldierImprisonmentForm(forms.ModelForm):
                 }
             )
         }
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields['pow_camp'].required = False
-        self.fields['pow_number'].required = False
-        self.fields['date_to'].required = False
-        self.fields['notes'].required = False
 
 class SoldierImprisonmentFormSetHelper(FormHelper):
     def __init__(self, *args, **kwargs):
