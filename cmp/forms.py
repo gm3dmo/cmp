@@ -503,6 +503,11 @@ class SoldierDecorationForm(forms.ModelForm):
         queryset=Country.objects.all(),
     )
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Order decorations alphabetically by name
+        self.fields['decoration'].queryset = Decoration.objects.order_by('name')
+
     class Meta:
         model = SoldierDecoration
         fields = ['decoration', 'gazette_issue', 'gazette_page', 'gazette_date', 'country', 'citation', 'notes']
