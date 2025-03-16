@@ -47,6 +47,15 @@ class SoldierImprisonmentForm(forms.ModelForm):
         required=False
     )
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['pow_camp'].required = False
+        self.fields['pow_number'].required = False
+        self.fields['date_to'].required = False
+        self.fields['notes'].required = False
+        # Order POW camps alphabetically by name
+        self.fields['pow_camp'].queryset = PowCamp.objects.order_by('name')
+
     class Meta:
         model = SoldierImprisonment
         fields = ['pow_camp', 'pow_number', 'date_from', 'date_to', 'notes']
@@ -58,13 +67,6 @@ class SoldierImprisonmentForm(forms.ModelForm):
                 }
             )
         }
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields['pow_camp'].required = False
-        self.fields['pow_number'].required = False
-        self.fields['date_to'].required = False
-        self.fields['notes'].required = False
 
 class SoldierImprisonmentFormSetHelper(FormHelper):
     def __init__(self, *args, **kwargs):
@@ -119,13 +121,13 @@ class SoldierImprisonmentFormSetWithHelper(SoldierImprisonmentInlineFormSet):
 class CustomUserCreationForm(UserCreationForm):
     class Meta:
         model = CustomUser
-        fields = ("email",)
+        fields = ("username",)
 
 
 class CustomUserChangeForm(UserChangeForm):
     class Meta:
         model = CustomUser
-        fields = ("email",)
+        fields = ("username",)
 
 
 class editPowCampForm(forms.ModelForm):
@@ -287,6 +289,8 @@ class editSoldierDeathForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         # Don't create the helper here - it will be set by the view
         self.helper = None  # We'll set this in the view
+        # Order cemeteries alphabetically by name
+        self.fields['cemetery'].queryset = Cemetery.objects.order_by('name')
 
 
 class editSoldierForm(forms.ModelForm):
@@ -500,6 +504,11 @@ class SoldierDecorationForm(forms.ModelForm):
     country = forms.ModelChoiceField(
         queryset=Country.objects.all(),
     )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Order decorations alphabetically by name
+        self.fields['decoration'].queryset = Decoration.objects.order_by('name')
 
     class Meta:
         model = SoldierDecoration

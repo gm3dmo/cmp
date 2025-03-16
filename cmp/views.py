@@ -50,6 +50,7 @@ from .forms import (
 from .forms import SoldierDecorationInlineFormSet
 from .forms import ProvostOfficerForm, ProvostAppointmentForm
 from .forms import SoldierImprisonmentFormSetHelper, SoldierDecorationFormSetHelper
+from .forms import ProvostAppointmentFormSetWithHelper, SoldierDecorationFormSetWithHelper
 
 from .models import ProvostAppointment
 
@@ -869,32 +870,41 @@ from .forms import ProvostOfficerForm, ProvostAppointmentForm
 def create_provost_officer(request):
     if request.method == 'POST':
         officer_form = ProvostOfficerForm(request.POST)
-        appointment_form = ProvostAppointmentForm(request.POST)
         
-        if officer_form.is_valid() and appointment_form.is_valid():
+        # Initialize formsets with POST data but no instance yet
+        appointment_formset = ProvostAppointmentFormSetWithHelper(request.POST)
+        decoration_formset = SoldierDecorationFormSetWithHelper(request.POST)
+        
+        if officer_form.is_valid() and appointment_formset.is_valid() and decoration_formset.is_valid():
             # Save the soldier first
             soldier = officer_form.save(commit=False)
             soldier.provost_officer = True
             soldier.save()
             
-            # Save the appointment with the soldier reference
-            appointment = appointment_form.save(commit=False)
-            appointment.soldier = soldier
-            appointment.save()
+            # Save the appointment formset with the soldier reference
+            appointment_formset.instance = soldier
+            appointment_formset.save()
+            
+            # Save the decoration formset with the soldier reference
+            decoration_formset.instance = soldier
+            decoration_formset.save()
             
             messages.success(request, f'Provost Officer {soldier.surname}, {soldier.initials} successfully added')
             return redirect('provost-officer-search')
             
         # If forms are invalid, print errors for debugging
         print("Officer form errors:", officer_form.errors)
-        print("Appointment form errors:", appointment_form.errors)
+        print("Appointment formset errors:", appointment_formset.errors)
+        print("Decoration formset errors:", decoration_formset.errors)
     else:
         officer_form = ProvostOfficerForm()
-        appointment_form = ProvostAppointmentForm()
+        appointment_formset = ProvostAppointmentFormSetWithHelper()
+        decoration_formset = SoldierDecorationFormSetWithHelper()
 
     return render(request, 'cmp/create-provost-officer.html', {
         'officer_form': officer_form,
-        'appointment_form': appointment_form,
+        'appointment_formset': appointment_formset,
+        'decoration_formset': decoration_formset,
     })
 
 def delete_acknowledgement(request, pk):
@@ -1002,7 +1012,23 @@ def soldier_edit(request, pk):
     })
 
 def about(request):
-    return render(request, 'cmp/about.html')
+    # Get statistics for the about page
+    cmp_soldier_count = Soldier.objects.count()
+    cmp_casualty_count = SoldierDeath.objects.count()
+    cmp_cemetery_count = Cemetery.objects.count()
+    cmp_country_count = Cemetery.objects.values('country').distinct().count()
+    cmp_decoration_count = SoldierDecoration.objects.count()
+    cmp_prisoner_count = SoldierImprisonment.objects.count()
+    
+    context = {
+        'cmp_soldier_count': cmp_soldier_count,
+        'cmp_casualty_count': cmp_casualty_count,
+        'cmp_cemetery_count': cmp_cemetery_count,
+        'cmp_country_count': cmp_country_count,
+        'cmp_decoration_count': cmp_decoration_count,
+        'cmp_prisoner_count': cmp_prisoner_count
+    }
+    return render(request, 'cmp/about.html', context)
 
 def war_diaries(request):
     return render(request, 'cmp/war-diaries.html')
@@ -1116,41 +1142,31 @@ def provost_officer_edit(request, id):
     
     if request.method == 'POST':
         officer_form = ProvostOfficerForm(request.POST, instance=officer)
-        # Get or create related ProvostAppointment with the officer's current rank
-        appointment, created = ProvostAppointment.objects.get_or_create(
-            soldier=officer,
-            defaults={'rank': officer.rank}  # Set default rank when creating new appointment
-        )
-        appointment_form = ProvostAppointmentForm(request.POST, instance=appointment)
+        appointment_formset = ProvostAppointmentFormSetWithHelper(request.POST, instance=officer)
+        decoration_formset = SoldierDecorationFormSetWithHelper(request.POST, instance=officer)
         
-        if officer_form.is_valid() and appointment_form.is_valid():
+        if officer_form.is_valid() and appointment_formset.is_valid() and decoration_formset.is_valid():
             officer = officer_form.save()
-            appointment = appointment_form.save(commit=False)
-            appointment.soldier = officer
-            if not appointment.rank:  # Ensure rank is set
-                appointment.rank = officer.rank
-            appointment.save()
+            appointment_formset.save()
+            decoration_formset.save()
             
             messages.success(request, f'Provost Officer {officer.surname}, {officer.initials} successfully updated')
             return redirect('provost-officer-search')
             
         # Print form errors for debugging
         print("Officer form errors:", officer_form.errors)
-        print("Appointment form errors:", appointment_form.errors)
+        print("Appointment formset errors:", appointment_formset.errors)
+        print("Decoration formset errors:", decoration_formset.errors)
     else:
         officer_form = ProvostOfficerForm(instance=officer)
-        # Get or create related ProvostAppointment with the officer's current rank
-        appointment, created = ProvostAppointment.objects.get_or_create(
-            soldier=officer,
-            defaults={'rank': officer.rank}  # Set default rank when creating new appointment
-        )
-        appointment_form = ProvostAppointmentForm(instance=appointment)
+        appointment_formset = ProvostAppointmentFormSetWithHelper(instance=officer)
+        decoration_formset = SoldierDecorationFormSetWithHelper(instance=officer)
 
     return render(request, 'cmp/edit-provost-officer.html', {
         'officer_form': officer_form,
-        'appointment_form': appointment_form,
-        'officer': officer,
-        'appointment': appointment
+        'appointment_formset': appointment_formset,
+        'decoration_formset': decoration_formset,
+        'officer': officer
     })
 
 def provost_officer_delete(request, id):

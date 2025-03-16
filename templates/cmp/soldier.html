@@ -34,6 +34,21 @@
        {% endfor %}
       {% endif %}
 
+      {% if soldier.provost_officer %}
+         <tr><td colspan="2"><h5>Provost Officer Appointments:</h5></td></tr>
+         {% for appointment in soldier.provostappointment_set.all %}
+            <tr>
+               <td>Appointment:</td>
+               <td>
+                  {{ appointment.rank.name }}
+                  {% if appointment.date %} - {{ appointment.date }}{% endif %}
+                  {% if appointment.notes %}<br>{{ appointment.notes|linebreaksbr }}{% endif %}
+               </td>
+            </tr>
+         {% empty %}
+            <tr><td colspan="2">No appointments recorded</td></tr>
+         {% endfor %}
+      {% endif %}
 
       {% if soldier.soldierdeath %}
          <tr><td colspan="2"><h5>Casualty Record:</h5></td></tr>
@@ -48,7 +63,6 @@
             </div>
           </td>
          </tr>
-
       {% endif %}
 
   </tbody>

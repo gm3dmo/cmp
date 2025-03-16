@@ -4,6 +4,7 @@ django-debug-toolbar
 django-extensions
 django-htmx
 django-storages
+django-allauth
 pytest-django
 sentry-sdk
 logzero

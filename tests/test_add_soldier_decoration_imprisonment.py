@@ -1,9 +1,19 @@
 import os
+import django
+import sys
+
+# Set up Django
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'core.settings')
+django.setup()
+
 from playwright.sync_api import sync_playwright
 import random
 import traceback  # Add this for better error reporting
 
 BASE_URL = "http://localhost:8000"
+ADMIN_USER = os.environ.get('admin_user')
+ADMIN_PASSWORD = os.environ.get('admin_password')
 
 def generate_random_name():
     surnames = ["Zod", "Durell", "mook", "Banner", "Zeke", "Tiddles", "zook", "zandor", "zydor", "yask"]
@@ -23,6 +33,13 @@ def test_add_soldier():
             # Go to search page
             page.goto(f"{BASE_URL}/mgmt/soldiers/search/")
             print("Loaded search page")
+            
+            # Login first
+            print("Logging in...")
+            page.fill("input[name='login']", ADMIN_USER)
+            page.fill("input[name='password']", ADMIN_PASSWORD)
+            page.click("button:has-text('Sign In')")
+            print("Login submitted")
             
             # Click the correct button text
             page.click("text=Add New Soldier")
