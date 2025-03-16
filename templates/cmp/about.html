@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
+{% load humanize %}
 {% block title %} Corps of Military Police {% endblock %}
 {% block content %}
 
@@ -9,11 +10,15 @@
 <h2> Corps of Military Police</h2>
 {% include 'navbar.html' %}
 
-This is a project by Barrie Morris (RMP 1962-1985 Squad Number:)
 
-
-<img src="{% static 'cmp/blm.svg' %}" style="width:600px; height:600px;" alt="Barrie Morris on a Norton  500 Motorcycle 1966">
-
+<div class="center-content">
+   <p>
+      This project was created by Barrie Morris (RMP 1962-1985 Squad Number: 25b). It is a record of {{ cmp_soldier_count|default:0|intcomma }} soldiers of the Corps of Military Police, Corps of Military Police (India) and Royal Military Police holding records of 
+      {{ cmp_casualty_count|default:0|intcomma }} casualties with memorials in {{ cmp_cemetery_count|default:0|intcomma }} cemeteries across {{ cmp_country_count|default:0|intcomma }} countries, {{ cmp_decoration_count|default:0|intcomma }} decorations/medals and {{ cmp_prisoner_count|default:0|intcomma }} Prisoners of War. 
+      Casualties are linked to the Commonwealth War Graves Commission (CWGC). Where known a link to the London Gazette entry for decoration/awards is provided. 
+      To learn more about the Corps of Military Police/Royal Military Police contact the official RMP museum at: <a href="http://www.rhqrmp.org">RHQ RMP Website</a>.
+   </p>
+   <img src="{% static 'cmp/blm.svg' %}" style="width:600px; height:600px; margin-top: 20px;" alt="Barrie Morris on a Norton 500 Motorcycle 1966">
 </div>
 
 {% endblock %}

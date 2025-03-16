@@ -1012,7 +1012,23 @@ def soldier_edit(request, pk):
     })
 
 def about(request):
-    return render(request, 'cmp/about.html')
+    # Get statistics for the about page
+    cmp_soldier_count = Soldier.objects.count()
+    cmp_casualty_count = SoldierDeath.objects.count()
+    cmp_cemetery_count = Cemetery.objects.count()
+    cmp_country_count = Cemetery.objects.values('country').distinct().count()
+    cmp_decoration_count = SoldierDecoration.objects.count()
+    cmp_prisoner_count = SoldierImprisonment.objects.count()
+    
+    context = {
+        'cmp_soldier_count': cmp_soldier_count,
+        'cmp_casualty_count': cmp_casualty_count,
+        'cmp_cemetery_count': cmp_cemetery_count,
+        'cmp_country_count': cmp_country_count,
+        'cmp_decoration_count': cmp_decoration_count,
+        'cmp_prisoner_count': cmp_prisoner_count
+    }
+    return render(request, 'cmp/about.html', context)
 
 def war_diaries(request):
     return render(request, 'cmp/war-diaries.html')
