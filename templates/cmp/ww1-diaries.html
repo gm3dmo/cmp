@@ -4,6 +4,40 @@
 {% block title %}World War I Diaries{% endblock %}
 
 {% block content %}
+<style>
+    .aligned-list {
+        list-style-position: outside;
+        padding-left: 20px;
+        margin-left: 0;
+        text-align: left;
+    }
+
+    .aligned-list li {
+        padding: 0;
+        margin-bottom: 0;
+        line-height: 1.3;
+        font-size: 0.95rem;
+    }
+
+    .diary-links {
+        width: 80%;
+        max-width: 800px;
+        margin: 0 auto 0 auto;
+        padding-left: 250px;
+    }
+    
+    /* New styles for links */
+    .diary-links a {
+        color: black;
+        text-decoration: none;
+    }
+    
+    /* Optional: Add hover effect to show it's still a link */
+    .diary-links a:hover {
+        color: #555;
+    }
+</style>
+
 <div class="center-content">
     <img src="{% static 'cmp/cmp-masthead.svg' %}" style="width:350px; height:auto;" alt="The badge of the Royal Military Police">
     <h2>Corps of Military Police</h2>
@@ -12,8 +46,22 @@
 
 
 <div class="center-content">
-    <h3>World War I Diaries</h3>
-    <p>This section contains World War I military diaries and records.</p>
-    <!-- Add your WW1 specific content here -->
+    <h4>World War I</h4>
+    
+    <h5>War Diaries</h5>
+    <div class="diary-links">
+        <ul class="aligned-list">
+            <li><a href="https://docs.google.com/document/d/e/2PACX-1vRqKrUBHYmk94Kjg9xywTpOUYcQ9SI9iig1ta_pu_FzY0yubjBsig5ZRHLrolXQ3yfj7STVWmV8Vhws/pub" target="_blank">World War 1 War Diaries</a></li>
+        </ul>
+    </div>
+    
+    <h5>Miscellaneous Information</h5>
+    <div class="diary-links">
+        <ul class="aligned-list">
+            <li><a href="https://docs.google.com/document/d/e/2PACX-1vTpXXj8LaVL78Ma7FFCsvipgUOlmVRs77qEWMHSf5Hsdl_qotYifWRUq-3oWjPGQmQuub9Lu9gHCcLv/pub" target="_blank">Misc World War I</a></li>
+            <li><a href="https://docs.google.com/document/d/e/2PACX-1vSNK6a__Y3Ol4M-Gn3zaYGJ6qLBrUybUwWVGpsKF4W9ndMZlaOdUknBCAddC_9eHPWWvU7w5timFgHJ/pub" target="_blank">WWI British Expeditionary Force Murder & Suicides</a></li>
+            <li><a href="https://docs.google.com/document/d/e/2PACX-1vRhW2PLdi-OsnnyU2Ajk5Rqew3Axh3-jhyy8-jRrfdyF_2USQTpCibt6rK8goo_fFiqeI6qE3fVIGaV/pub" target="_blank">Traffic Control</a></li>
+        </ul>
+    </div>
 </div>
 {% endblock %} 
