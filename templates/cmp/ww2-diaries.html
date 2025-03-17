@@ -4,6 +4,39 @@
 {% block title %}World War II Diaries{% endblock %}
 
 {% block content %}
+<style>
+    .aligned-list {
+        list-style-position: outside;
+        padding-left: 20px;
+        margin-left: 0;
+        text-align: left;
+    }
+
+    .aligned-list li {
+        padding: 0;
+        margin-bottom: 0;
+        line-height: 1.3;
+    }
+
+    .diary-links {
+        width: 80%;
+        max-width: 800px;
+        margin: 0 auto 0 auto;
+        padding-left: 250px;
+    }
+    
+    /* New styles for links */
+    .diary-links a {
+        color: black;
+        text-decoration: none;
+    }
+    
+    /* Optional: Add hover effect to show it's still a link */
+    .diary-links a:hover {
+        color: #555;
+    }
+</style>
+
 <div class="center-content">
     <img src="{% static 'cmp/cmp-masthead.svg' %}" style="width:350px; height:auto;" alt="The badge of the Royal Military Police">
     <h2>Corps of Military Police</h2>
@@ -12,34 +45,41 @@
 
 
 <div class="center-content">
-    <h4>World War II Diaries</h4>
-    <p>This section contains World War II military diaries and records.</p>
+    <h4>World War II</h4>
     
     <h5>War Diaries</h5>
     <div class="diary-links">
-        <ul>
-            <li><a href="https://docs.google.com/document/d/e/2PACX-1vT8oAkbgq8IDQ-U1Ne71P6tpViL77cPsxCc0TeNsTStt0vM9Z14-v6haYymgYIkQPSXOSpofL1uSrb3/pub" target="_blank">WO175 CMP War Diary North Africa</a></li>
-            <li><a href="https://docs.google.com/document/d/e/2PACX-1vSl20n2RTFlLf2aYPus43i_oqytUIBarz8l_s9dnBsnPDsw6cGzwkM5AvNTjPmxEwodan27IpJPB3Ve/pub" target="_blank">WO171 North West Europe</a></li>
-            <li><a href="https://docs.google.com/document/d/e/2PACX-1vSUaIccaN-i-Zorrcu9ZpUgZ69wtlPGD85V6079GnCRSLuMZ-pkHTbgF_W5uMCwuZx3WkIfXDpeew7G/pub" target="_blank">WO176 War Office Forces Various Small Theatres</a></li>
-            <li><a href="https://docs.google.com/document/d/e/2PACX-1vQ7QGwr3tj6Zqn3V5CDlJ2TGs3YEfoalDJNtVv2MbZ6N4-qZsMv5G5Z448ylkYl8Gbi2G3c8kxpNRWC/pub" target="_blank">WO170 Central Mediterranean</a></li>
+        <ul class="aligned-list">
             <li><a href="https://docs.google.com/document/d/e/2PACX-1vRUv-YxGa6PYg0DeK7Pz_t77skJ9FCs4tKDEWrTdqffa90NXwVRQoGfbK_-huhHtGc89_ymtiREmmRs/pub" target="_blank">WO167 British Expeditionary Force 1939-1940</a></li>
+            <li><a href="https://docs.google.com/document/d/e/2PACX-1vQUUoWyTc2cWYF4I0DKACc1G-iWFWiDMW-nHjDkZ7ebxj-FUFlFSzCmvYG7Ny40IM3UhDOrABL3R7SR/pub" target="_blank">WO169 Middle East</a></li>
+            <li><a href="https://docs.google.com/document/d/e/2PACX-1vQ7QGwr3tj6Zqn3V5CDlJ2TGs3YEfoalDJNtVv2MbZ6N4-qZsMv5G5Z448ylkYl8Gbi2G3c8kxpNRWC/pub" target="_blank">WO170 Central Mediterranean</a></li>
+            <li><a href="https://docs.google.com/document/d/e/2PACX-1vSl20n2RTFlLf2aYPus43i_oqytUIBarz8l_s9dnBsnPDsw6cGzwkM5AvNTjPmxEwodan27IpJPB3Ve/pub" target="_blank">WO171 North West Europe</a></li>
             <li><a href="https://docs.google.com/document/d/e/2PACX-1vQzLb4CkR-ty_ExEg2qEOYk0IKtuX9doAZuL3nwIrjGp-RpulN0iumgcHwpArZNshBoaVzQcZ5b40uV/pub" target="_blank">WO172 India & Burma</a></li>
+            <li><a href="https://docs.google.com/document/d/e/2PACX-1vT8oAkbgq8IDQ-U1Ne71P6tpViL77cPsxCc0TeNsTStt0vM9Z14-v6haYymgYIkQPSXOSpofL1uSrb3/pub" target="_blank">WO175 CMP War Diary North Africa</a></li>
+            <li><a href="https://docs.google.com/document/d/e/2PACX-1vSUaIccaN-i-Zorrcu9ZpUgZ69wtlPGD85V6079GnCRSLuMZ-pkHTbgF_W5uMCwuZx3WkIfXDpeew7G/pub" target="_blank">WO176 War Office Forces Various Small Theatres</a></li>
         </ul>
     </div>
     
     <h5>Unit Histories</h5>
     <div class="diary-links">
-        <ul>
+        <ul class="aligned-list">
+            <li><a href="https://docs.google.com/document/d/e/2PACX-1vQNN4JiDOWxl6JDiMANgE1yYt3givs1DuQcSzcNOm2VOlZKYHUiMXvYLA0c_4LyduCFDbWL7Ayzv_pO/pub" target="_blank">26 Company (Traffic Control)</a></li>
+            <li><a href="https://docs.google.com/document/d/e/2PACX-1vRL7xsQbggZMCd8svOnzdP5p3EkwvcFhLnmDRzX7tebOsH2nsXrvKbwcu3HAhAOwST0Q1pLtOC_6WEu/pub" target="_blank">102 Provost Company</a></li>
             <li><a href="https://docs.google.com/document/d/e/2PACX-1vS9eVwyK8VCaoQLNCIflL_Aa3zL4ukSDUC5fhMRTGdZzKQriA3ukRUKyjEUqGoBT2u51T1Y-L5-LCZD/pub" target="_blank">108 Provost Company</a></li>
             <li><a href="https://docs.google.com/document/d/e/2PACX-1vQq93E82piAJGBFg6T6YdfQWWoqXnlTArwiOaEY6p6SXq08goz5-0Rl365PHGiLMxinYAW2C9_aSfSe/pub" target="_blank">109 Provost Company</a></li>
             <li><a href="https://docs.google.com/document/d/e/2PACX-1vTp5qYQXHBMAx0CYNJUV5aSxUVrfGN5YsHTz7oCPryO7HwW18GMWhxXPz-5G4dUMJ9wGmJzAkFLRym7/pub" target="_blank">110 Provost Company</a></li>
             <li><a href="https://docs.google.com/document/d/e/2PACX-1vT7XMRR8nfSiokGwrbELv_DMK6kzsmwOjbmpknSWS7SvlkkkDOLJB-wtzNUgVfsrpUM4grqeQZYie2T/pub" target="_blank">111 Provost Company</a></li>
+            <li><a href="https://docs.google.com/document/d/e/2PACX-1vSxgyC2lyTi7x74828IW8kzyis_r4rZyrBKA3V07hEsTH_OAyf8F7_XDoWpMtQxTlntOHP3K9nAAPqD/pub" target="_blank">247 Provost Company (Berlin)</a></li>
+            <li><a href="https://docs.google.com/document/d/e/2PACX-1vQpwcRa-mBj8yuSqmnRhAvLM9sZSKlKbGow0rGSOa6bsRXhKT3NX8gNglWoUJlT1mC9-lHJpkBgBnmf/pub" target="_blank">Auxiliary Territorial Service Provost</a></li>
         </ul>
     </div>
     
     <h5>Miscellaneous Information</h5>
     <div class="diary-links">
-        <ul>
+        <ul class="aligned-list">
+            <li><a href="https://docs.google.com/document/d/e/2PACX-1vQpQ8f5uVPoBi3P2KI0wM1YcjZOKwLzvmS2Zti2LyrckhXZR1QGts82vL0UOaEUx50TUi4tPnTo31xn/pub" target="_blank">A Dunkirk Story</a></li>
+            <li><a href="https://docs.google.com/document/d/e/2PACX-1vQGfa5pQ-OAg8evb5zr3Sf0Em5RhmtcZN0OynPmmGxJ81lL3lzChMMSTh0w6yxHOFwSwQarKWVn4Akm/pub" target="_blank">Black day at Antwerp 16th December 1944</a></li>
+            <li><a href="https://docs.google.com/document/d/e/2PACX-1vQannZ6a7hUXk2y4GRAsNOhpvdMe3DvB_I_jJq0CukXNNLDM_8DVF0ySX9gNkDNybULj15VrLUrf0yL/pub" target="_blank">Coats Mission: Protection of the Royal Family</a></li>
             <li><a href="https://docs.google.com/document/d/e/2PACX-1vTR3zOBWgihEg94IdPA2gf2T62i9o8l1QDSF2q26UHHQ36a7GFFExYgjf3lYExbTQ/pub" target="_blank">Normandy Casualties</a></li>
             <li><a href="https://docs.google.com/document/d/e/2PACX-1vQi-jLkYY3Z_RZ1KDPqop1mJ_dtN3UwD8QUxsKhtjo_6vR70N2k0nv5AtuQg19xxytmvcccq0VgSoZa/pub" target="_blank">Black day at Brouai Normandy</a></li>
             <li><a href="https://docs.google.com/document/d/e/2PACX-1vTF6fqEgU4EKIAEnmH4zqxD3XtAa4gEb8OQdrsUvUZ7f_fgnDaILVTv2P1lFxLhJP4XD5dC184vRX1k/pub" target="_blank">Corps of Military Police in Normandy 6/6/1944</a></li>
@@ -48,6 +88,7 @@
             <li><a href="https://docs.google.com/document/d/e/2PACX-1vRryXOZ2oAb7jWxPWXl8BVy76nNGSXF4cChOhdFWrSckctRyqzOwo_DOKXfxdj_1GFGOMqD4rSp2wFU/pub" target="_blank">Military Police Speed Checks</a></li>
             <li><a href="https://docs.google.com/document/d/e/2PACX-1vQ2z2pRp8Q6bOqIKq6SwB-k6utNhcjIsu2L2fYbkg-QH4dEXtdpys24Qey6MkQoR2PA368XQ1AX1-OL/pub" target="_blank">Black day at Eastbourne</a></li>
             <li><a href="https://docs.google.com/document/d/e/2PACX-1vTbmmHpX7Nhcd2_oIH50gQCHWIOGGpZLacLPlIEEF92qw8UQQiI6R03ewTFAkdm8cCMMRcnjSbKUyVb/pub" target="_blank">Explosion at Bari Docks April 1945</a></li>
+            <li><a href="https://docs.google.com/document/d/e/2PACX-1vRZgUjEgJ-s_2H-tldCRqRa-5adpb1qDEstIy4vjSyS2BJf2B6-qTqlUaY5y5mnGIX6MgKnioznwt4-/pub" target="_blank">Vienna: By the Red Danube</a></li>
         </ul>
     </div>
 </div>
