@@ -294,11 +294,14 @@ class editSoldierDeathForm(forms.ModelForm):
 
 
 class editSoldierForm(forms.ModelForm):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, provost_editable=True, **kwargs):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.label_class = 'form-label'  
-        self.fields['provost_officer'].disabled = True
+        
+        # Only disable the field if provost_editable is False
+        if not provost_editable:
+            self.fields['provost_officer'].disabled = True
 
         # Initialize both formsets with helpers
         self.imprisonment_formset = SoldierImprisonmentFormSetWithHelper(
