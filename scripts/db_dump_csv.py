@@ -115,94 +115,97 @@ def upload_to_github(file_path, github_token):
         print(f"Failed to upload {filename}: {response.status_code}, {response.text}")
         return False
 
-def dump_tables_to_csv(db_path=None, output_dir=OUTPUT_DIR):
-    """
-    Opens a SQLite database in read-only mode and dumps all tables 
-    starting with 'cmp_' to CSV files.
-    
-    Args:
-        db_path: Path to the SQLite database file
-        output_dir: Directory to save CSV files (created if it doesn't exist)
-        
-    Returns:
-        List of paths to created CSV files
-    """
-    # Create output directory if it doesn't exist
-    if not os.path.exists(output_dir):
-        os.makedirs(output_dir)
-        print(f"Created output directory: {output_dir}")
-    
-    # Connect to the database in read-only mode
-    try:
-        # URI format with ?mode=ro for read-only
-        conn = sqlite3.connect(f"file:{db_path}?mode=ro", uri=True)
-        cursor = conn.cursor()
-        print(f"Connected to database: {db_path} (read-only mode)")
-    except sqlite3.Error as e:
-        print(f"Error connecting to database: {e}")
-        sys.exit(1)
-    
-    # Track created files for GitHub upload
+def dump_tables_to_csv():
+    """Dump all tables starting with 'cmp_' to CSV files."""
     created_files = []
     
     try:
-        # Get all table names
+        # Connect to the SQLite database
+        db_path = settings.DATABASES['default']['NAME']
+        print(f"Connecting to database at {db_path}")
+        
+        # Check if the database file exists
+        if not os.path.exists(db_path):
+            print(f"Database file not found at {db_path}")
+            print(f"Current working directory: {os.getcwd()}")
+            print(f"Absolute path to database: {os.path.abspath(db_path)}")
+            raise FileNotFoundError(f"Database file not found: {db_path}")
+        
+        # Try to connect without read-only mode first
+        try:
+            connection = sqlite3.connect(db_path)
+            print("Connected to database successfully")
+        except sqlite3.Error as e:
+            print(f"Error connecting to database directly: {e}")
+            print("Trying read-only mode...")
+            # Use read-only mode as fallback
+            connection = sqlite3.connect(f"file:{db_path}?mode=ro", uri=True)
+            print("Connected in read-only mode")
+        
+        cursor = connection.cursor()
+        
+        # Get all tables
         cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
         all_tables = cursor.fetchall()
         
         # Filter tables that start with 'cmp_'
-        cmp_tables = [table[0] for table in all_tables if table[0].startswith('cmp_')]
+        tables = [table[0] for table in all_tables if table[0].startswith('cmp_')]
         
-        if not cmp_tables:
-            print("No tables found with prefix 'cmp_'")
-            return created_files
+        print(f"Found {len(tables)} tables starting with 'cmp_'")
         
-        print(f"Found {len(cmp_tables)} tables with prefix 'cmp_'")
+        # Dump each table to a CSV file
+        for table in tables:
+            try:
+                cursor.execute(f"SELECT * FROM {table};")
+                rows = cursor.fetchall()
+                
+                # Get column names
+                column_names = [description[0] for description in cursor.description]
+                
+                # Write to CSV
+                output_file = os.path.join(OUTPUT_DIR, f"{table}.csv")
+                with open(output_file, 'w', newline='') as f:
+                    writer = csv.writer(f)
+                    writer.writerow(column_names)
+                    writer.writerows(rows)
+                
+                print(f"Table {table} dumped to {output_file}")
+                created_files.append(output_file)
+                
+            except Exception as e:
+                print(f"Error dumping table {table}: {e}")
         
-        # Process each table
-        for table_name in cmp_tables:
-            output_file = os.path.join(output_dir, f"{table_name}.csv")
-            
-            # Get column names
-            cursor.execute(f"PRAGMA table_info({table_name});")
-            columns = [column[1] for column in cursor.fetchall()]
-            
-            # Get all rows
-            cursor.execute(f"SELECT * FROM {table_name};")
-            rows = cursor.fetchall()
-            
-            # Write to CSV
-            with open(output_file, 'w', newline='', encoding='utf-8') as csvfile:
-                csv_writer = csv.writer(csvfile)
-                # Write header
-                csv_writer.writerow(columns)
-                # Write data
-                csv_writer.writerows(rows)
-            
-            print(f"Exported {len(rows)} rows from {table_name} to {output_file}")
-            created_files.append(output_file)
+        connection.close()
+        
+    except Exception as e:
+        print(f"Error connecting to database: {e}")
     
-    except sqlite3.Error as e:
-        print(f"Error processing database: {e}")
-    
-    finally:
-        cursor.close()
-        conn.close()
-        print("Database connection closed")
-        
     return created_files
 
 def main():
     try:
+        # Make sure Django is properly set up
+        print(f"Django settings module: {os.environ.get('DJANGO_SETTINGS_MODULE')}")
+        print(f"Django BASE_DIR: {settings.BASE_DIR}")
+        
         # Create output directory if it doesn't exist
         if not os.path.exists(OUTPUT_DIR):
             os.makedirs(OUTPUT_DIR)
+            print(f"Created output directory: {OUTPUT_DIR}")
         
         # Get all created CSV files
+        print("Dumping tables to CSV...")
         created_files = dump_tables_to_csv()
         
+        if not created_files:
+            print("No files were created. Check the database connection issues above.")
+            return
+        
         # Check if in production environment
-        if os.environ.get('DJANGO_ENV', '').startswith('prod'):
+        django_env = os.environ.get('DJANGO_ENV', '')
+        print(f"Current environment: {django_env}")
+        
+        if django_env.startswith('prod'):
             # Get GitHub token from environment variable or Django settings
             github_token = getattr(settings, 'ARCHIVE_TOKEN', None) or os.environ.get('archive_token')
             
@@ -225,10 +228,14 @@ def main():
                     create_github_release(github_token, uploaded_files)
                 else:
                     print("No files were uploaded successfully. Skipping release creation.")
+        else:
+            print("Not in production environment. Skipping GitHub upload.")
         
         print("Database tables successfully dumped to CSV files.")
     except Exception as e:
         print(f"Error: {e}")
+        import traceback
+        traceback.print_exc()
         sys.exit(1)
 
 if __name__ == "__main__":
