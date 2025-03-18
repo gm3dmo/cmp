@@ -192,7 +192,7 @@ def dump_tables_to_csv(db_path=None, output_dir=OUTPUT_DIR):
         
     return created_files
 
-if __name__ == "__main__":
+def main():
     try:
         # Create output directory if it doesn't exist
         if not os.path.exists(OUTPUT_DIR):
@@ -203,7 +203,7 @@ if __name__ == "__main__":
         
         # Check if in production environment
         if os.environ.get('DJANGO_ENV', '').startswith('prod'):
-            # Get GitHub token from environment variable
+            # Get GitHub token from environment variable or Django settings
             github_token = getattr(settings, 'ARCHIVE_TOKEN', None) or os.environ.get('archive_token')
             
             if not github_token:
@@ -230,4 +230,7 @@ if __name__ == "__main__":
     except Exception as e:
         print(f"Error: {e}")
         sys.exit(1)
+
+if __name__ == "__main__":
+    main()
 
