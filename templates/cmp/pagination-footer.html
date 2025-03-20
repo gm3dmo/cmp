@@ -1,11 +1,11 @@
 <div class="pagination">
     <span class="pagination-links">
         {% if page_obj.has_previous %}
-            <a href="?name={{ request.GET.name }}&page={{ page_obj.previous_page_number }}" class="page-arrow">&larr; PREVIOUS</a>
+            <a href="?{% for key, value in request.GET.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page={{ page_obj.previous_page_number }}" class="page-arrow">&larr; PREVIOUS</a>
         {% endif %}
 
         {% if page_obj.number > 3 %}
-            <a href="?name={{ request.GET.name }}&page=1" class="page-number">1</a>
+            <a href="?{% for key, value in request.GET.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page=1" class="page-number">1</a>
             <span class="ellipsis">...</span>
         {% endif %}
 
@@ -14,18 +14,18 @@
                 {% if i == page_obj.number %}
                     <span class="current-page">{{ i }}</span>
                 {% else %}
-                    <a href="?name={{ request.GET.name }}&page={{ i }}" class="page-number">{{ i }}</a>
+                    <a href="?{% for key, value in request.GET.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page={{ i }}" class="page-number">{{ i }}</a>
                 {% endif %}
             {% endif %}
         {% endfor %}
 
         {% if page_obj.number < page_obj.paginator.num_pages|add:"-2" %}
             <span class="ellipsis">...</span>
-            <a href="?name={{ request.GET.name }}&page={{ page_obj.paginator.num_pages }}" class="page-number">{{ page_obj.paginator.num_pages }}</a>
+            <a href="?{% for key, value in request.GET.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page={{ page_obj.paginator.num_pages }}" class="page-number">{{ page_obj.paginator.num_pages }}</a>
         {% endif %}
 
         {% if page_obj.has_next %}
-            <a href="?name={{ request.GET.name }}&page={{ page_obj.next_page_number }}" class="page-arrow">NEXT &rarr;</a>
+            <a href="?{% for key, value in request.GET.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page={{ page_obj.next_page_number }}" class="page-arrow">NEXT &rarr;</a>
         {% endif %}
     </span>
 </div>
