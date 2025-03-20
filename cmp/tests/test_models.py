@@ -6,11 +6,19 @@ from cmp.models import (
     SoldierDeath, SoldierImprisonment, Acknowledgement,
     SoldierDecoration
 )
+from django.contrib.auth import get_user_model
 
 class CustomUserTests(TestCase):
     def test_user_creation(self):
-        user = CustomUser.objects.create(email="test@example.com")
-        self.assertEqual(str(user), "test@example.com")
+        User = get_user_model()
+        user = User.objects.create_user(
+            email='test@example.com',
+            username='testuser',
+            password='password123'
+        )
+        
+        self.assertEqual(str(user), "testuser")
+        self.assertEqual(user.email, "test@example.com")
 
 class CountryTests(TestCase):
     def test_country_creation(self):
