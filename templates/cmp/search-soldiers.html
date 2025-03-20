@@ -26,6 +26,12 @@
 </form>
 </div>
 
+{% if request.GET.q %}
+<div class="search-results-info">
+  <p>Found {{ total_results }} result{% if total_results != 1 %}s{% endif %} for "{{ request.GET.q }}"</p>
+</div>
+{% endif %}
+
 <div>
 <table class="content-table">
   <thead class="">

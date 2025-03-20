@@ -623,18 +623,32 @@ def search_powcamps(request):
 
 
 def search_soldiers(request):
-    query = request.GET.get('q')
-    page_number = request.GET.get('page')
+    query = request.GET.get('q', '')
+    
     if query:
+        # Filter soldiers based on surname or army number
         soldiers = Soldier.objects.filter(
-            Q(surname__icontains=query) |
+            Q(surname__icontains=query) | 
             Q(army_number__icontains=query)
-        ).order_by('surname', 'initials')
+        ).order_by('surname')  # Add appropriate ordering
     else:
-        soldiers = Soldier.objects.all().order_by('surname', 'initials')
+        # If no query, show all soldiers
+        soldiers = Soldier.objects.all().order_by('surname')
+    
+    # Store the total count before pagination
+    total_results = soldiers.count()
+    
+    # Paginate the results
     paginator = Paginator(soldiers, settings.PAGE_SIZE)
+    page_number = request.GET.get('page', 1)
     page_obj = paginator.get_page(page_number)
-    return render(request, 'cmp/search-soldiers.html', {'page_obj': page_obj})
+    
+    context = {
+        'page_obj': page_obj,
+        'total_results': total_results,
+    }
+    
+    return render(request, 'cmp/search-soldiers.html', context)
 
 
 def search_decorations(request):
