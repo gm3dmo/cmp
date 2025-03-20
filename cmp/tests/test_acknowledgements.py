@@ -2,6 +2,8 @@ import pytest
 from django.test import TestCase
 from django.urls import reverse
 from cmp.models import Acknowledgement
+from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 
 @pytest.mark.django_db
 class AcknowledgementModelTest(TestCase):
@@ -23,11 +25,25 @@ class AcknowledgementModelTest(TestCase):
 @pytest.mark.django_db
 class AcknowledgementViewsTest(TestCase):
     def setUp(self):
-        self.acknowledgement = Acknowledgement.objects.create(
-            name="John",
-            surname="Smith",
-            notes="Test acknowledgement"
+        # Create a test user
+        User = get_user_model()
+        self.user = User.objects.create_user(
+            email='testuser@example.com',
+            username='testuser',  # Add username
+            password='testpassword',
+            is_staff=True  # Make sure user has permissions
         )
+        
+        # Create a test acknowledgement
+        self.acknowledgement = Acknowledgement.objects.create(
+            name='John',
+            # Add any other required fields
+        )
+        
+        # Log in the user
+        self.client.login(username='testuser', password='testpassword')
+        # Or if your app uses email for login:
+        # self.client.login(email='testuser@example.com', password='testpassword')
 
     def test_search_acknowledgement_view(self):
         response = self.client.get('/mgmt/acknowledgement/search/')
