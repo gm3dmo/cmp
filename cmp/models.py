@@ -213,6 +213,30 @@ class SoldierDeath(models.Model):
     def __str__(self):
         return f"{self.soldier} - {self.date}"
 
+    def cwgc_url(self):
+        """Build a URL for a link to CWGC site."""
+        if not self.date:  # Check if date is None
+            return None  # or return a default URL
+        wg_site = "http://www.cwgc.org"
+        if self.cwgc_id:
+            wg_string = "find-war-dead/casualty/%s/" % (self.cwgc_id)
+            wg_url = "%s/%s" % (wg_site, wg_string)
+            return wg_url
+        else:
+            dk = self.date
+            wg_string = (
+                'search/SearchResults.aspx?surname=%s&initials=%s&war=0&yearfrom=%s&yearto=%s&force=%s&nationality=&send.x=26&send.y=19"'
+                % (
+                    self.soldier.surname,
+                    self.soldier.first_initial(),
+                    dk.year,
+                    dk.year,
+                    "Army",
+                )
+            )
+        wg_url = "%s/%s" % (wg_site, wg_string)
+        return wg_url
+
 
 class SoldierImprisonment(models.Model):
     soldier = models.ForeignKey("Soldier", on_delete=models.CASCADE)
