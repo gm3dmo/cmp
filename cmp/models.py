@@ -7,6 +7,8 @@ from django.utils import timezone
 
 from PIL import Image
 from django.conf import settings
+from io import BytesIO
+from django.core.files import File
 
 from .managers import CustomUserManager
 from pathlib import Path
@@ -173,21 +175,28 @@ class ProvostAppointment(models.Model):
 
 
 def get_upload_to(instance, filename):
-    print("\n=== get_upload_to called ===")
-    print(f"Original filename: {filename}")
-    print(f"Soldier ID: {instance.soldier.id}")
+    ext = os.path.splitext(filename)[1].lower()
+    relative_path = f'{instance.soldier.id}/memorial/{instance.soldier.id}{ext}'
     
-    # Create the media directory structure
-    upload_path = os.path.join(settings.MEDIA_ROOT, str(instance.soldier.id), 'memorial')
-    os.makedirs(upload_path, exist_ok=True)
-    print(f"Created directory: {upload_path}")
-    
-    # Get file extension from original file
-    ext = os.path.splitext(filename)[1]
-    
-    # Return relative path for Django to use
-    relative_path = f'{instance.soldier.id}/memorial/{instance.soldier.id}{Path(filename).suffix.lower()}'
-    print(f"Returning path: {relative_path}")
+    # If this is a new file being uploaded (not just a path being generated)
+    if hasattr(instance.image, 'file'):
+        # Open the uploaded image
+        img = Image.open(instance.image)
+        
+        # Convert to RGB if image is in RGBA mode
+        if img.mode in ('RGBA', 'P'):
+            img = img.convert('RGB')
+            
+        # Create thumbnail
+        img.thumbnail((300, 400), Image.LANCZOS)
+        
+        # Save the processed image
+        thumb_io = BytesIO()
+        img.save(thumb_io, format='JPEG', quality=85)
+        thumb_io.seek(0)
+        
+        # Update the instance's image field with processed image
+        instance.image = File(thumb_io, name=os.path.basename(relative_path))
     
     return relative_path
 
