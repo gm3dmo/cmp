@@ -9,6 +9,7 @@ from PIL import Image
 from django.conf import settings
 
 from .managers import CustomUserManager
+from pathlib import Path
 
 
 class CustomUserManager(BaseUserManager):
@@ -185,7 +186,7 @@ def get_upload_to(instance, filename):
     ext = os.path.splitext(filename)[1]
     
     # Return relative path for Django to use
-    relative_path = f'{instance.soldier.id}/memorial/{instance.soldier.id}{ext}'
+    relative_path = f'{instance.soldier.id}/memorial/{instance.soldier.id}{Path(filename).suffix.lower()}'
     print(f"Returning path: {relative_path}")
     
     return relative_path
