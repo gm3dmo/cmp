@@ -13,7 +13,8 @@
     <!-- Comic Sans MS is typically available on most systems as a system font, 
          but we can add a fallback from Google Fonts for similar styles -->
     {% if ENVIRONMENT == 'development' %}
-    <link href="https://fonts.googleapis.com/css2?family=Comic+Neue&display=swap" rel="stylesheet">
+    <!-- Load Comic Neue first -->
+    <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
     {% endif %}
     
     <link rel="stylesheet" href="{% static 'cmp/css/base.css' %}">
@@ -25,7 +26,7 @@
             html, body, p, div, span, h1, h2, h3, h4, h5, h6, 
             table, td, th, button, input, select, textarea, a, 
             .btn, .form-control, .nav-link, .dropdown-item {
-                font-family: 'Comic Sans MS', 'Comic Sans', cursive !important;
+                font-family: 'Comic Neue', 'Comic Sans MS', 'Chalkboard SE', 'Comic Sans', cursive !important;
             }
         {% else %}
             /* All other environments (including production) use Fell */
