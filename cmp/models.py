@@ -9,6 +9,7 @@ from PIL import Image
 from django.conf import settings
 from io import BytesIO
 from django.core.files import File
+from datetime import datetime
 
 from .managers import CustomUserManager
 from pathlib import Path
@@ -176,27 +177,36 @@ class ProvostAppointment(models.Model):
 
 def get_upload_to(instance, filename):
     ext = os.path.splitext(filename)[1].lower()
-    relative_path = f'{instance.soldier.id}/memorial/{instance.soldier.id}{ext}'
+    base_path = f'{instance.soldier.id}/memorial'
+    base_name = f'{instance.soldier.id}{ext}'
+    relative_path = f'{base_path}/{base_name}'
     
-    # If this is a new file being uploaded (not just a path being generated)
+    # If this is a new file being uploaded
     if hasattr(instance.image, 'file'):
-        # Open the uploaded image
-        img = Image.open(instance.image)
+        print("Processing new image upload")
         
-        # Convert to RGB if image is in RGBA mode
-        if img.mode in ('RGBA', 'P'):
-            img = img.convert('RGB')
-            
-        # Create thumbnail
-        img.thumbnail((300, 400), Image.LANCZOS)
+        # Check if file already exists
+        full_path = os.path.join(settings.MEDIA_ROOT, base_path, base_name)
+        if os.path.exists(full_path):
+            timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+            backup_name = f'{instance.soldier.id}_{timestamp}{ext}'
+            backup_path = os.path.join(settings.MEDIA_ROOT, base_path, backup_name)
+            os.rename(full_path, backup_path)
+            print(f"Moved existing file to {backup_path}")
         
-        # Save the processed image
-        thumb_io = BytesIO()
-        img.save(thumb_io, format='JPEG', quality=85)
-        thumb_io.seek(0)
+        # Create the directory if it doesn't exist
+        os.makedirs(os.path.dirname(full_path), exist_ok=True)
         
-        # Update the instance's image field with processed image
-        instance.image = File(thumb_io, name=os.path.basename(relative_path))
+        # Process and save the new image
+        with Image.open(instance.image) as img:
+            print(f"Original size: {img.size}")
+            if img.mode in ('RGBA', 'P'):
+                img = img.convert('RGB')
+            img.thumbnail((300, 400), Image.LANCZOS)
+            print(f"New size after thumbnail: {img.size}")
+            # Save directly to the final location
+            img.save(full_path, 'JPEG', quality=85)
+            print(f"Saved resized image to {full_path}")
     
     return relative_path
 
