@@ -1,6 +1,18 @@
 import os
+import sys
+import django
 from playwright.sync_api import sync_playwright
 import random
+from test_utils import login
+
+# Add the project root directory to the Python path
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+# Set up Django
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'core.settings')
+django.setup()
+
+from django.conf import settings
 
 BASE_URL = "http://localhost:8000"
 
@@ -17,10 +29,11 @@ def test_add_soldier():
         browser = playwright.chromium.launch(headless=False)
         page = browser.new_page()
         
-        # Go to search page
-        page.goto(f"{BASE_URL}/mgmt/soldiers/search/")
+        # Use shared login function
+        login(page)
         
-        # Click the correct button text
+        # Rest of the test remains the same
+        page.goto(f"{BASE_URL}/mgmt/soldiers/search/")
         page.click("text=Add New Soldier")
         
         # Generate random name
