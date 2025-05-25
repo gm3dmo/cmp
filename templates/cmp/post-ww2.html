@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Post World War II Diaries{% endblock %}
+
+{% block content %}
+<style>
+    .aligned-list {
+        list-style-position: outside;
+        padding-left: 20px;
+        margin-left: 0;
+        text-align: left;
+    }
+
+    .aligned-list li {
+        padding: 0;
+        margin-bottom: 0;
+        line-height: 1.3;
+    }
+
+    .diary-links {
+        width: 80%;
+        max-width: 800px;
+        margin: 0 auto 0 auto;
+        padding-left: 250px;
+    }
+    
+    /* New styles for links */
+    .diary-links a {
+        color: black;
+        text-decoration: none;
+    }
+    
+    /* Optional: Add hover effect to show it's still a link */
+    .diary-links a:hover {
+        color: #555;
+    }
+</style>
+
+<div class="center-content">
+    <img src="{% static 'cmp/cmp-masthead.svg' %}" style="width:350px; height:auto;" alt="The badge of the Royal Military Police">
+    <h2>Corps of Military Police</h2>
+{% include 'navbar.html' %}
+</div>
+
+
+<div class="center-content">
+    <h4>Post World War II</h4>
+        <ul>
+            <li><a href="https://docs.google.com/document/d/e/2PACX-1vTV8nJHx93hrWe_klV0ZWbwwlOrrs5qhIxei1fN4Cnzf0yauWmg-ogv5XGyx4qLjqWDVGdjkZGVy1_t/pub?embedded=true" target="_blank">Police Constable's Intuition Led to Arrest 1955</a></li>
+            <li><a href="https://docs.google.com/document/d/e/2PACX-1vRZgUjEgJ-s_2H-tldCRqRa-5adpb1qDEstIy4vjSyS2BJf2B6-qTqlUaY5y5mnGIX6MgKnioznwt4-/pub" target="_blank">Inter-Allied Military Police Patrol, Vienna August 1945 - September 1955 (The Red Danube)</a></li>
+            <li><a href="https://docs.google.com/document/d/e/2PACX-1vSyYs3H1ua3-1OtJCWc7t_ex_rbNV9eCHp1L40UmXBCWCKpF-CRRasViTaQVozClmh6ZkiL44rbzTvx/pub" target="_blank">Court of Inquiry Attack on CMP Post Alexandria 1945</a></li>
+            <li><a href="https://docs.google.com/document/d/e/2PACX-1vTOuJhC3lmRyrLjDNibWuxfVjVzd-IuPXWqdYz9JVCyTBmBFlQnAE6jcD2ArqoEAbSoX3JqcFYmvB7k/pub" target="_blank">Life at Inkerman Barracks November 1952 - April 1953 Cpl. AM Dale RMP Squad 331</a></li>
+            <li><a href="https://docs.google.com/document/d/e/2PACX-1vTAUQG0Y7tEXs0zrJ039zi4H7oXoKppmokXYSKENwEiaKRx6to-NzqRcJ_7hR5Dk4eaQNpNy2uFtopw/pub" target="_blank">RMP Depot & Training Establishment Inkerman Barracks by Colin Whatman Squad 374</a></li>
+            <li><a href="https://docs.google.com/document/d/e/2PACX-1vQqX2UN4YVBM8G_94_e4pmW3hn3Wl_yEvATqLsWJ_kLJjcRgxWQgSddhdqtg9iKFbpEzFIJXkg2Hrl0/pub" target="_blank">RMP Radfan 1964</a></li>
+            <li><a href="https://docs.google.com/document/d/e/2PACX-1vR7fzEyHRD2IATuGuj_FG8g4c2C9u9ao5yRILgT7v3fImmYivq8c0aRPTJRjrlx9b-eBzZKOONpPF7-/pub" target="_blank">Gurkha Military Police Insignia</a></li>
+            <li><a href="https://docs.google.com/document/d/e/2PACX-1vSvIelD5EayS0tRaAu2M4_o0WtJybAFu6p0aOu4Sj-b2QaZF8V75knqiciAUqf02DiaZwQrW1KCLDRo/pub" target="_blank">Recruits Best Books World War 1, 2 and 1960's</a></li>
+        </ul>
+</div>
+    
+{% endblock %} 
