@@ -12,13 +12,13 @@
                             <a href="{% url 'ww1-diaries' %}" class="nav-link" style="padding: 6px 10px;">World War I</a>
                         </li>
                         <li class="page-collection {% if '/inter-war' in request.path %}active{% endif %}">
-                            <a href="{% url 'ww2-diaries' %}" class="nav-link" style="padding: 6px 10px;">Inter-War Period</a>
+                            <a href="{% url 'inter-war' %}" class="nav-link" style="padding: 6px 10px;">Inter-War Period</a>
                         </li>
                         <li class="page-collection {% if '/ww2-diaries' in request.path %}active{% endif %}">
                             <a href="{% url 'ww2-diaries' %}" class="nav-link" style="padding: 6px 10px;">World War II</a>
                         </li>
                         <li class="page-collection {% if '/post-ww2' in request.path %}active{% endif %}">
-                            <a href="{% url 'ww2-diaries' %}" class="nav-link" style="padding: 6px 10px;">Post World War II</a>
+                            <a href="{% url 'post-ww2' %}" class="nav-link" style="padding: 6px 10px;">Post World War II</a>
                         </li>
                     </ul>
                 </div>

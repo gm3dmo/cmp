@@ -1050,8 +1050,14 @@ def war_diaries(request):
 def ww1_diaries(request):
     return render(request, 'cmp/ww1-diaries.html')
 
+def inter_war(request):
+    return render(request, 'cmp/inter-war.html')
+
 def ww2_diaries(request):
     return render(request, 'cmp/ww2-diaries.html')
+
+def post_ww2(request):
+    return render(request, 'cmp/post-ww2.html')
 
 def decorations_report(request):
     # Get top 10 soldiers with most decorations
