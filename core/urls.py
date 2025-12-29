@@ -28,5 +28,5 @@ urlpatterns = [
     path('reports/years/', views.year_report, name='year-report'),
 ]
 
-urlpatterns += [path("", include("cmp.urls"))]
+urlpatterns += [path("", include("cmp.urls"))]  
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
