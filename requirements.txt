@@ -173,7 +173,7 @@ pytest-cov==6.1.1
     # via -r requirements.in
 pytest-django==4.11.1
     # via -r requirements.in
-requests==2.32.3
+requests==2.32.4
     # via
     #   azure-core
     #   folium
