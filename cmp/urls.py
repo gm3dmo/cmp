@@ -106,10 +106,7 @@ urlpatterns = [
     path('ranks/', views.ranks, name='ranks'),
     path('acknowledgements/', views.acknowledgements, name='acknowledgements'),
 
-    path('ww1-diaries/', views.ww1_diaries, name='ww1-diaries'),
-    path('inter-war/', views.inter_war, name='inter-war'),
-    path('ww2-diaries/', views.ww2_diaries, name='ww2-diaries'),
-    path('post-ww2/', views.post_ww2, name='post-ww2'),
+    path('histories/', views.histories, name='histories'),
 
     path('accounts/', include('allauth.urls')),
     path('', include(protect_patterns(mgmt_patterns))),
