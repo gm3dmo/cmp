@@ -31,18 +31,13 @@ def run():
     title = sys.argv[2]
     
     start_fetch_time = time.time()
-    ref_data_url = "https://api.github.com/repos/gm3dmo/old-cmp/contents/data/soldier.csv"
+    ref_data_url = "https://api.github.com/repos/gm3dmo/cmp-archive/contents/cmp_soldier.csv"
 
     http = urllib3.PoolManager()
     r = http.request('GET', ref_data_url, headers=headers)
     end_fetch_time = time.time()
-    
-    # Read raw data and split into lines while preserving line endings
-    raw_data = r.data.decode('utf-8')
-    lines = raw_data.splitlines(keepends=True)
-    
-    # Create CSV reader with the first line as header
-    reader = csv.DictReader(lines)
+    # load the response into a csv dictionary reader
+    reader = csv.DictReader(r.data.decode('utf-8').splitlines())
     
     start_insert_time = time.time()
     for row in reader:
@@ -58,8 +53,6 @@ def run():
                 notes = row['notes']
             )
             
-            # Debug print to verify what was saved
-            saved_soldier = Soldier.objects.get(id=row['id'])
             
         except Exception as e:
             print(f"""💥row: ({row}) """)
