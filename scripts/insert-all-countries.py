@@ -19,7 +19,6 @@ def run():
 
     github_token= str(f"{env('READ_PAT')}")
 
-    print()
     title = sys.argv[2]
 
     headers = {
@@ -27,11 +26,10 @@ def run():
        'Authorization': f'Bearer {github_token}'
     }
 
-    print()
     title = sys.argv[2]
     
     start_fetch_time = time.time()
-    ref_data_url = "https://api.github.com/repos/gm3dmo/old-cmp/contents/data/country.csv"
+    ref_data_url = "https://api.github.com/repos/gm3dmo/cmp-archive/contents/cmp_country.csv"
     http = urllib3.PoolManager()
     r = http.request('GET', ref_data_url, headers=headers)
     end_fetch_time = time.time()
@@ -43,14 +41,14 @@ def run():
         try:
             Country.objects.create(
                 id = row['id'],
-                name = row['Name'],
-                alpha2 = row['Alpha2'],
-                alpha3 = row['Alpha3'],
-                country_number = row['CountryNumber'],
-                flag = ""
+                name = row['name'],
+                alpha2 = row['alpha2'],
+                alpha3 = row['alpha3'],
+                country_number = row['country_number'],
+                flag = row['flag']
         )
         except Exception as e:
-            print("Error with: " + row['Name'])
+            print("Error with: " + row['name'])
             raise e
 
     end_insert_time = time.time()

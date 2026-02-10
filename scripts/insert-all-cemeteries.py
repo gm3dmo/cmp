@@ -27,7 +27,7 @@ def run():
     }
 
     start_fetch_time = time.time()
-    ref_data_url = "https://api.github.com/repos/gm3dmo/old-cmp/contents/data/cemetery.csv"
+    ref_data_url = "https://api.github.com/repos/gm3dmo/cmp-archive/contents/cmp_cemetery.csv"
     http = urllib3.PoolManager()
     r = http.request('GET', ref_data_url, headers=headers)
     end_fetch_time = time.time()
@@ -35,7 +35,8 @@ def run():
     reader = csv.DictReader(r.data.decode('utf-8').splitlines())
     reader.fieldnames = [field.replace('.', '_') for field in reader.fieldnames]
     
-    # add a country model for each row in the csv file
+    # delete existing cemeteries before re-inserting
+    Cemetery.objects.all().delete()
     start_insert_time = time.time()
     for row in reader:
         if row['latitude'] == '':
@@ -46,7 +47,7 @@ def run():
             Cemetery.objects.create(
                 id=row['id'],
                 name=row['name'],
-                country_id=row['ccn3'],
+                country_id=row['country_id'],
                 latitude=row['latitude'],
                 longitude=row['longitude']
         )

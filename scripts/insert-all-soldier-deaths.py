@@ -9,7 +9,6 @@ def run():
     import csv
     import time
     from cmp.models import SoldierDeath
-    from cmp.models import Company
 
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'core.settings')
 
@@ -31,7 +30,7 @@ def run():
     title = sys.argv[2]
     
     start_fetch_time = time.time()
-    ref_data_url = "https://api.github.com/repos/gm3dmo/old-cmp/contents/data/soldier-death.csv"
+    ref_data_url = "https://api.github.com/repos/gm3dmo/cmp-archive/contents/cmp_soldierdeath.csv"
     http = urllib3.PoolManager()
     r = http.request('GET', ref_data_url, headers=headers)
     end_fetch_time = time.time()
@@ -43,19 +42,15 @@ def run():
     for row in reader:
         #print(f"""row: ({row['id']}) cwgc:({row['cwgc_id']})""")
         try:
-            company = Company.objects.filter(name=row['company_id']) 
-            if company:
-                company = company.first()
-            else:
-                #print(f"""row: ({row['id']}) cwgc:({row['cwgc_id']})""")
-                company = Company.objects.filter(name="UNKNOWN").first()
             cwgc_id = row.get('cwgc_id', 90909) if row.get('cwgc_id') != '' else 90909
+            date_value = row['date'] if row['date'] != '' else None
+            company_id = int(row['company_id']) if row['company_id'] != '' else None
+            cemetery_id = int(row['cemetery_id']) if row['cemetery_id'] != '' else None
             SoldierDeath.objects.create(
-                #id=int(row['id']),
                 soldier_id = int(row['soldier_id']),
-                date =row['Date'],
-                company_id = company.id,
-                cemetery_id = row['cemetery_id'],
+                date = date_value,
+                company_id = company_id,
+                cemetery_id = cemetery_id,
                 cwgc_id = cwgc_id
         )
         except Exception as e:

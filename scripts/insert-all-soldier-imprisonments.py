@@ -29,7 +29,7 @@ def run():
 
     
     start_fetch_time = time.time()
-    ref_data_url = "https://api.github.com/repos/gm3dmo/old-cmp/contents/data/soldier-imprisonment.csv"
+    ref_data_url = "https://api.github.com/repos/gm3dmo/cmp-archive/contents/cmp_soldierimprisonment.csv"
     http = urllib3.PoolManager()
     r = http.request('GET', ref_data_url, headers=headers)
     end_fetch_time = time.time()
@@ -43,11 +43,11 @@ def run():
             SoldierImprisonment.objects.create(
                 id = row['id'],
                 soldier_id = row['soldier_id'],
-                legacy_company = row['company_id'],
-                pow_number = row['powNumber'],
-                pow_camp_id = row['powCamp_id'],
-                legacy_date_from = row['dateFrom'],
-                legacy_date_to = row['dateTo'],
+                legacy_company = row['legacy_company'],
+                pow_number = row['pow_number'],
+                pow_camp_id = row['pow_camp_id'],
+                legacy_date_from = row['legacy_date_from'],
+                legacy_date_to = row['legacy_date_to'],
                 notes = row['notes']
         )
         except Exception as e:

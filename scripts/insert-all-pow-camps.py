@@ -27,7 +27,7 @@ def run():
     }
 
     start_fetch_time = time.time()
-    ref_data_url = "https://api.github.com/repos/gm3dmo/old-cmp/contents/data/pow-camp.csv"
+    ref_data_url = "https://api.github.com/repos/gm3dmo/cmp-archive/contents/cmp_powcamp.csv"
     http = urllib3.PoolManager()
     r = http.request('GET', ref_data_url, headers=headers)
     end_fetch_time = time.time()
@@ -41,11 +41,11 @@ def run():
         try:
             PowCamp.objects.create(
                 id=row['id'],
-                name=row['Name'],
-                country_id=row['PresentCountry_id'],
-                wartime_country=row['WartimeCountry'],
-                latitude=row['Latitude'],
-                longitude=row['Longitude']
+                name=row['name'],
+                country_id=row['country_id'],
+                wartime_country=row['wartime_country'],
+                latitude=row['latitude'],
+                longitude=row['longitude']
         )
         except Exception as e:
             print(f"""💥row: ({row}) """)
