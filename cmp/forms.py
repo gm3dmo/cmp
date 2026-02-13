@@ -245,6 +245,10 @@ class editCompanyForm(forms.ModelForm):
         fields = "__all__"
 
 class editDecorationForm(forms.ModelForm):
+    country = forms.ModelChoiceField(
+        queryset=Country.objects.all().order_by('name'),
+    )
+    
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
@@ -505,7 +509,7 @@ class ProvostAppointmentFormSetWithHelper(ProvostAppointmentInlineFormSet):
 
 class SoldierDecorationForm(forms.ModelForm):
     country = forms.ModelChoiceField(
-        queryset=Country.objects.all(),
+        queryset=Country.objects.all().order_by('name'),
     )
 
     def __init__(self, *args, **kwargs):
