@@ -18,7 +18,6 @@ ipdb
 folium
 Pillow
 pip-tools
-pip
 gunicorn
 azure-storage-blob
 azure-identity

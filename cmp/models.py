@@ -55,6 +55,9 @@ class Country(models.Model):
     country_number = models.CharField(max_length=3, unique=True)
     flag = models.CharField(max_length=255, default="", blank=True)
 
+    class Meta:
+        ordering = ['name']
+
     def __str__(self):
         return self.name
 
