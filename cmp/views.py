@@ -1,6 +1,8 @@
+import os
 from django.conf import settings
 from django.core.paginator import Paginator
 from django.shortcuts import get_object_or_404, render, HttpResponse
+from django.http import Http404
 
 from django.db.models import Q, Count, F
 from django.db.models.functions import Cast, ExtractYear
@@ -1206,3 +1208,17 @@ def safe_delete(request, model, pk, redirect_url):
         logger.error(f'Error deleting {model.__name__} {pk}: {str(e)}')
         messages.error(request, f'Error deleting {model.__name__}')
     return redirect(redirect_url)
+
+
+def country_map_report(request, alpha2):
+    """Serve a pre-generated country map report by 2-letter country code."""
+    alpha2 = alpha2.lower()
+    report_path = os.path.join(
+        settings.BASE_DIR, "reports", "country", alpha2, "index.html"
+    )
+    if not os.path.isfile(report_path):
+        raise Http404(f"No map report found for country code '{alpha2.upper()}'")
+    with open(report_path, "r", encoding="utf-8") as f:
+        response = HttpResponse(f.read(), content_type="text/html")
+    response["Referrer-Policy"] = "no-referrer-when-downgrade"
+    return response

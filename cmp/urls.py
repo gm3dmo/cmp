@@ -115,6 +115,7 @@ urlpatterns = [
     path('reports/decorations/', views.decorations_report, name='decorations-report'),
     path('reports/decorations/common/', views.decorations_common, name='decorations-common'),
     path('reports/countries/', views.countries_report, name='countries-report'),
+    path('reports/country/<str:alpha2>/', views.country_map_report, name='country-map-report'),
     path('reports/year/', views.year_report, name='year-report'),
 
     # About
